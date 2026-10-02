@@ -1,0 +1,14 @@
+{
+  "collectedAt": "2026-10-01",
+  "countryCount": 195,
+  "unMemberCount": 193,
+  "observerCount": 2,
+  "familiarCount": 30,
+  "imageBytes": 645455,
+  "sources": {
+    "countries": "https://raw.githubusercontent.com/mledoze/countries/master/countries.json",
+    "flags": "https://flagcdn.com/",
+    "coverage": "https://www.un.org/en/about-us/member-states"
+  },
+  "dataLicense": "ODbL-1.0"
+}

@@ -1,0 +1,4584 @@
+[
+  {
+    "id": "ad",
+    "name": "안도라",
+    "englishName": "Andorra",
+    "officialName": "안도라 공국",
+    "aliases": [
+      "안도라",
+      "안도라 공국",
+      "Andorra",
+      "Principality of Andorra"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Andorra la Vella"
+    ],
+    "languages": [
+      "Catalan"
+    ],
+    "isoCode": "AD",
+    "familiar": false,
+    "image": "assets/flags/ad.png",
+    "imageSource": "https://flagcdn.com/w640/ad.png"
+  },
+  {
+    "id": "ae",
+    "name": "아랍에미리트",
+    "englishName": "United Arab Emirates",
+    "officialName": "아랍 토후국 연방",
+    "aliases": [
+      "아랍에미리트",
+      "아랍 토후국 연방",
+      "United Arab Emirates"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Abu Dhabi"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "AE",
+    "familiar": false,
+    "image": "assets/flags/ae.png",
+    "imageSource": "https://flagcdn.com/w640/ae.png"
+  },
+  {
+    "id": "af",
+    "name": "아프가니스탄",
+    "englishName": "Afghanistan",
+    "officialName": "아프가니스탄 이슬람 공화국",
+    "aliases": [
+      "아프가니스탄",
+      "아프가니스탄 이슬람 공화국",
+      "Afghanistan",
+      "Islamic Republic of Afghanistan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Kabul"
+    ],
+    "languages": [
+      "Dari",
+      "Pashto",
+      "Turkmen"
+    ],
+    "isoCode": "AF",
+    "familiar": false,
+    "image": "assets/flags/af.png",
+    "imageSource": "https://flagcdn.com/w640/af.png"
+  },
+  {
+    "id": "ag",
+    "name": "앤티가 바부다",
+    "englishName": "Antigua and Barbuda",
+    "officialName": "앤티가 바부다",
+    "aliases": [
+      "앤티가 바부다",
+      "Antigua and Barbuda"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Saint John's"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "AG",
+    "familiar": false,
+    "image": "assets/flags/ag.png",
+    "imageSource": "https://flagcdn.com/w640/ag.png"
+  },
+  {
+    "id": "al",
+    "name": "알바니아",
+    "englishName": "Albania",
+    "officialName": "알바니아 공화국",
+    "aliases": [
+      "알바니아",
+      "알바니아 공화국",
+      "Albania",
+      "Republic of Albania"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Tirana"
+    ],
+    "languages": [
+      "Albanian"
+    ],
+    "isoCode": "AL",
+    "familiar": false,
+    "image": "assets/flags/al.png",
+    "imageSource": "https://flagcdn.com/w640/al.png"
+  },
+  {
+    "id": "am",
+    "name": "아르메니아",
+    "englishName": "Armenia",
+    "officialName": "아르메니아 공화국",
+    "aliases": [
+      "아르메니아",
+      "아르메니아 공화국",
+      "Armenia",
+      "Republic of Armenia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Yerevan"
+    ],
+    "languages": [
+      "Armenian"
+    ],
+    "isoCode": "AM",
+    "familiar": false,
+    "image": "assets/flags/am.png",
+    "imageSource": "https://flagcdn.com/w640/am.png"
+  },
+  {
+    "id": "ao",
+    "name": "앙골라",
+    "englishName": "Angola",
+    "officialName": "앙골라 공화국",
+    "aliases": [
+      "앙골라",
+      "앙골라 공화국",
+      "Angola",
+      "Republic of Angola"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Luanda"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "AO",
+    "familiar": false,
+    "image": "assets/flags/ao.png",
+    "imageSource": "https://flagcdn.com/w640/ao.png"
+  },
+  {
+    "id": "ar",
+    "name": "아르헨티나",
+    "englishName": "Argentina",
+    "officialName": "아르헨티나 공화국",
+    "aliases": [
+      "아르헨티나",
+      "아르헨티나 공화국",
+      "Argentina",
+      "Argentine Republic"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Buenos Aires"
+    ],
+    "languages": [
+      "Guaraní",
+      "Spanish"
+    ],
+    "isoCode": "AR",
+    "familiar": true,
+    "image": "assets/flags/ar.png",
+    "imageSource": "https://flagcdn.com/w640/ar.png"
+  },
+  {
+    "id": "at",
+    "name": "오스트리아",
+    "englishName": "Austria",
+    "officialName": "오스트리아 공화국",
+    "aliases": [
+      "오스트리아",
+      "오스트리아 공화국",
+      "Austria",
+      "Republic of Austria"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Vienna"
+    ],
+    "languages": [
+      "Austro-Bavarian German"
+    ],
+    "isoCode": "AT",
+    "familiar": false,
+    "image": "assets/flags/at.png",
+    "imageSource": "https://flagcdn.com/w640/at.png"
+  },
+  {
+    "id": "au",
+    "name": "호주",
+    "englishName": "Australia",
+    "officialName": "오스트레일리아 연방",
+    "aliases": [
+      "호주",
+      "오스트레일리아 연방",
+      "Australia",
+      "Commonwealth of Australia"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Canberra"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "AU",
+    "familiar": true,
+    "image": "assets/flags/au.png",
+    "imageSource": "https://flagcdn.com/w640/au.png"
+  },
+  {
+    "id": "az",
+    "name": "아제르바이잔",
+    "englishName": "Azerbaijan",
+    "officialName": "아제르바이잔 공화국",
+    "aliases": [
+      "아제르바이잔",
+      "아제르바이잔 공화국",
+      "Azerbaijan",
+      "Republic of Azerbaijan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Baku"
+    ],
+    "languages": [
+      "Azerbaijani",
+      "Russian"
+    ],
+    "isoCode": "AZ",
+    "familiar": false,
+    "image": "assets/flags/az.png",
+    "imageSource": "https://flagcdn.com/w640/az.png"
+  },
+  {
+    "id": "ba",
+    "name": "보스니아 헤르체고비나",
+    "englishName": "Bosnia and Herzegovina",
+    "officialName": "보스니아 헤르체고비나",
+    "aliases": [
+      "보스니아 헤르체고비나",
+      "Bosnia and Herzegovina"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Sarajevo"
+    ],
+    "languages": [
+      "Bosnian",
+      "Croatian",
+      "Serbian"
+    ],
+    "isoCode": "BA",
+    "familiar": false,
+    "image": "assets/flags/ba.png",
+    "imageSource": "https://flagcdn.com/w640/ba.png"
+  },
+  {
+    "id": "bb",
+    "name": "바베이도스",
+    "englishName": "Barbados",
+    "officialName": "바베이도스",
+    "aliases": [
+      "바베이도스",
+      "Barbados"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Bridgetown"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "BB",
+    "familiar": false,
+    "image": "assets/flags/bb.png",
+    "imageSource": "https://flagcdn.com/w640/bb.png"
+  },
+  {
+    "id": "bd",
+    "name": "방글라데시",
+    "englishName": "Bangladesh",
+    "officialName": "방글라데시 인민 공화국",
+    "aliases": [
+      "방글라데시",
+      "방글라데시 인민 공화국",
+      "Bangladesh",
+      "People's Republic of Bangladesh"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Dhaka"
+    ],
+    "languages": [
+      "Bengali"
+    ],
+    "isoCode": "BD",
+    "familiar": false,
+    "image": "assets/flags/bd.png",
+    "imageSource": "https://flagcdn.com/w640/bd.png"
+  },
+  {
+    "id": "be",
+    "name": "벨기에",
+    "englishName": "Belgium",
+    "officialName": "벨기에 왕국",
+    "aliases": [
+      "벨기에",
+      "벨기에 왕국",
+      "Belgium",
+      "Kingdom of Belgium"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Brussels"
+    ],
+    "languages": [
+      "German",
+      "French",
+      "Dutch"
+    ],
+    "isoCode": "BE",
+    "familiar": false,
+    "image": "assets/flags/be.png",
+    "imageSource": "https://flagcdn.com/w640/be.png"
+  },
+  {
+    "id": "bf",
+    "name": "부르키나파소",
+    "englishName": "Burkina Faso",
+    "officialName": "부르키나파소",
+    "aliases": [
+      "부르키나파소",
+      "Burkina Faso"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Ouagadougou"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "BF",
+    "familiar": false,
+    "image": "assets/flags/bf.png",
+    "imageSource": "https://flagcdn.com/w640/bf.png"
+  },
+  {
+    "id": "bg",
+    "name": "불가리아",
+    "englishName": "Bulgaria",
+    "officialName": "불가리아 공화국",
+    "aliases": [
+      "불가리아",
+      "불가리아 공화국",
+      "Bulgaria",
+      "Republic of Bulgaria"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Sofia"
+    ],
+    "languages": [
+      "Bulgarian"
+    ],
+    "isoCode": "BG",
+    "familiar": false,
+    "image": "assets/flags/bg.png",
+    "imageSource": "https://flagcdn.com/w640/bg.png"
+  },
+  {
+    "id": "bh",
+    "name": "바레인",
+    "englishName": "Bahrain",
+    "officialName": "바레인 왕국",
+    "aliases": [
+      "바레인",
+      "바레인 왕국",
+      "Bahrain",
+      "Kingdom of Bahrain"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Manama"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "BH",
+    "familiar": false,
+    "image": "assets/flags/bh.png",
+    "imageSource": "https://flagcdn.com/w640/bh.png"
+  },
+  {
+    "id": "bi",
+    "name": "부룬디",
+    "englishName": "Burundi",
+    "officialName": "부룬디",
+    "aliases": [
+      "부룬디",
+      "Burundi",
+      "Republic of Burundi"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Gitega"
+    ],
+    "languages": [
+      "French",
+      "Kirundi"
+    ],
+    "isoCode": "BI",
+    "familiar": false,
+    "image": "assets/flags/bi.png",
+    "imageSource": "https://flagcdn.com/w640/bi.png"
+  },
+  {
+    "id": "bj",
+    "name": "베냉",
+    "englishName": "Benin",
+    "officialName": "베냉 공화국",
+    "aliases": [
+      "베냉",
+      "베냉 공화국",
+      "Benin",
+      "Republic of Benin"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Porto-Novo"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "BJ",
+    "familiar": false,
+    "image": "assets/flags/bj.png",
+    "imageSource": "https://flagcdn.com/w640/bj.png"
+  },
+  {
+    "id": "bn",
+    "name": "브루나이",
+    "englishName": "Brunei",
+    "officialName": "브루나이 다루살람국",
+    "aliases": [
+      "브루나이",
+      "브루나이 다루살람국",
+      "Brunei",
+      "Nation of Brunei, Abode of Peace"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Bandar Seri Begawan"
+    ],
+    "languages": [
+      "Malay"
+    ],
+    "isoCode": "BN",
+    "familiar": false,
+    "image": "assets/flags/bn.png",
+    "imageSource": "https://flagcdn.com/w640/bn.png"
+  },
+  {
+    "id": "bo",
+    "name": "볼리비아",
+    "englishName": "Bolivia",
+    "officialName": "볼리비아 다민족국",
+    "aliases": [
+      "볼리비아",
+      "볼리비아 다민족국",
+      "Bolivia",
+      "Plurinational State of Bolivia"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Sucre"
+    ],
+    "languages": [
+      "Aymara",
+      "Guaraní",
+      "Quechua",
+      "Spanish"
+    ],
+    "isoCode": "BO",
+    "familiar": false,
+    "image": "assets/flags/bo.png",
+    "imageSource": "https://flagcdn.com/w640/bo.png"
+  },
+  {
+    "id": "br",
+    "name": "브라질",
+    "englishName": "Brazil",
+    "officialName": "브라질 연방 공화국",
+    "aliases": [
+      "브라질",
+      "브라질 연방 공화국",
+      "Brazil",
+      "Federative Republic of Brazil"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Brasília"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "BR",
+    "familiar": true,
+    "image": "assets/flags/br.png",
+    "imageSource": "https://flagcdn.com/w640/br.png"
+  },
+  {
+    "id": "bs",
+    "name": "바하마",
+    "englishName": "Bahamas",
+    "officialName": "바하마 연방",
+    "aliases": [
+      "바하마",
+      "바하마 연방",
+      "Bahamas",
+      "Commonwealth of the Bahamas"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Nassau"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "BS",
+    "familiar": false,
+    "image": "assets/flags/bs.png",
+    "imageSource": "https://flagcdn.com/w640/bs.png"
+  },
+  {
+    "id": "bt",
+    "name": "부탄",
+    "englishName": "Bhutan",
+    "officialName": "부탄 왕국",
+    "aliases": [
+      "부탄",
+      "부탄 왕국",
+      "Bhutan",
+      "Kingdom of Bhutan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Thimphu"
+    ],
+    "languages": [
+      "Dzongkha"
+    ],
+    "isoCode": "BT",
+    "familiar": false,
+    "image": "assets/flags/bt.png",
+    "imageSource": "https://flagcdn.com/w640/bt.png"
+  },
+  {
+    "id": "bw",
+    "name": "보츠와나",
+    "englishName": "Botswana",
+    "officialName": "보츠와나 공화국",
+    "aliases": [
+      "보츠와나",
+      "보츠와나 공화국",
+      "Botswana",
+      "Republic of Botswana"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Gaborone"
+    ],
+    "languages": [
+      "English",
+      "Tswana"
+    ],
+    "isoCode": "BW",
+    "familiar": false,
+    "image": "assets/flags/bw.png",
+    "imageSource": "https://flagcdn.com/w640/bw.png"
+  },
+  {
+    "id": "by",
+    "name": "벨라루스",
+    "englishName": "Belarus",
+    "officialName": "벨라루스 공화국",
+    "aliases": [
+      "벨라루스",
+      "벨라루스 공화국",
+      "Belarus",
+      "Republic of Belarus"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Minsk"
+    ],
+    "languages": [
+      "Belarusian",
+      "Russian"
+    ],
+    "isoCode": "BY",
+    "familiar": false,
+    "image": "assets/flags/by.png",
+    "imageSource": "https://flagcdn.com/w640/by.png"
+  },
+  {
+    "id": "bz",
+    "name": "벨리즈",
+    "englishName": "Belize",
+    "officialName": "벨리즈",
+    "aliases": [
+      "벨리즈",
+      "Belize"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Belmopan"
+    ],
+    "languages": [
+      "Belizean Creole",
+      "English",
+      "Spanish"
+    ],
+    "isoCode": "BZ",
+    "familiar": false,
+    "image": "assets/flags/bz.png",
+    "imageSource": "https://flagcdn.com/w640/bz.png"
+  },
+  {
+    "id": "ca",
+    "name": "캐나다",
+    "englishName": "Canada",
+    "officialName": "캐나다",
+    "aliases": [
+      "캐나다",
+      "Canada"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Ottawa"
+    ],
+    "languages": [
+      "English",
+      "French"
+    ],
+    "isoCode": "CA",
+    "familiar": true,
+    "image": "assets/flags/ca.png",
+    "imageSource": "https://flagcdn.com/w640/ca.png"
+  },
+  {
+    "id": "cd",
+    "name": "콩고민주공화국",
+    "englishName": "DR Congo",
+    "officialName": "콩고 민주 공화국",
+    "aliases": [
+      "콩고민주공화국",
+      "콩고 민주 공화국",
+      "DR Congo",
+      "Democratic Republic of the Congo"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Kinshasa"
+    ],
+    "languages": [
+      "French",
+      "Kikongo",
+      "Lingala",
+      "Tshiluba",
+      "Swahili"
+    ],
+    "isoCode": "CD",
+    "familiar": false,
+    "image": "assets/flags/cd.png",
+    "imageSource": "https://flagcdn.com/w640/cd.png"
+  },
+  {
+    "id": "cf",
+    "name": "중앙아프리카 공화국",
+    "englishName": "Central African Republic",
+    "officialName": "중앙아프리카 공화국",
+    "aliases": [
+      "중앙아프리카 공화국",
+      "Central African Republic"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Bangui"
+    ],
+    "languages": [
+      "French",
+      "Sango"
+    ],
+    "isoCode": "CF",
+    "familiar": false,
+    "image": "assets/flags/cf.png",
+    "imageSource": "https://flagcdn.com/w640/cf.png"
+  },
+  {
+    "id": "cg",
+    "name": "콩고공화국",
+    "englishName": "Congo",
+    "officialName": "콩고",
+    "aliases": [
+      "콩고공화국",
+      "콩고",
+      "Congo",
+      "Republic of the Congo"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Brazzaville"
+    ],
+    "languages": [
+      "French",
+      "Kikongo",
+      "Lingala"
+    ],
+    "isoCode": "CG",
+    "familiar": false,
+    "image": "assets/flags/cg.png",
+    "imageSource": "https://flagcdn.com/w640/cg.png"
+  },
+  {
+    "id": "ch",
+    "name": "스위스",
+    "englishName": "Switzerland",
+    "officialName": "스위스 연방",
+    "aliases": [
+      "스위스",
+      "스위스 연방",
+      "Switzerland",
+      "Swiss Confederation"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Bern"
+    ],
+    "languages": [
+      "French",
+      "Swiss German",
+      "Italian",
+      "Romansh"
+    ],
+    "isoCode": "CH",
+    "familiar": true,
+    "image": "assets/flags/ch.png",
+    "imageSource": "https://flagcdn.com/w640/ch.png"
+  },
+  {
+    "id": "ci",
+    "name": "코트디부아르",
+    "englishName": "Ivory Coast",
+    "officialName": "코트디부아르 공화국",
+    "aliases": [
+      "코트디부아르",
+      "코트디부아르 공화국",
+      "Ivory Coast",
+      "Republic of Côte d'Ivoire"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Yamoussoukro"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "CI",
+    "familiar": false,
+    "image": "assets/flags/ci.png",
+    "imageSource": "https://flagcdn.com/w640/ci.png"
+  },
+  {
+    "id": "cl",
+    "name": "칠레",
+    "englishName": "Chile",
+    "officialName": "칠레 공화국",
+    "aliases": [
+      "칠레",
+      "칠레 공화국",
+      "Chile",
+      "Republic of Chile"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Santiago"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "CL",
+    "familiar": false,
+    "image": "assets/flags/cl.png",
+    "imageSource": "https://flagcdn.com/w640/cl.png"
+  },
+  {
+    "id": "cm",
+    "name": "카메룬",
+    "englishName": "Cameroon",
+    "officialName": "카메룬 공화국",
+    "aliases": [
+      "카메룬",
+      "카메룬 공화국",
+      "Cameroon",
+      "Republic of Cameroon"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Yaoundé"
+    ],
+    "languages": [
+      "English",
+      "French"
+    ],
+    "isoCode": "CM",
+    "familiar": false,
+    "image": "assets/flags/cm.png",
+    "imageSource": "https://flagcdn.com/w640/cm.png"
+  },
+  {
+    "id": "cn",
+    "name": "중국",
+    "englishName": "China",
+    "officialName": "중화인민공화국",
+    "aliases": [
+      "중국",
+      "중화인민공화국",
+      "China",
+      "People's Republic of China"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Beijing"
+    ],
+    "languages": [
+      "Chinese"
+    ],
+    "isoCode": "CN",
+    "familiar": true,
+    "image": "assets/flags/cn.png",
+    "imageSource": "https://flagcdn.com/w640/cn.png"
+  },
+  {
+    "id": "co",
+    "name": "콜롬비아",
+    "englishName": "Colombia",
+    "officialName": "콜롬비아 공화국",
+    "aliases": [
+      "콜롬비아",
+      "콜롬비아 공화국",
+      "Colombia",
+      "Republic of Colombia"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Bogotá"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "CO",
+    "familiar": false,
+    "image": "assets/flags/co.png",
+    "imageSource": "https://flagcdn.com/w640/co.png"
+  },
+  {
+    "id": "cr",
+    "name": "코스타리카",
+    "englishName": "Costa Rica",
+    "officialName": "코스타리카 공화국",
+    "aliases": [
+      "코스타리카",
+      "코스타리카 공화국",
+      "Costa Rica",
+      "Republic of Costa Rica"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "San José"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "CR",
+    "familiar": false,
+    "image": "assets/flags/cr.png",
+    "imageSource": "https://flagcdn.com/w640/cr.png"
+  },
+  {
+    "id": "cu",
+    "name": "쿠바",
+    "englishName": "Cuba",
+    "officialName": "쿠바 공화국",
+    "aliases": [
+      "쿠바",
+      "쿠바 공화국",
+      "Cuba",
+      "Republic of Cuba"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Havana"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "CU",
+    "familiar": false,
+    "image": "assets/flags/cu.png",
+    "imageSource": "https://flagcdn.com/w640/cu.png"
+  },
+  {
+    "id": "cv",
+    "name": "카보베르데",
+    "englishName": "Cape Verde",
+    "officialName": "카보베르데 공화국",
+    "aliases": [
+      "카보베르데",
+      "카보베르데 공화국",
+      "Cape Verde",
+      "Republic of Cabo Verde",
+      "케이프베르데"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Praia"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "CV",
+    "familiar": false,
+    "image": "assets/flags/cv.png",
+    "imageSource": "https://flagcdn.com/w640/cv.png"
+  },
+  {
+    "id": "cy",
+    "name": "키프로스",
+    "englishName": "Cyprus",
+    "officialName": "키프로스 공화국",
+    "aliases": [
+      "키프로스",
+      "키프로스 공화국",
+      "Cyprus",
+      "Republic of Cyprus"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Nicosia"
+    ],
+    "languages": [
+      "Greek",
+      "Turkish"
+    ],
+    "isoCode": "CY",
+    "familiar": false,
+    "image": "assets/flags/cy.png",
+    "imageSource": "https://flagcdn.com/w640/cy.png"
+  },
+  {
+    "id": "cz",
+    "name": "체코",
+    "englishName": "Czechia",
+    "officialName": "체코",
+    "aliases": [
+      "체코",
+      "Czechia",
+      "Czech Republic",
+      "체코공화국"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Prague"
+    ],
+    "languages": [
+      "Czech",
+      "Slovak"
+    ],
+    "isoCode": "CZ",
+    "familiar": false,
+    "image": "assets/flags/cz.png",
+    "imageSource": "https://flagcdn.com/w640/cz.png"
+  },
+  {
+    "id": "de",
+    "name": "독일",
+    "englishName": "Germany",
+    "officialName": "독일 연방 공화국",
+    "aliases": [
+      "독일",
+      "독일 연방 공화국",
+      "Germany",
+      "Federal Republic of Germany"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Berlin"
+    ],
+    "languages": [
+      "German"
+    ],
+    "isoCode": "DE",
+    "familiar": true,
+    "image": "assets/flags/de.png",
+    "imageSource": "https://flagcdn.com/w640/de.png"
+  },
+  {
+    "id": "dj",
+    "name": "지부티",
+    "englishName": "Djibouti",
+    "officialName": "지부티 공화국",
+    "aliases": [
+      "지부티",
+      "지부티 공화국",
+      "Djibouti",
+      "Republic of Djibouti"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Djibouti"
+    ],
+    "languages": [
+      "Arabic",
+      "French"
+    ],
+    "isoCode": "DJ",
+    "familiar": false,
+    "image": "assets/flags/dj.png",
+    "imageSource": "https://flagcdn.com/w640/dj.png"
+  },
+  {
+    "id": "dk",
+    "name": "덴마크",
+    "englishName": "Denmark",
+    "officialName": "덴마크 왕국",
+    "aliases": [
+      "덴마크",
+      "덴마크 왕국",
+      "Denmark",
+      "Kingdom of Denmark"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Copenhagen"
+    ],
+    "languages": [
+      "Danish"
+    ],
+    "isoCode": "DK",
+    "familiar": false,
+    "image": "assets/flags/dk.png",
+    "imageSource": "https://flagcdn.com/w640/dk.png"
+  },
+  {
+    "id": "dm",
+    "name": "도미니카 공화국",
+    "englishName": "Dominica",
+    "officialName": "도미니카 공화국",
+    "aliases": [
+      "도미니카 공화국",
+      "Dominica",
+      "Commonwealth of Dominica"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Roseau"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "DM",
+    "familiar": false,
+    "image": "assets/flags/dm.png",
+    "imageSource": "https://flagcdn.com/w640/dm.png"
+  },
+  {
+    "id": "do",
+    "name": "도미니카 공화국",
+    "englishName": "Dominican Republic",
+    "officialName": "도미니카 공화국",
+    "aliases": [
+      "도미니카 공화국",
+      "Dominican Republic"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Santo Domingo"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "DO",
+    "familiar": false,
+    "image": "assets/flags/do.png",
+    "imageSource": "https://flagcdn.com/w640/do.png"
+  },
+  {
+    "id": "dz",
+    "name": "알제리",
+    "englishName": "Algeria",
+    "officialName": "알제리 인민 민주 공화국",
+    "aliases": [
+      "알제리",
+      "알제리 인민 민주 공화국",
+      "Algeria",
+      "People's Democratic Republic of Algeria"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Algiers"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "DZ",
+    "familiar": false,
+    "image": "assets/flags/dz.png",
+    "imageSource": "https://flagcdn.com/w640/dz.png"
+  },
+  {
+    "id": "ec",
+    "name": "에콰도르",
+    "englishName": "Ecuador",
+    "officialName": "에콰도르 공화국",
+    "aliases": [
+      "에콰도르",
+      "에콰도르 공화국",
+      "Ecuador",
+      "Republic of Ecuador"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Quito"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "EC",
+    "familiar": false,
+    "image": "assets/flags/ec.png",
+    "imageSource": "https://flagcdn.com/w640/ec.png"
+  },
+  {
+    "id": "ee",
+    "name": "에스토니아",
+    "englishName": "Estonia",
+    "officialName": "에스토니아 공화국",
+    "aliases": [
+      "에스토니아",
+      "에스토니아 공화국",
+      "Estonia",
+      "Republic of Estonia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Tallinn"
+    ],
+    "languages": [
+      "Estonian"
+    ],
+    "isoCode": "EE",
+    "familiar": false,
+    "image": "assets/flags/ee.png",
+    "imageSource": "https://flagcdn.com/w640/ee.png"
+  },
+  {
+    "id": "eg",
+    "name": "이집트",
+    "englishName": "Egypt",
+    "officialName": "이집트 아랍 공화국",
+    "aliases": [
+      "이집트",
+      "이집트 아랍 공화국",
+      "Egypt",
+      "Arab Republic of Egypt"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Cairo"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "EG",
+    "familiar": true,
+    "image": "assets/flags/eg.png",
+    "imageSource": "https://flagcdn.com/w640/eg.png"
+  },
+  {
+    "id": "er",
+    "name": "에리트레아",
+    "englishName": "Eritrea",
+    "officialName": "에리트레아국",
+    "aliases": [
+      "에리트레아",
+      "에리트레아국",
+      "Eritrea",
+      "State of Eritrea"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Asmara"
+    ],
+    "languages": [
+      "Arabic",
+      "English",
+      "Tigrinya"
+    ],
+    "isoCode": "ER",
+    "familiar": false,
+    "image": "assets/flags/er.png",
+    "imageSource": "https://flagcdn.com/w640/er.png"
+  },
+  {
+    "id": "es",
+    "name": "스페인",
+    "englishName": "Spain",
+    "officialName": "에스파냐 왕국",
+    "aliases": [
+      "스페인",
+      "에스파냐 왕국",
+      "Spain",
+      "Kingdom of Spain"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Madrid"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "ES",
+    "familiar": true,
+    "image": "assets/flags/es.png",
+    "imageSource": "https://flagcdn.com/w640/es.png"
+  },
+  {
+    "id": "et",
+    "name": "에티오피아",
+    "englishName": "Ethiopia",
+    "officialName": "에티오피아 연방 민주 공화국",
+    "aliases": [
+      "에티오피아",
+      "에티오피아 연방 민주 공화국",
+      "Ethiopia",
+      "Federal Democratic Republic of Ethiopia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Addis Ababa"
+    ],
+    "languages": [
+      "Amharic"
+    ],
+    "isoCode": "ET",
+    "familiar": false,
+    "image": "assets/flags/et.png",
+    "imageSource": "https://flagcdn.com/w640/et.png"
+  },
+  {
+    "id": "fi",
+    "name": "핀란드",
+    "englishName": "Finland",
+    "officialName": "핀란드 공화국",
+    "aliases": [
+      "핀란드",
+      "핀란드 공화국",
+      "Finland",
+      "Republic of Finland"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Helsinki"
+    ],
+    "languages": [
+      "Finnish",
+      "Swedish"
+    ],
+    "isoCode": "FI",
+    "familiar": false,
+    "image": "assets/flags/fi.png",
+    "imageSource": "https://flagcdn.com/w640/fi.png"
+  },
+  {
+    "id": "fj",
+    "name": "피지",
+    "englishName": "Fiji",
+    "officialName": "피지 공화국",
+    "aliases": [
+      "피지",
+      "피지 공화국",
+      "Fiji",
+      "Republic of Fiji"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Suva"
+    ],
+    "languages": [
+      "English",
+      "Fijian",
+      "Fiji Hindi"
+    ],
+    "isoCode": "FJ",
+    "familiar": false,
+    "image": "assets/flags/fj.png",
+    "imageSource": "https://flagcdn.com/w640/fj.png"
+  },
+  {
+    "id": "fm",
+    "name": "미크로네시아",
+    "englishName": "Micronesia",
+    "officialName": "미크로네시아 연방",
+    "aliases": [
+      "미크로네시아",
+      "미크로네시아 연방",
+      "Micronesia",
+      "Federated States of Micronesia"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Palikir"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "FM",
+    "familiar": false,
+    "image": "assets/flags/fm.png",
+    "imageSource": "https://flagcdn.com/w640/fm.png"
+  },
+  {
+    "id": "fr",
+    "name": "프랑스",
+    "englishName": "France",
+    "officialName": "프랑스 공화국",
+    "aliases": [
+      "프랑스",
+      "프랑스 공화국",
+      "France",
+      "French Republic"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Paris"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "FR",
+    "familiar": true,
+    "image": "assets/flags/fr.png",
+    "imageSource": "https://flagcdn.com/w640/fr.png"
+  },
+  {
+    "id": "ga",
+    "name": "가봉",
+    "englishName": "Gabon",
+    "officialName": "가봉 공화국",
+    "aliases": [
+      "가봉",
+      "가봉 공화국",
+      "Gabon",
+      "Gabonese Republic"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Libreville"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "GA",
+    "familiar": false,
+    "image": "assets/flags/ga.png",
+    "imageSource": "https://flagcdn.com/w640/ga.png"
+  },
+  {
+    "id": "gb",
+    "name": "영국",
+    "englishName": "United Kingdom",
+    "officialName": "그레이트브리튼 북아일랜드 연합 왕국",
+    "aliases": [
+      "영국",
+      "그레이트브리튼 북아일랜드 연합 왕국",
+      "United Kingdom",
+      "United Kingdom of Great Britain and Northern Ireland",
+      "그레이트브리튼"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "London"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "GB",
+    "familiar": true,
+    "image": "assets/flags/gb.png",
+    "imageSource": "https://flagcdn.com/w640/gb.png"
+  },
+  {
+    "id": "gd",
+    "name": "그레나다",
+    "englishName": "Grenada",
+    "officialName": "그레나다",
+    "aliases": [
+      "그레나다",
+      "Grenada"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "St. George's"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "GD",
+    "familiar": false,
+    "image": "assets/flags/gd.png",
+    "imageSource": "https://flagcdn.com/w640/gd.png"
+  },
+  {
+    "id": "ge",
+    "name": "조지아",
+    "englishName": "Georgia",
+    "officialName": "조지아",
+    "aliases": [
+      "조지아",
+      "Georgia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Tbilisi"
+    ],
+    "languages": [
+      "Georgian"
+    ],
+    "isoCode": "GE",
+    "familiar": false,
+    "image": "assets/flags/ge.png",
+    "imageSource": "https://flagcdn.com/w640/ge.png"
+  },
+  {
+    "id": "gh",
+    "name": "가나",
+    "englishName": "Ghana",
+    "officialName": "가나 공화국",
+    "aliases": [
+      "가나",
+      "가나 공화국",
+      "Ghana",
+      "Republic of Ghana"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Accra"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "GH",
+    "familiar": false,
+    "image": "assets/flags/gh.png",
+    "imageSource": "https://flagcdn.com/w640/gh.png"
+  },
+  {
+    "id": "gm",
+    "name": "감비아",
+    "englishName": "Gambia",
+    "officialName": "감비아 공화국",
+    "aliases": [
+      "감비아",
+      "감비아 공화국",
+      "Gambia",
+      "Republic of the Gambia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Banjul"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "GM",
+    "familiar": false,
+    "image": "assets/flags/gm.png",
+    "imageSource": "https://flagcdn.com/w640/gm.png"
+  },
+  {
+    "id": "gn",
+    "name": "기니",
+    "englishName": "Guinea",
+    "officialName": "기니 공화국",
+    "aliases": [
+      "기니",
+      "기니 공화국",
+      "Guinea",
+      "Republic of Guinea"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Conakry"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "GN",
+    "familiar": false,
+    "image": "assets/flags/gn.png",
+    "imageSource": "https://flagcdn.com/w640/gn.png"
+  },
+  {
+    "id": "gq",
+    "name": "적도 기니",
+    "englishName": "Equatorial Guinea",
+    "officialName": "적도 기니 공화국",
+    "aliases": [
+      "적도 기니",
+      "적도 기니 공화국",
+      "Equatorial Guinea",
+      "Republic of Equatorial Guinea"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Malabo"
+    ],
+    "languages": [
+      "French",
+      "Portuguese",
+      "Spanish"
+    ],
+    "isoCode": "GQ",
+    "familiar": false,
+    "image": "assets/flags/gq.png",
+    "imageSource": "https://flagcdn.com/w640/gq.png"
+  },
+  {
+    "id": "gr",
+    "name": "그리스",
+    "englishName": "Greece",
+    "officialName": "그리스 공화국",
+    "aliases": [
+      "그리스",
+      "그리스 공화국",
+      "Greece",
+      "Hellenic Republic"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Athens"
+    ],
+    "languages": [
+      "Greek"
+    ],
+    "isoCode": "GR",
+    "familiar": true,
+    "image": "assets/flags/gr.png",
+    "imageSource": "https://flagcdn.com/w640/gr.png"
+  },
+  {
+    "id": "gt",
+    "name": "과테말라",
+    "englishName": "Guatemala",
+    "officialName": "과테말라 공화국",
+    "aliases": [
+      "과테말라",
+      "과테말라 공화국",
+      "Guatemala",
+      "Republic of Guatemala"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Guatemala City"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "GT",
+    "familiar": false,
+    "image": "assets/flags/gt.png",
+    "imageSource": "https://flagcdn.com/w640/gt.png"
+  },
+  {
+    "id": "gw",
+    "name": "기니비사우",
+    "englishName": "Guinea-Bissau",
+    "officialName": "기니비사우 공화국",
+    "aliases": [
+      "기니비사우",
+      "기니비사우 공화국",
+      "Guinea-Bissau",
+      "Republic of Guinea-Bissau"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Bissau"
+    ],
+    "languages": [
+      "Portuguese",
+      "Upper Guinea Creole"
+    ],
+    "isoCode": "GW",
+    "familiar": false,
+    "image": "assets/flags/gw.png",
+    "imageSource": "https://flagcdn.com/w640/gw.png"
+  },
+  {
+    "id": "gy",
+    "name": "가이아나",
+    "englishName": "Guyana",
+    "officialName": "가이아나 협동 공화국",
+    "aliases": [
+      "가이아나",
+      "가이아나 협동 공화국",
+      "Guyana",
+      "Co-operative Republic of Guyana"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Georgetown"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "GY",
+    "familiar": false,
+    "image": "assets/flags/gy.png",
+    "imageSource": "https://flagcdn.com/w640/gy.png"
+  },
+  {
+    "id": "hn",
+    "name": "온두라스",
+    "englishName": "Honduras",
+    "officialName": "온두라스 공화국",
+    "aliases": [
+      "온두라스",
+      "온두라스 공화국",
+      "Honduras",
+      "Republic of Honduras"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Tegucigalpa"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "HN",
+    "familiar": false,
+    "image": "assets/flags/hn.png",
+    "imageSource": "https://flagcdn.com/w640/hn.png"
+  },
+  {
+    "id": "hr",
+    "name": "크로아티아",
+    "englishName": "Croatia",
+    "officialName": "크로아티아 공화국",
+    "aliases": [
+      "크로아티아",
+      "크로아티아 공화국",
+      "Croatia",
+      "Republic of Croatia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Zagreb"
+    ],
+    "languages": [
+      "Croatian"
+    ],
+    "isoCode": "HR",
+    "familiar": false,
+    "image": "assets/flags/hr.png",
+    "imageSource": "https://flagcdn.com/w640/hr.png"
+  },
+  {
+    "id": "ht",
+    "name": "아이티",
+    "englishName": "Haiti",
+    "officialName": "아이티 공화국",
+    "aliases": [
+      "아이티",
+      "아이티 공화국",
+      "Haiti",
+      "Republic of Haiti"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Port-au-Prince"
+    ],
+    "languages": [
+      "French",
+      "Haitian Creole"
+    ],
+    "isoCode": "HT",
+    "familiar": false,
+    "image": "assets/flags/ht.png",
+    "imageSource": "https://flagcdn.com/w640/ht.png"
+  },
+  {
+    "id": "hu",
+    "name": "헝가리",
+    "englishName": "Hungary",
+    "officialName": "헝가리",
+    "aliases": [
+      "헝가리",
+      "Hungary"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Budapest"
+    ],
+    "languages": [
+      "Hungarian"
+    ],
+    "isoCode": "HU",
+    "familiar": false,
+    "image": "assets/flags/hu.png",
+    "imageSource": "https://flagcdn.com/w640/hu.png"
+  },
+  {
+    "id": "id",
+    "name": "인도네시아",
+    "englishName": "Indonesia",
+    "officialName": "인도네시아 공화국",
+    "aliases": [
+      "인도네시아",
+      "인도네시아 공화국",
+      "Indonesia",
+      "Republic of Indonesia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Jakarta"
+    ],
+    "languages": [
+      "Indonesian"
+    ],
+    "isoCode": "ID",
+    "familiar": true,
+    "image": "assets/flags/id.png",
+    "imageSource": "https://flagcdn.com/w640/id.png"
+  },
+  {
+    "id": "ie",
+    "name": "아일랜드",
+    "englishName": "Ireland",
+    "officialName": "아일랜드 공화국",
+    "aliases": [
+      "아일랜드",
+      "아일랜드 공화국",
+      "Ireland",
+      "Republic of Ireland"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Dublin"
+    ],
+    "languages": [
+      "English",
+      "Irish"
+    ],
+    "isoCode": "IE",
+    "familiar": false,
+    "image": "assets/flags/ie.png",
+    "imageSource": "https://flagcdn.com/w640/ie.png"
+  },
+  {
+    "id": "il",
+    "name": "이스라엘",
+    "englishName": "Israel",
+    "officialName": "이스라엘국",
+    "aliases": [
+      "이스라엘",
+      "이스라엘국",
+      "Israel",
+      "State of Israel"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Jerusalem"
+    ],
+    "languages": [
+      "Arabic",
+      "Hebrew"
+    ],
+    "isoCode": "IL",
+    "familiar": false,
+    "image": "assets/flags/il.png",
+    "imageSource": "https://flagcdn.com/w640/il.png"
+  },
+  {
+    "id": "in",
+    "name": "인도",
+    "englishName": "India",
+    "officialName": "인도 공화국",
+    "aliases": [
+      "인도",
+      "인도 공화국",
+      "India",
+      "Republic of India"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "New Delhi"
+    ],
+    "languages": [
+      "English",
+      "Hindi",
+      "Tamil"
+    ],
+    "isoCode": "IN",
+    "familiar": true,
+    "image": "assets/flags/in.png",
+    "imageSource": "https://flagcdn.com/w640/in.png"
+  },
+  {
+    "id": "iq",
+    "name": "이라크",
+    "englishName": "Iraq",
+    "officialName": "이라크 공화국",
+    "aliases": [
+      "이라크",
+      "이라크 공화국",
+      "Iraq",
+      "Republic of Iraq"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Baghdad"
+    ],
+    "languages": [
+      "Arabic",
+      "Aramaic",
+      "Sorani"
+    ],
+    "isoCode": "IQ",
+    "familiar": false,
+    "image": "assets/flags/iq.png",
+    "imageSource": "https://flagcdn.com/w640/iq.png"
+  },
+  {
+    "id": "ir",
+    "name": "이란",
+    "englishName": "Iran",
+    "officialName": "이란 이슬람 공화국",
+    "aliases": [
+      "이란",
+      "이란 이슬람 공화국",
+      "Iran",
+      "Islamic Republic of Iran"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Tehran"
+    ],
+    "languages": [
+      "Persian (Farsi)"
+    ],
+    "isoCode": "IR",
+    "familiar": false,
+    "image": "assets/flags/ir.png",
+    "imageSource": "https://flagcdn.com/w640/ir.png"
+  },
+  {
+    "id": "is",
+    "name": "아이슬란드",
+    "englishName": "Iceland",
+    "officialName": "아이슬란드 공화국",
+    "aliases": [
+      "아이슬란드",
+      "아이슬란드 공화국",
+      "Iceland"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Reykjavik"
+    ],
+    "languages": [
+      "Icelandic"
+    ],
+    "isoCode": "IS",
+    "familiar": false,
+    "image": "assets/flags/is.png",
+    "imageSource": "https://flagcdn.com/w640/is.png"
+  },
+  {
+    "id": "it",
+    "name": "이탈리아",
+    "englishName": "Italy",
+    "officialName": "이탈리아 공화국",
+    "aliases": [
+      "이탈리아",
+      "이탈리아 공화국",
+      "Italy",
+      "Italian Republic"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Rome"
+    ],
+    "languages": [
+      "Italian"
+    ],
+    "isoCode": "IT",
+    "familiar": true,
+    "image": "assets/flags/it.png",
+    "imageSource": "https://flagcdn.com/w640/it.png"
+  },
+  {
+    "id": "jm",
+    "name": "자메이카",
+    "englishName": "Jamaica",
+    "officialName": "자메이카",
+    "aliases": [
+      "자메이카",
+      "Jamaica"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Kingston"
+    ],
+    "languages": [
+      "English",
+      "Jamaican Patois"
+    ],
+    "isoCode": "JM",
+    "familiar": false,
+    "image": "assets/flags/jm.png",
+    "imageSource": "https://flagcdn.com/w640/jm.png"
+  },
+  {
+    "id": "jo",
+    "name": "요르단",
+    "englishName": "Jordan",
+    "officialName": "요르단 하심 왕국",
+    "aliases": [
+      "요르단",
+      "요르단 하심 왕국",
+      "Jordan",
+      "Hashemite Kingdom of Jordan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Amman"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "JO",
+    "familiar": false,
+    "image": "assets/flags/jo.png",
+    "imageSource": "https://flagcdn.com/w640/jo.png"
+  },
+  {
+    "id": "jp",
+    "name": "일본",
+    "englishName": "Japan",
+    "officialName": "일본국",
+    "aliases": [
+      "일본",
+      "일본국",
+      "Japan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Tokyo"
+    ],
+    "languages": [
+      "Japanese"
+    ],
+    "isoCode": "JP",
+    "familiar": true,
+    "image": "assets/flags/jp.png",
+    "imageSource": "https://flagcdn.com/w640/jp.png"
+  },
+  {
+    "id": "ke",
+    "name": "케냐",
+    "englishName": "Kenya",
+    "officialName": "케냐 공화국",
+    "aliases": [
+      "케냐",
+      "케냐 공화국",
+      "Kenya",
+      "Republic of Kenya"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Nairobi"
+    ],
+    "languages": [
+      "English",
+      "Swahili"
+    ],
+    "isoCode": "KE",
+    "familiar": false,
+    "image": "assets/flags/ke.png",
+    "imageSource": "https://flagcdn.com/w640/ke.png"
+  },
+  {
+    "id": "kg",
+    "name": "키르기스스탄",
+    "englishName": "Kyrgyzstan",
+    "officialName": "키르기스 공화국",
+    "aliases": [
+      "키르기스스탄",
+      "키르기스 공화국",
+      "Kyrgyzstan",
+      "Kyrgyz Republic"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Bishkek"
+    ],
+    "languages": [
+      "Kyrgyz",
+      "Russian"
+    ],
+    "isoCode": "KG",
+    "familiar": false,
+    "image": "assets/flags/kg.png",
+    "imageSource": "https://flagcdn.com/w640/kg.png"
+  },
+  {
+    "id": "kh",
+    "name": "캄보디아",
+    "englishName": "Cambodia",
+    "officialName": "캄보디아 왕국",
+    "aliases": [
+      "캄보디아",
+      "캄보디아 왕국",
+      "Cambodia",
+      "Kingdom of Cambodia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Phnom Penh"
+    ],
+    "languages": [
+      "Khmer"
+    ],
+    "isoCode": "KH",
+    "familiar": false,
+    "image": "assets/flags/kh.png",
+    "imageSource": "https://flagcdn.com/w640/kh.png"
+  },
+  {
+    "id": "ki",
+    "name": "키리바시",
+    "englishName": "Kiribati",
+    "officialName": "키리바시 공화국",
+    "aliases": [
+      "키리바시",
+      "키리바시 공화국",
+      "Kiribati",
+      "Independent and Sovereign Republic of Kiribati"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "South Tarawa"
+    ],
+    "languages": [
+      "English",
+      "Gilbertese"
+    ],
+    "isoCode": "KI",
+    "familiar": false,
+    "image": "assets/flags/ki.png",
+    "imageSource": "https://flagcdn.com/w640/ki.png"
+  },
+  {
+    "id": "km",
+    "name": "코모로",
+    "englishName": "Comoros",
+    "officialName": "코모로 연방",
+    "aliases": [
+      "코모로",
+      "코모로 연방",
+      "Comoros",
+      "Union of the Comoros"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Moroni"
+    ],
+    "languages": [
+      "Arabic",
+      "French",
+      "Comorian"
+    ],
+    "isoCode": "KM",
+    "familiar": false,
+    "image": "assets/flags/km.png",
+    "imageSource": "https://flagcdn.com/w640/km.png"
+  },
+  {
+    "id": "kn",
+    "name": "세인트키츠 네비스",
+    "englishName": "Saint Kitts and Nevis",
+    "officialName": "세인트키츠 네비스 연방",
+    "aliases": [
+      "세인트키츠 네비스",
+      "세인트키츠 네비스 연방",
+      "Saint Kitts and Nevis",
+      "Federation of Saint Christopher and Nevis"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Basseterre"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "KN",
+    "familiar": false,
+    "image": "assets/flags/kn.png",
+    "imageSource": "https://flagcdn.com/w640/kn.png"
+  },
+  {
+    "id": "kp",
+    "name": "북한",
+    "englishName": "North Korea",
+    "officialName": "조선민주주의인민공화국",
+    "aliases": [
+      "북한",
+      "조선",
+      "조선민주주의인민공화국",
+      "North Korea",
+      "Democratic People's Republic of Korea",
+      "북조선"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Pyongyang"
+    ],
+    "languages": [
+      "Korean"
+    ],
+    "isoCode": "KP",
+    "familiar": true,
+    "image": "assets/flags/kp.png",
+    "imageSource": "https://flagcdn.com/w640/kp.png"
+  },
+  {
+    "id": "kr",
+    "name": "대한민국",
+    "englishName": "South Korea",
+    "officialName": "대한민국",
+    "aliases": [
+      "대한민국",
+      "한국",
+      "South Korea",
+      "Republic of Korea",
+      "남한"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Seoul"
+    ],
+    "languages": [
+      "Korean"
+    ],
+    "isoCode": "KR",
+    "familiar": true,
+    "image": "assets/flags/kr.png",
+    "imageSource": "https://flagcdn.com/w640/kr.png"
+  },
+  {
+    "id": "kw",
+    "name": "쿠웨이트",
+    "englishName": "Kuwait",
+    "officialName": "쿠웨이트국",
+    "aliases": [
+      "쿠웨이트",
+      "쿠웨이트국",
+      "Kuwait",
+      "State of Kuwait"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Kuwait City"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "KW",
+    "familiar": false,
+    "image": "assets/flags/kw.png",
+    "imageSource": "https://flagcdn.com/w640/kw.png"
+  },
+  {
+    "id": "kz",
+    "name": "카자흐스탄",
+    "englishName": "Kazakhstan",
+    "officialName": "카자흐스탄 공화국",
+    "aliases": [
+      "카자흐스탄",
+      "카자흐스탄 공화국",
+      "Kazakhstan",
+      "Republic of Kazakhstan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Astana"
+    ],
+    "languages": [
+      "Kazakh",
+      "Russian"
+    ],
+    "isoCode": "KZ",
+    "familiar": false,
+    "image": "assets/flags/kz.png",
+    "imageSource": "https://flagcdn.com/w640/kz.png"
+  },
+  {
+    "id": "la",
+    "name": "라오스",
+    "englishName": "Laos",
+    "officialName": "라오 인민 민주 공화국",
+    "aliases": [
+      "라오스",
+      "라오 인민 민주 공화국",
+      "Laos",
+      "Lao People's Democratic Republic"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Vientiane"
+    ],
+    "languages": [
+      "Lao"
+    ],
+    "isoCode": "LA",
+    "familiar": false,
+    "image": "assets/flags/la.png",
+    "imageSource": "https://flagcdn.com/w640/la.png"
+  },
+  {
+    "id": "lb",
+    "name": "레바논",
+    "englishName": "Lebanon",
+    "officialName": "레바논 공화국",
+    "aliases": [
+      "레바논",
+      "레바논 공화국",
+      "Lebanon",
+      "Lebanese Republic"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Beirut"
+    ],
+    "languages": [
+      "Arabic",
+      "French"
+    ],
+    "isoCode": "LB",
+    "familiar": false,
+    "image": "assets/flags/lb.png",
+    "imageSource": "https://flagcdn.com/w640/lb.png"
+  },
+  {
+    "id": "lc",
+    "name": "세인트루시아",
+    "englishName": "Saint Lucia",
+    "officialName": "세인트루시아",
+    "aliases": [
+      "세인트루시아",
+      "Saint Lucia"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Castries"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "LC",
+    "familiar": false,
+    "image": "assets/flags/lc.png",
+    "imageSource": "https://flagcdn.com/w640/lc.png"
+  },
+  {
+    "id": "li",
+    "name": "리히텐슈타인",
+    "englishName": "Liechtenstein",
+    "officialName": "리히텐슈타인 공국",
+    "aliases": [
+      "리히텐슈타인",
+      "리히텐슈타인 공국",
+      "Liechtenstein",
+      "Principality of Liechtenstein"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Vaduz"
+    ],
+    "languages": [
+      "German"
+    ],
+    "isoCode": "LI",
+    "familiar": false,
+    "image": "assets/flags/li.png",
+    "imageSource": "https://flagcdn.com/w640/li.png"
+  },
+  {
+    "id": "lk",
+    "name": "스리랑카",
+    "englishName": "Sri Lanka",
+    "officialName": "스리랑카 민주 사회주의 공화국",
+    "aliases": [
+      "스리랑카",
+      "스리랑카 민주 사회주의 공화국",
+      "Sri Lanka",
+      "Democratic Socialist Republic of Sri Lanka"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Colombo"
+    ],
+    "languages": [
+      "Sinhala",
+      "Tamil"
+    ],
+    "isoCode": "LK",
+    "familiar": false,
+    "image": "assets/flags/lk.png",
+    "imageSource": "https://flagcdn.com/w640/lk.png"
+  },
+  {
+    "id": "lr",
+    "name": "라이베리아",
+    "englishName": "Liberia",
+    "officialName": "라이베리아 공화국",
+    "aliases": [
+      "라이베리아",
+      "라이베리아 공화국",
+      "Liberia",
+      "Republic of Liberia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Monrovia"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "LR",
+    "familiar": false,
+    "image": "assets/flags/lr.png",
+    "imageSource": "https://flagcdn.com/w640/lr.png"
+  },
+  {
+    "id": "ls",
+    "name": "레소토",
+    "englishName": "Lesotho",
+    "officialName": "레소토 왕국",
+    "aliases": [
+      "레소토",
+      "레소토 왕국",
+      "Lesotho",
+      "Kingdom of Lesotho"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Maseru"
+    ],
+    "languages": [
+      "English",
+      "Sotho"
+    ],
+    "isoCode": "LS",
+    "familiar": false,
+    "image": "assets/flags/ls.png",
+    "imageSource": "https://flagcdn.com/w640/ls.png"
+  },
+  {
+    "id": "lt",
+    "name": "리투아니아",
+    "englishName": "Lithuania",
+    "officialName": "리투아니아 공화국",
+    "aliases": [
+      "리투아니아",
+      "리투아니아 공화국",
+      "Lithuania",
+      "Republic of Lithuania"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Vilnius"
+    ],
+    "languages": [
+      "Lithuanian"
+    ],
+    "isoCode": "LT",
+    "familiar": false,
+    "image": "assets/flags/lt.png",
+    "imageSource": "https://flagcdn.com/w640/lt.png"
+  },
+  {
+    "id": "lu",
+    "name": "룩셈부르크",
+    "englishName": "Luxembourg",
+    "officialName": "룩셈부르크 대공국",
+    "aliases": [
+      "룩셈부르크",
+      "룩셈부르크 대공국",
+      "Luxembourg",
+      "Grand Duchy of Luxembourg"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Luxembourg"
+    ],
+    "languages": [
+      "German",
+      "French",
+      "Luxembourgish"
+    ],
+    "isoCode": "LU",
+    "familiar": false,
+    "image": "assets/flags/lu.png",
+    "imageSource": "https://flagcdn.com/w640/lu.png"
+  },
+  {
+    "id": "lv",
+    "name": "라트비아",
+    "englishName": "Latvia",
+    "officialName": "라트비아 공화국",
+    "aliases": [
+      "라트비아",
+      "라트비아 공화국",
+      "Latvia",
+      "Republic of Latvia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Riga"
+    ],
+    "languages": [
+      "Latvian"
+    ],
+    "isoCode": "LV",
+    "familiar": false,
+    "image": "assets/flags/lv.png",
+    "imageSource": "https://flagcdn.com/w640/lv.png"
+  },
+  {
+    "id": "ly",
+    "name": "리비아",
+    "englishName": "Libya",
+    "officialName": "리비아",
+    "aliases": [
+      "리비아",
+      "Libya",
+      "State of Libya"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Tripoli"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "LY",
+    "familiar": false,
+    "image": "assets/flags/ly.png",
+    "imageSource": "https://flagcdn.com/w640/ly.png"
+  },
+  {
+    "id": "ma",
+    "name": "모로코",
+    "englishName": "Morocco",
+    "officialName": "모로코 왕국",
+    "aliases": [
+      "모로코",
+      "모로코 왕국",
+      "Morocco",
+      "Kingdom of Morocco"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Rabat"
+    ],
+    "languages": [
+      "Arabic",
+      "Berber"
+    ],
+    "isoCode": "MA",
+    "familiar": false,
+    "image": "assets/flags/ma.png",
+    "imageSource": "https://flagcdn.com/w640/ma.png"
+  },
+  {
+    "id": "mc",
+    "name": "모나코",
+    "englishName": "Monaco",
+    "officialName": "모나코 공국",
+    "aliases": [
+      "모나코",
+      "모나코 공국",
+      "Monaco",
+      "Principality of Monaco"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Monaco"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "MC",
+    "familiar": false,
+    "image": "assets/flags/mc.png",
+    "imageSource": "https://flagcdn.com/w640/mc.png"
+  },
+  {
+    "id": "md",
+    "name": "몰도바",
+    "englishName": "Moldova",
+    "officialName": "몰도바 공화국",
+    "aliases": [
+      "몰도바",
+      "몰도바 공화국",
+      "Moldova",
+      "Republic of Moldova"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Chișinău"
+    ],
+    "languages": [
+      "Moldavian"
+    ],
+    "isoCode": "MD",
+    "familiar": false,
+    "image": "assets/flags/md.png",
+    "imageSource": "https://flagcdn.com/w640/md.png"
+  },
+  {
+    "id": "me",
+    "name": "몬테네그로",
+    "englishName": "Montenegro",
+    "officialName": "몬테네그로",
+    "aliases": [
+      "몬테네그로",
+      "Montenegro"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Podgorica"
+    ],
+    "languages": [
+      "Montenegrin"
+    ],
+    "isoCode": "ME",
+    "familiar": false,
+    "image": "assets/flags/me.png",
+    "imageSource": "https://flagcdn.com/w640/me.png"
+  },
+  {
+    "id": "mg",
+    "name": "마다가스카르",
+    "englishName": "Madagascar",
+    "officialName": "마다가스카르 공화국",
+    "aliases": [
+      "마다가스카르",
+      "마다가스카르 공화국",
+      "Madagascar",
+      "Republic of Madagascar"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Antananarivo"
+    ],
+    "languages": [
+      "French",
+      "Malagasy"
+    ],
+    "isoCode": "MG",
+    "familiar": false,
+    "image": "assets/flags/mg.png",
+    "imageSource": "https://flagcdn.com/w640/mg.png"
+  },
+  {
+    "id": "mh",
+    "name": "마셜 제도",
+    "englishName": "Marshall Islands",
+    "officialName": "마셜 제도 공화국",
+    "aliases": [
+      "마셜 제도",
+      "마셜 제도 공화국",
+      "Marshall Islands",
+      "Republic of the Marshall Islands"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Majuro"
+    ],
+    "languages": [
+      "English",
+      "Marshallese"
+    ],
+    "isoCode": "MH",
+    "familiar": false,
+    "image": "assets/flags/mh.png",
+    "imageSource": "https://flagcdn.com/w640/mh.png"
+  },
+  {
+    "id": "mk",
+    "name": "북마케도니아",
+    "englishName": "North Macedonia",
+    "officialName": "북마케도니아 공화국",
+    "aliases": [
+      "북마케도니아",
+      "북마케도니아 공화국",
+      "North Macedonia",
+      "Republic of North Macedonia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Skopje"
+    ],
+    "languages": [
+      "Macedonian"
+    ],
+    "isoCode": "MK",
+    "familiar": false,
+    "image": "assets/flags/mk.png",
+    "imageSource": "https://flagcdn.com/w640/mk.png"
+  },
+  {
+    "id": "ml",
+    "name": "말리",
+    "englishName": "Mali",
+    "officialName": "말리 공화국",
+    "aliases": [
+      "말리",
+      "말리 공화국",
+      "Mali",
+      "Republic of Mali"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Bamako"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "ML",
+    "familiar": false,
+    "image": "assets/flags/ml.png",
+    "imageSource": "https://flagcdn.com/w640/ml.png"
+  },
+  {
+    "id": "mm",
+    "name": "미얀마",
+    "englishName": "Myanmar",
+    "officialName": "미얀마 연방 공화국",
+    "aliases": [
+      "미얀마",
+      "미얀마 연방 공화국",
+      "Myanmar",
+      "Republic of the Union of Myanmar",
+      "버마"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Naypyidaw"
+    ],
+    "languages": [
+      "Burmese"
+    ],
+    "isoCode": "MM",
+    "familiar": false,
+    "image": "assets/flags/mm.png",
+    "imageSource": "https://flagcdn.com/w640/mm.png"
+  },
+  {
+    "id": "mn",
+    "name": "몽골국",
+    "englishName": "Mongolia",
+    "officialName": "몽골",
+    "aliases": [
+      "몽골국",
+      "몽골",
+      "Mongolia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Ulan Bator"
+    ],
+    "languages": [
+      "Mongolian"
+    ],
+    "isoCode": "MN",
+    "familiar": false,
+    "image": "assets/flags/mn.png",
+    "imageSource": "https://flagcdn.com/w640/mn.png"
+  },
+  {
+    "id": "mr",
+    "name": "모리타니",
+    "englishName": "Mauritania",
+    "officialName": "모리타니 이슬람 공화국",
+    "aliases": [
+      "모리타니",
+      "모리타니 이슬람 공화국",
+      "Mauritania",
+      "Islamic Republic of Mauritania"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Nouakchott"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "MR",
+    "familiar": false,
+    "image": "assets/flags/mr.png",
+    "imageSource": "https://flagcdn.com/w640/mr.png"
+  },
+  {
+    "id": "mt",
+    "name": "몰타",
+    "englishName": "Malta",
+    "officialName": "몰타 공화국",
+    "aliases": [
+      "몰타",
+      "몰타 공화국",
+      "Malta",
+      "Republic of Malta"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Valletta"
+    ],
+    "languages": [
+      "English",
+      "Maltese"
+    ],
+    "isoCode": "MT",
+    "familiar": false,
+    "image": "assets/flags/mt.png",
+    "imageSource": "https://flagcdn.com/w640/mt.png"
+  },
+  {
+    "id": "mu",
+    "name": "모리셔스",
+    "englishName": "Mauritius",
+    "officialName": "모리셔스 공화국",
+    "aliases": [
+      "모리셔스",
+      "모리셔스 공화국",
+      "Mauritius",
+      "Republic of Mauritius"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Port Louis"
+    ],
+    "languages": [
+      "English",
+      "French",
+      "Mauritian Creole"
+    ],
+    "isoCode": "MU",
+    "familiar": false,
+    "image": "assets/flags/mu.png",
+    "imageSource": "https://flagcdn.com/w640/mu.png"
+  },
+  {
+    "id": "mv",
+    "name": "몰디브",
+    "englishName": "Maldives",
+    "officialName": "몰디브 공화국",
+    "aliases": [
+      "몰디브",
+      "몰디브 공화국",
+      "Maldives",
+      "Republic of the Maldives"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Malé"
+    ],
+    "languages": [
+      "Maldivian"
+    ],
+    "isoCode": "MV",
+    "familiar": false,
+    "image": "assets/flags/mv.png",
+    "imageSource": "https://flagcdn.com/w640/mv.png"
+  },
+  {
+    "id": "mw",
+    "name": "말라위",
+    "englishName": "Malawi",
+    "officialName": "말라위 공화국",
+    "aliases": [
+      "말라위",
+      "말라위 공화국",
+      "Malawi",
+      "Republic of Malawi"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Lilongwe"
+    ],
+    "languages": [
+      "English",
+      "Chewa"
+    ],
+    "isoCode": "MW",
+    "familiar": false,
+    "image": "assets/flags/mw.png",
+    "imageSource": "https://flagcdn.com/w640/mw.png"
+  },
+  {
+    "id": "mx",
+    "name": "멕시코",
+    "englishName": "Mexico",
+    "officialName": "멕시코 합중국",
+    "aliases": [
+      "멕시코",
+      "멕시코 합중국",
+      "Mexico",
+      "United Mexican States"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Mexico City"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "MX",
+    "familiar": true,
+    "image": "assets/flags/mx.png",
+    "imageSource": "https://flagcdn.com/w640/mx.png"
+  },
+  {
+    "id": "my",
+    "name": "말레이시아",
+    "englishName": "Malaysia",
+    "officialName": "말레이시아",
+    "aliases": [
+      "말레이시아",
+      "Malaysia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Kuala Lumpur"
+    ],
+    "languages": [
+      "English",
+      "Malay"
+    ],
+    "isoCode": "MY",
+    "familiar": false,
+    "image": "assets/flags/my.png",
+    "imageSource": "https://flagcdn.com/w640/my.png"
+  },
+  {
+    "id": "mz",
+    "name": "모잠비크",
+    "englishName": "Mozambique",
+    "officialName": "모잠비크 공화국",
+    "aliases": [
+      "모잠비크",
+      "모잠비크 공화국",
+      "Mozambique",
+      "Republic of Mozambique"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Maputo"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "MZ",
+    "familiar": false,
+    "image": "assets/flags/mz.png",
+    "imageSource": "https://flagcdn.com/w640/mz.png"
+  },
+  {
+    "id": "na",
+    "name": "나미비아",
+    "englishName": "Namibia",
+    "officialName": "나미비아 공화국",
+    "aliases": [
+      "나미비아",
+      "나미비아 공화국",
+      "Namibia",
+      "Republic of Namibia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Windhoek"
+    ],
+    "languages": [
+      "Afrikaans",
+      "German",
+      "English",
+      "Herero",
+      "Khoekhoe",
+      "Kwangali",
+      "Lozi",
+      "Ndonga",
+      "Tswana"
+    ],
+    "isoCode": "NA",
+    "familiar": false,
+    "image": "assets/flags/na.png",
+    "imageSource": "https://flagcdn.com/w640/na.png"
+  },
+  {
+    "id": "ne",
+    "name": "니제르",
+    "englishName": "Niger",
+    "officialName": "니제르 공화국",
+    "aliases": [
+      "니제르",
+      "니제르 공화국",
+      "Niger",
+      "Republic of Niger"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Niamey"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "NE",
+    "familiar": false,
+    "image": "assets/flags/ne.png",
+    "imageSource": "https://flagcdn.com/w640/ne.png"
+  },
+  {
+    "id": "ng",
+    "name": "나이지리아",
+    "englishName": "Nigeria",
+    "officialName": "나이지리아 연방 공화국",
+    "aliases": [
+      "나이지리아",
+      "나이지리아 연방 공화국",
+      "Nigeria",
+      "Federal Republic of Nigeria"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Abuja"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "NG",
+    "familiar": false,
+    "image": "assets/flags/ng.png",
+    "imageSource": "https://flagcdn.com/w640/ng.png"
+  },
+  {
+    "id": "ni",
+    "name": "니카라과",
+    "englishName": "Nicaragua",
+    "officialName": "니카라과 공화국",
+    "aliases": [
+      "니카라과",
+      "니카라과 공화국",
+      "Nicaragua",
+      "Republic of Nicaragua"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Managua"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "NI",
+    "familiar": false,
+    "image": "assets/flags/ni.png",
+    "imageSource": "https://flagcdn.com/w640/ni.png"
+  },
+  {
+    "id": "nl",
+    "name": "네덜란드",
+    "englishName": "Netherlands",
+    "officialName": "네덜란드 왕국",
+    "aliases": [
+      "네덜란드",
+      "네덜란드 왕국",
+      "Netherlands",
+      "Kingdom of the Netherlands"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Amsterdam"
+    ],
+    "languages": [
+      "Dutch"
+    ],
+    "isoCode": "NL",
+    "familiar": true,
+    "image": "assets/flags/nl.png",
+    "imageSource": "https://flagcdn.com/w640/nl.png"
+  },
+  {
+    "id": "no",
+    "name": "노르웨이",
+    "englishName": "Norway",
+    "officialName": "노르웨이 왕국",
+    "aliases": [
+      "노르웨이",
+      "노르웨이 왕국",
+      "Norway",
+      "Kingdom of Norway"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Oslo"
+    ],
+    "languages": [
+      "Norwegian Nynorsk",
+      "Norwegian Bokmål",
+      "Sami"
+    ],
+    "isoCode": "NO",
+    "familiar": false,
+    "image": "assets/flags/no.png",
+    "imageSource": "https://flagcdn.com/w640/no.png"
+  },
+  {
+    "id": "np",
+    "name": "네팔",
+    "englishName": "Nepal",
+    "officialName": "네팔 연방 민주 공화국",
+    "aliases": [
+      "네팔",
+      "네팔 연방 민주 공화국",
+      "Nepal",
+      "Federal Democratic Republic of Nepal"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Kathmandu"
+    ],
+    "languages": [
+      "Nepali"
+    ],
+    "isoCode": "NP",
+    "familiar": false,
+    "image": "assets/flags/np.png",
+    "imageSource": "https://flagcdn.com/w640/np.png"
+  },
+  {
+    "id": "nr",
+    "name": "나우루",
+    "englishName": "Nauru",
+    "officialName": "나우루 공화국",
+    "aliases": [
+      "나우루",
+      "나우루 공화국",
+      "Nauru",
+      "Republic of Nauru"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Yaren"
+    ],
+    "languages": [
+      "English",
+      "Nauru"
+    ],
+    "isoCode": "NR",
+    "familiar": false,
+    "image": "assets/flags/nr.png",
+    "imageSource": "https://flagcdn.com/w640/nr.png"
+  },
+  {
+    "id": "nz",
+    "name": "뉴질랜드",
+    "englishName": "New Zealand",
+    "officialName": "뉴질랜드",
+    "aliases": [
+      "뉴질랜드",
+      "New Zealand"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Wellington"
+    ],
+    "languages": [
+      "English",
+      "Māori",
+      "New Zealand Sign Language"
+    ],
+    "isoCode": "NZ",
+    "familiar": true,
+    "image": "assets/flags/nz.png",
+    "imageSource": "https://flagcdn.com/w640/nz.png"
+  },
+  {
+    "id": "om",
+    "name": "오만",
+    "englishName": "Oman",
+    "officialName": "오만 술탄국",
+    "aliases": [
+      "오만",
+      "오만 술탄국",
+      "Oman",
+      "Sultanate of Oman"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Muscat"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "OM",
+    "familiar": false,
+    "image": "assets/flags/om.png",
+    "imageSource": "https://flagcdn.com/w640/om.png"
+  },
+  {
+    "id": "pa",
+    "name": "파나마",
+    "englishName": "Panama",
+    "officialName": "파나마 공화국",
+    "aliases": [
+      "파나마",
+      "파나마 공화국",
+      "Panama",
+      "Republic of Panama"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Panama City"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "PA",
+    "familiar": false,
+    "image": "assets/flags/pa.png",
+    "imageSource": "https://flagcdn.com/w640/pa.png"
+  },
+  {
+    "id": "pe",
+    "name": "페루",
+    "englishName": "Peru",
+    "officialName": "페루 공화국",
+    "aliases": [
+      "페루",
+      "페루 공화국",
+      "Peru",
+      "Republic of Peru"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Lima"
+    ],
+    "languages": [
+      "Aymara",
+      "Quechua",
+      "Spanish"
+    ],
+    "isoCode": "PE",
+    "familiar": false,
+    "image": "assets/flags/pe.png",
+    "imageSource": "https://flagcdn.com/w640/pe.png"
+  },
+  {
+    "id": "pg",
+    "name": "파푸아뉴기니",
+    "englishName": "Papua New Guinea",
+    "officialName": "파푸아뉴기니 독립국",
+    "aliases": [
+      "파푸아뉴기니",
+      "파푸아뉴기니 독립국",
+      "Papua New Guinea",
+      "Independent State of Papua New Guinea"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Port Moresby"
+    ],
+    "languages": [
+      "English",
+      "Hiri Motu",
+      "Tok Pisin"
+    ],
+    "isoCode": "PG",
+    "familiar": false,
+    "image": "assets/flags/pg.png",
+    "imageSource": "https://flagcdn.com/w640/pg.png"
+  },
+  {
+    "id": "ph",
+    "name": "필리핀",
+    "englishName": "Philippines",
+    "officialName": "필리핀 공화국",
+    "aliases": [
+      "필리핀",
+      "필리핀 공화국",
+      "Philippines",
+      "Republic of the Philippines"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Manila"
+    ],
+    "languages": [
+      "English",
+      "Filipino"
+    ],
+    "isoCode": "PH",
+    "familiar": true,
+    "image": "assets/flags/ph.png",
+    "imageSource": "https://flagcdn.com/w640/ph.png"
+  },
+  {
+    "id": "pk",
+    "name": "파키스탄",
+    "englishName": "Pakistan",
+    "officialName": "파키스탄 이슬람 공화국",
+    "aliases": [
+      "파키스탄",
+      "파키스탄 이슬람 공화국",
+      "Pakistan",
+      "Islamic Republic of Pakistan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Islamabad"
+    ],
+    "languages": [
+      "English",
+      "Urdu"
+    ],
+    "isoCode": "PK",
+    "familiar": false,
+    "image": "assets/flags/pk.png",
+    "imageSource": "https://flagcdn.com/w640/pk.png"
+  },
+  {
+    "id": "pl",
+    "name": "폴란드",
+    "englishName": "Poland",
+    "officialName": "폴란드 공화국",
+    "aliases": [
+      "폴란드",
+      "폴란드 공화국",
+      "Poland",
+      "Republic of Poland"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Warsaw"
+    ],
+    "languages": [
+      "Polish"
+    ],
+    "isoCode": "PL",
+    "familiar": false,
+    "image": "assets/flags/pl.png",
+    "imageSource": "https://flagcdn.com/w640/pl.png"
+  },
+  {
+    "id": "ps",
+    "name": "팔레스타인",
+    "englishName": "Palestine",
+    "officialName": "팔레스타인국",
+    "aliases": [
+      "팔레스타인",
+      "팔레스타인국",
+      "Palestine",
+      "State of Palestine"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Ramallah"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "PS",
+    "familiar": false,
+    "image": "assets/flags/ps.png",
+    "imageSource": "https://flagcdn.com/w640/ps.png"
+  },
+  {
+    "id": "pt",
+    "name": "포르투갈",
+    "englishName": "Portugal",
+    "officialName": "포르투갈 공화국",
+    "aliases": [
+      "포르투갈",
+      "포르투갈 공화국",
+      "Portugal",
+      "Portuguese Republic"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Lisbon"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "PT",
+    "familiar": false,
+    "image": "assets/flags/pt.png",
+    "imageSource": "https://flagcdn.com/w640/pt.png"
+  },
+  {
+    "id": "pw",
+    "name": "팔라우",
+    "englishName": "Palau",
+    "officialName": "팔라우 공화국",
+    "aliases": [
+      "팔라우",
+      "팔라우 공화국",
+      "Palau",
+      "Republic of Palau"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Ngerulmud"
+    ],
+    "languages": [
+      "English",
+      "Palauan"
+    ],
+    "isoCode": "PW",
+    "familiar": false,
+    "image": "assets/flags/pw.png",
+    "imageSource": "https://flagcdn.com/w640/pw.png"
+  },
+  {
+    "id": "py",
+    "name": "파라과이",
+    "englishName": "Paraguay",
+    "officialName": "파라과이 공화국",
+    "aliases": [
+      "파라과이",
+      "파라과이 공화국",
+      "Paraguay",
+      "Republic of Paraguay"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Asunción"
+    ],
+    "languages": [
+      "Guaraní",
+      "Spanish"
+    ],
+    "isoCode": "PY",
+    "familiar": false,
+    "image": "assets/flags/py.png",
+    "imageSource": "https://flagcdn.com/w640/py.png"
+  },
+  {
+    "id": "qa",
+    "name": "카타르",
+    "englishName": "Qatar",
+    "officialName": "카타르국",
+    "aliases": [
+      "카타르",
+      "카타르국",
+      "Qatar",
+      "State of Qatar"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Doha"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "QA",
+    "familiar": false,
+    "image": "assets/flags/qa.png",
+    "imageSource": "https://flagcdn.com/w640/qa.png"
+  },
+  {
+    "id": "ro",
+    "name": "루마니아",
+    "englishName": "Romania",
+    "officialName": "루마니아",
+    "aliases": [
+      "루마니아",
+      "Romania"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Bucharest"
+    ],
+    "languages": [
+      "Romanian"
+    ],
+    "isoCode": "RO",
+    "familiar": false,
+    "image": "assets/flags/ro.png",
+    "imageSource": "https://flagcdn.com/w640/ro.png"
+  },
+  {
+    "id": "rs",
+    "name": "세르비아",
+    "englishName": "Serbia",
+    "officialName": "세르비아 공화국",
+    "aliases": [
+      "세르비아",
+      "세르비아 공화국",
+      "Serbia",
+      "Republic of Serbia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Belgrade"
+    ],
+    "languages": [
+      "Serbian"
+    ],
+    "isoCode": "RS",
+    "familiar": false,
+    "image": "assets/flags/rs.png",
+    "imageSource": "https://flagcdn.com/w640/rs.png"
+  },
+  {
+    "id": "ru",
+    "name": "러시아",
+    "englishName": "Russia",
+    "officialName": "러시아 연방",
+    "aliases": [
+      "러시아",
+      "러시아 연방",
+      "Russia",
+      "Russian Federation"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Moscow"
+    ],
+    "languages": [
+      "Russian"
+    ],
+    "isoCode": "RU",
+    "familiar": true,
+    "image": "assets/flags/ru.png",
+    "imageSource": "https://flagcdn.com/w640/ru.png"
+  },
+  {
+    "id": "rw",
+    "name": "르완다",
+    "englishName": "Rwanda",
+    "officialName": "르완다 공화국",
+    "aliases": [
+      "르완다",
+      "르완다 공화국",
+      "Rwanda",
+      "Republic of Rwanda"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Kigali"
+    ],
+    "languages": [
+      "English",
+      "French",
+      "Kinyarwanda"
+    ],
+    "isoCode": "RW",
+    "familiar": false,
+    "image": "assets/flags/rw.png",
+    "imageSource": "https://flagcdn.com/w640/rw.png"
+  },
+  {
+    "id": "sa",
+    "name": "사우디아라비아",
+    "englishName": "Saudi Arabia",
+    "officialName": "사우디아라비아 왕국",
+    "aliases": [
+      "사우디아라비아",
+      "사우디아라비아 왕국",
+      "Saudi Arabia",
+      "Kingdom of Saudi Arabia"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Riyadh"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "SA",
+    "familiar": false,
+    "image": "assets/flags/sa.png",
+    "imageSource": "https://flagcdn.com/w640/sa.png"
+  },
+  {
+    "id": "sb",
+    "name": "솔로몬 제도",
+    "englishName": "Solomon Islands",
+    "officialName": "솔로몬 제도",
+    "aliases": [
+      "솔로몬 제도",
+      "Solomon Islands"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Honiara"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "SB",
+    "familiar": false,
+    "image": "assets/flags/sb.png",
+    "imageSource": "https://flagcdn.com/w640/sb.png"
+  },
+  {
+    "id": "sc",
+    "name": "세이셸",
+    "englishName": "Seychelles",
+    "officialName": "세이셸 공화국",
+    "aliases": [
+      "세이셸",
+      "세이셸 공화국",
+      "Seychelles",
+      "Republic of Seychelles"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Victoria"
+    ],
+    "languages": [
+      "Seychellois Creole",
+      "English",
+      "French"
+    ],
+    "isoCode": "SC",
+    "familiar": false,
+    "image": "assets/flags/sc.png",
+    "imageSource": "https://flagcdn.com/w640/sc.png"
+  },
+  {
+    "id": "sd",
+    "name": "수단",
+    "englishName": "Sudan",
+    "officialName": "수단 공화국",
+    "aliases": [
+      "수단",
+      "수단 공화국",
+      "Sudan",
+      "Republic of the Sudan"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Khartoum"
+    ],
+    "languages": [
+      "Arabic",
+      "English"
+    ],
+    "isoCode": "SD",
+    "familiar": false,
+    "image": "assets/flags/sd.png",
+    "imageSource": "https://flagcdn.com/w640/sd.png"
+  },
+  {
+    "id": "se",
+    "name": "스웨덴",
+    "englishName": "Sweden",
+    "officialName": "스웨덴 왕국",
+    "aliases": [
+      "스웨덴",
+      "스웨덴 왕국",
+      "Sweden",
+      "Kingdom of Sweden"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Stockholm"
+    ],
+    "languages": [
+      "Swedish"
+    ],
+    "isoCode": "SE",
+    "familiar": false,
+    "image": "assets/flags/se.png",
+    "imageSource": "https://flagcdn.com/w640/se.png"
+  },
+  {
+    "id": "sg",
+    "name": "싱가포르",
+    "englishName": "Singapore",
+    "officialName": "싱가포르 공화국",
+    "aliases": [
+      "싱가포르",
+      "싱가포르 공화국",
+      "Singapore",
+      "Republic of Singapore"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Singapore"
+    ],
+    "languages": [
+      "English",
+      "Malay",
+      "Tamil",
+      "Chinese"
+    ],
+    "isoCode": "SG",
+    "familiar": true,
+    "image": "assets/flags/sg.png",
+    "imageSource": "https://flagcdn.com/w640/sg.png"
+  },
+  {
+    "id": "si",
+    "name": "슬로베니아",
+    "englishName": "Slovenia",
+    "officialName": "슬로베니아 공화국",
+    "aliases": [
+      "슬로베니아",
+      "슬로베니아 공화국",
+      "Slovenia",
+      "Republic of Slovenia"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Ljubljana"
+    ],
+    "languages": [
+      "Slovene"
+    ],
+    "isoCode": "SI",
+    "familiar": false,
+    "image": "assets/flags/si.png",
+    "imageSource": "https://flagcdn.com/w640/si.png"
+  },
+  {
+    "id": "sk",
+    "name": "슬로바키아",
+    "englishName": "Slovakia",
+    "officialName": "슬로바키아 공화국",
+    "aliases": [
+      "슬로바키아",
+      "슬로바키아 공화국",
+      "Slovakia",
+      "Slovak Republic"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Bratislava"
+    ],
+    "languages": [
+      "Slovak"
+    ],
+    "isoCode": "SK",
+    "familiar": false,
+    "image": "assets/flags/sk.png",
+    "imageSource": "https://flagcdn.com/w640/sk.png"
+  },
+  {
+    "id": "sl",
+    "name": "시에라리온",
+    "englishName": "Sierra Leone",
+    "officialName": "시에라리온 공화국",
+    "aliases": [
+      "시에라리온",
+      "시에라리온 공화국",
+      "Sierra Leone",
+      "Republic of Sierra Leone"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Freetown"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "SL",
+    "familiar": false,
+    "image": "assets/flags/sl.png",
+    "imageSource": "https://flagcdn.com/w640/sl.png"
+  },
+  {
+    "id": "sm",
+    "name": "산마리노",
+    "englishName": "San Marino",
+    "officialName": "산마리노 공화국",
+    "aliases": [
+      "산마리노",
+      "산마리노 공화국",
+      "San Marino",
+      "Most Serene Republic of San Marino"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "City of San Marino"
+    ],
+    "languages": [
+      "Italian"
+    ],
+    "isoCode": "SM",
+    "familiar": false,
+    "image": "assets/flags/sm.png",
+    "imageSource": "https://flagcdn.com/w640/sm.png"
+  },
+  {
+    "id": "sn",
+    "name": "세네갈",
+    "englishName": "Senegal",
+    "officialName": "세네갈 공화국",
+    "aliases": [
+      "세네갈",
+      "세네갈 공화국",
+      "Senegal",
+      "Republic of Senegal"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Dakar"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "SN",
+    "familiar": false,
+    "image": "assets/flags/sn.png",
+    "imageSource": "https://flagcdn.com/w640/sn.png"
+  },
+  {
+    "id": "so",
+    "name": "소말리아",
+    "englishName": "Somalia",
+    "officialName": " 소말리아 연방 공화국",
+    "aliases": [
+      "소말리아",
+      " 소말리아 연방 공화국",
+      "Somalia",
+      "Federal Republic of Somalia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Mogadishu"
+    ],
+    "languages": [
+      "Arabic",
+      "Somali"
+    ],
+    "isoCode": "SO",
+    "familiar": false,
+    "image": "assets/flags/so.png",
+    "imageSource": "https://flagcdn.com/w640/so.png"
+  },
+  {
+    "id": "sr",
+    "name": "수리남",
+    "englishName": "Suriname",
+    "officialName": "수리남 공화국",
+    "aliases": [
+      "수리남",
+      "수리남 공화국",
+      "Suriname",
+      "Republic of Suriname"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Paramaribo"
+    ],
+    "languages": [
+      "Dutch"
+    ],
+    "isoCode": "SR",
+    "familiar": false,
+    "image": "assets/flags/sr.png",
+    "imageSource": "https://flagcdn.com/w640/sr.png"
+  },
+  {
+    "id": "ss",
+    "name": "남수단",
+    "englishName": "South Sudan",
+    "officialName": "남수단 공화국",
+    "aliases": [
+      "남수단",
+      "남수단 공화국",
+      "South Sudan",
+      "Republic of South Sudan"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Juba"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "SS",
+    "familiar": false,
+    "image": "assets/flags/ss.png",
+    "imageSource": "https://flagcdn.com/w640/ss.png"
+  },
+  {
+    "id": "st",
+    "name": "상투메 프린시페",
+    "englishName": "São Tomé and Príncipe",
+    "officialName": "상투메 프린시페 민주 공화국",
+    "aliases": [
+      "상투메 프린시페",
+      "상투메 프린시페 민주 공화국",
+      "São Tomé and Príncipe",
+      "Democratic Republic of São Tomé and Príncipe"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "São Tomé"
+    ],
+    "languages": [
+      "Portuguese"
+    ],
+    "isoCode": "ST",
+    "familiar": false,
+    "image": "assets/flags/st.png",
+    "imageSource": "https://flagcdn.com/w640/st.png"
+  },
+  {
+    "id": "sv",
+    "name": "엘살바도르",
+    "englishName": "El Salvador",
+    "officialName": "엘살바도르 공화국",
+    "aliases": [
+      "엘살바도르",
+      "엘살바도르 공화국",
+      "El Salvador",
+      "Republic of El Salvador"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "San Salvador"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "SV",
+    "familiar": false,
+    "image": "assets/flags/sv.png",
+    "imageSource": "https://flagcdn.com/w640/sv.png"
+  },
+  {
+    "id": "sy",
+    "name": "시리아",
+    "englishName": "Syria",
+    "officialName": "시리아 아랍 공화국",
+    "aliases": [
+      "시리아",
+      "시리아 아랍 공화국",
+      "Syria",
+      "Syrian Arab Republic"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Damascus"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "SY",
+    "familiar": false,
+    "image": "assets/flags/sy.png",
+    "imageSource": "https://flagcdn.com/w640/sy.png"
+  },
+  {
+    "id": "sz",
+    "name": "에스와티니",
+    "englishName": "Eswatini",
+    "officialName": "에스와티니 왕국",
+    "aliases": [
+      "에스와티니",
+      "에스와티니 왕국",
+      "Eswatini",
+      "Kingdom of Eswatini",
+      "스와질란드"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Lobamba"
+    ],
+    "languages": [
+      "English",
+      "Swazi"
+    ],
+    "isoCode": "SZ",
+    "familiar": false,
+    "image": "assets/flags/sz.png",
+    "imageSource": "https://flagcdn.com/w640/sz.png"
+  },
+  {
+    "id": "td",
+    "name": "차드",
+    "englishName": "Chad",
+    "officialName": "차드 공화국",
+    "aliases": [
+      "차드",
+      "차드 공화국",
+      "Chad",
+      "Republic of Chad"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "N'Djamena"
+    ],
+    "languages": [
+      "Arabic",
+      "French"
+    ],
+    "isoCode": "TD",
+    "familiar": false,
+    "image": "assets/flags/td.png",
+    "imageSource": "https://flagcdn.com/w640/td.png"
+  },
+  {
+    "id": "tg",
+    "name": "토고",
+    "englishName": "Togo",
+    "officialName": "토고 공화국",
+    "aliases": [
+      "토고",
+      "토고 공화국",
+      "Togo",
+      "Togolese Republic"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Lomé"
+    ],
+    "languages": [
+      "French"
+    ],
+    "isoCode": "TG",
+    "familiar": false,
+    "image": "assets/flags/tg.png",
+    "imageSource": "https://flagcdn.com/w640/tg.png"
+  },
+  {
+    "id": "th",
+    "name": "태국",
+    "englishName": "Thailand",
+    "officialName": "타이 왕국",
+    "aliases": [
+      "태국",
+      "타이 왕국",
+      "Thailand",
+      "Kingdom of Thailand"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Bangkok"
+    ],
+    "languages": [
+      "Thai"
+    ],
+    "isoCode": "TH",
+    "familiar": true,
+    "image": "assets/flags/th.png",
+    "imageSource": "https://flagcdn.com/w640/th.png"
+  },
+  {
+    "id": "tj",
+    "name": "타지키스탄",
+    "englishName": "Tajikistan",
+    "officialName": "타지키스탄 공화국",
+    "aliases": [
+      "타지키스탄",
+      "타지키스탄 공화국",
+      "Tajikistan",
+      "Republic of Tajikistan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Dushanbe"
+    ],
+    "languages": [
+      "Russian",
+      "Tajik"
+    ],
+    "isoCode": "TJ",
+    "familiar": false,
+    "image": "assets/flags/tj.png",
+    "imageSource": "https://flagcdn.com/w640/tj.png"
+  },
+  {
+    "id": "tl",
+    "name": "동티모르",
+    "englishName": "Timor-Leste",
+    "officialName": "동티모르 민주 공화국",
+    "aliases": [
+      "동티모르",
+      "동티모르 민주 공화국",
+      "Timor-Leste",
+      "Democratic Republic of Timor-Leste",
+      "티모르레스테"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Dili"
+    ],
+    "languages": [
+      "Portuguese",
+      "Tetum"
+    ],
+    "isoCode": "TL",
+    "familiar": false,
+    "image": "assets/flags/tl.png",
+    "imageSource": "https://flagcdn.com/w640/tl.png"
+  },
+  {
+    "id": "tm",
+    "name": "투르크메니스탄",
+    "englishName": "Turkmenistan",
+    "officialName": "투르크메니스탄",
+    "aliases": [
+      "투르크메니스탄",
+      "Turkmenistan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Ashgabat"
+    ],
+    "languages": [
+      "Russian",
+      "Turkmen"
+    ],
+    "isoCode": "TM",
+    "familiar": false,
+    "image": "assets/flags/tm.png",
+    "imageSource": "https://flagcdn.com/w640/tm.png"
+  },
+  {
+    "id": "tn",
+    "name": "튀니지",
+    "englishName": "Tunisia",
+    "officialName": "튀니지 공화국",
+    "aliases": [
+      "튀니지",
+      "튀니지 공화국",
+      "Tunisia",
+      "Tunisian Republic"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Tunis"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "TN",
+    "familiar": false,
+    "image": "assets/flags/tn.png",
+    "imageSource": "https://flagcdn.com/w640/tn.png"
+  },
+  {
+    "id": "to",
+    "name": "통가",
+    "englishName": "Tonga",
+    "officialName": "통가 왕국",
+    "aliases": [
+      "통가",
+      "통가 왕국",
+      "Tonga",
+      "Kingdom of Tonga"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Nuku'alofa"
+    ],
+    "languages": [
+      "English",
+      "Tongan"
+    ],
+    "isoCode": "TO",
+    "familiar": false,
+    "image": "assets/flags/to.png",
+    "imageSource": "https://flagcdn.com/w640/to.png"
+  },
+  {
+    "id": "tr",
+    "name": "튀르키예",
+    "englishName": "Türkiye",
+    "officialName": "터키 공화국",
+    "aliases": [
+      "튀르키예",
+      "터키",
+      "터키 공화국",
+      "Türkiye",
+      "Republic of Türkiye"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Ankara"
+    ],
+    "languages": [
+      "Turkish"
+    ],
+    "isoCode": "TR",
+    "familiar": true,
+    "image": "assets/flags/tr.png",
+    "imageSource": "https://flagcdn.com/w640/tr.png"
+  },
+  {
+    "id": "tt",
+    "name": "트리니다드 토바고",
+    "englishName": "Trinidad and Tobago",
+    "officialName": "트리니다드 토바고 공화국",
+    "aliases": [
+      "트리니다드 토바고",
+      "트리니다드 토바고 공화국",
+      "Trinidad and Tobago",
+      "Republic of Trinidad and Tobago"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Port of Spain"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "TT",
+    "familiar": false,
+    "image": "assets/flags/tt.png",
+    "imageSource": "https://flagcdn.com/w640/tt.png"
+  },
+  {
+    "id": "tv",
+    "name": "투발루",
+    "englishName": "Tuvalu",
+    "officialName": "투발루",
+    "aliases": [
+      "투발루",
+      "Tuvalu"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Funafuti"
+    ],
+    "languages": [
+      "English",
+      "Tuvaluan"
+    ],
+    "isoCode": "TV",
+    "familiar": false,
+    "image": "assets/flags/tv.png",
+    "imageSource": "https://flagcdn.com/w640/tv.png"
+  },
+  {
+    "id": "tz",
+    "name": "탄자니아",
+    "englishName": "Tanzania",
+    "officialName": "탄자니아 연합 공화국",
+    "aliases": [
+      "탄자니아",
+      "탄자니아 연합 공화국",
+      "Tanzania",
+      "United Republic of Tanzania"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Dodoma"
+    ],
+    "languages": [
+      "English",
+      "Swahili"
+    ],
+    "isoCode": "TZ",
+    "familiar": false,
+    "image": "assets/flags/tz.png",
+    "imageSource": "https://flagcdn.com/w640/tz.png"
+  },
+  {
+    "id": "ua",
+    "name": "우크라이나",
+    "englishName": "Ukraine",
+    "officialName": "우크라이나",
+    "aliases": [
+      "우크라이나",
+      "Ukraine"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Kyiv"
+    ],
+    "languages": [
+      "Ukrainian"
+    ],
+    "isoCode": "UA",
+    "familiar": true,
+    "image": "assets/flags/ua.png",
+    "imageSource": "https://flagcdn.com/w640/ua.png"
+  },
+  {
+    "id": "ug",
+    "name": "우간다",
+    "englishName": "Uganda",
+    "officialName": "우간다 공화국",
+    "aliases": [
+      "우간다",
+      "우간다 공화국",
+      "Uganda",
+      "Republic of Uganda"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Kampala"
+    ],
+    "languages": [
+      "English",
+      "Swahili"
+    ],
+    "isoCode": "UG",
+    "familiar": false,
+    "image": "assets/flags/ug.png",
+    "imageSource": "https://flagcdn.com/w640/ug.png"
+  },
+  {
+    "id": "us",
+    "name": "미국",
+    "englishName": "United States",
+    "officialName": "아메리카 합중국",
+    "aliases": [
+      "미국",
+      "아메리카 합중국",
+      "United States",
+      "United States of America",
+      "아메리카합중국",
+      "미합중국"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Washington D.C."
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "US",
+    "familiar": true,
+    "image": "assets/flags/us.png",
+    "imageSource": "https://flagcdn.com/w640/us.png"
+  },
+  {
+    "id": "uy",
+    "name": "우루과이",
+    "englishName": "Uruguay",
+    "officialName": "우루과이 동방 공화국",
+    "aliases": [
+      "우루과이",
+      "우루과이 동방 공화국",
+      "Uruguay",
+      "Oriental Republic of Uruguay"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Montevideo"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "UY",
+    "familiar": false,
+    "image": "assets/flags/uy.png",
+    "imageSource": "https://flagcdn.com/w640/uy.png"
+  },
+  {
+    "id": "uz",
+    "name": "우즈베키스탄",
+    "englishName": "Uzbekistan",
+    "officialName": "우즈베키스탄 공화국",
+    "aliases": [
+      "우즈베키스탄",
+      "우즈베키스탄 공화국",
+      "Uzbekistan",
+      "Republic of Uzbekistan"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Tashkent"
+    ],
+    "languages": [
+      "Russian",
+      "Uzbek"
+    ],
+    "isoCode": "UZ",
+    "familiar": false,
+    "image": "assets/flags/uz.png",
+    "imageSource": "https://flagcdn.com/w640/uz.png"
+  },
+  {
+    "id": "va",
+    "name": "바티칸",
+    "englishName": "Vatican City",
+    "officialName": "바티칸 시국",
+    "aliases": [
+      "바티칸",
+      "바티칸 시국",
+      "Vatican City",
+      "Vatican City State",
+      "바티칸시국"
+    ],
+    "continent": "유럽",
+    "capital": [
+      "Vatican City"
+    ],
+    "languages": [
+      "Italian",
+      "Latin"
+    ],
+    "isoCode": "VA",
+    "familiar": false,
+    "image": "assets/flags/va.png",
+    "imageSource": "https://flagcdn.com/w640/va.png"
+  },
+  {
+    "id": "vc",
+    "name": "세인트빈센트 그레나딘",
+    "englishName": "Saint Vincent and the Grenadines",
+    "officialName": "세인트빈센트 그레나딘",
+    "aliases": [
+      "세인트빈센트 그레나딘",
+      "Saint Vincent and the Grenadines"
+    ],
+    "continent": "북아메리카",
+    "capital": [
+      "Kingstown"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "VC",
+    "familiar": false,
+    "image": "assets/flags/vc.png",
+    "imageSource": "https://flagcdn.com/w640/vc.png"
+  },
+  {
+    "id": "ve",
+    "name": "베네수엘라",
+    "englishName": "Venezuela",
+    "officialName": "베네수엘라 볼리바르 공화국",
+    "aliases": [
+      "베네수엘라",
+      "베네수엘라 볼리바르 공화국",
+      "Venezuela",
+      "Bolivarian Republic of Venezuela"
+    ],
+    "continent": "남아메리카",
+    "capital": [
+      "Caracas"
+    ],
+    "languages": [
+      "Spanish"
+    ],
+    "isoCode": "VE",
+    "familiar": false,
+    "image": "assets/flags/ve.png",
+    "imageSource": "https://flagcdn.com/w640/ve.png"
+  },
+  {
+    "id": "vn",
+    "name": "베트남",
+    "englishName": "Vietnam",
+    "officialName": "베트남 사회주의 공화국",
+    "aliases": [
+      "베트남",
+      "베트남 사회주의 공화국",
+      "Vietnam",
+      "Socialist Republic of Vietnam"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Hanoi"
+    ],
+    "languages": [
+      "Vietnamese"
+    ],
+    "isoCode": "VN",
+    "familiar": true,
+    "image": "assets/flags/vn.png",
+    "imageSource": "https://flagcdn.com/w640/vn.png"
+  },
+  {
+    "id": "vu",
+    "name": "바누아투",
+    "englishName": "Vanuatu",
+    "officialName": "바누아투 공화국",
+    "aliases": [
+      "바누아투",
+      "바누아투 공화국",
+      "Vanuatu",
+      "Republic of Vanuatu"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Port Vila"
+    ],
+    "languages": [
+      "Bislama",
+      "English",
+      "French"
+    ],
+    "isoCode": "VU",
+    "familiar": false,
+    "image": "assets/flags/vu.png",
+    "imageSource": "https://flagcdn.com/w640/vu.png"
+  },
+  {
+    "id": "ws",
+    "name": "사모아",
+    "englishName": "Samoa",
+    "officialName": "사모아 독립국",
+    "aliases": [
+      "사모아",
+      "사모아 독립국",
+      "Samoa",
+      "Independent State of Samoa"
+    ],
+    "continent": "오세아니아",
+    "capital": [
+      "Apia"
+    ],
+    "languages": [
+      "English",
+      "Samoan"
+    ],
+    "isoCode": "WS",
+    "familiar": false,
+    "image": "assets/flags/ws.png",
+    "imageSource": "https://flagcdn.com/w640/ws.png"
+  },
+  {
+    "id": "ye",
+    "name": "예멘",
+    "englishName": "Yemen",
+    "officialName": "예멘 공화국",
+    "aliases": [
+      "예멘",
+      "예멘 공화국",
+      "Yemen",
+      "Republic of Yemen"
+    ],
+    "continent": "아시아",
+    "capital": [
+      "Sana'a"
+    ],
+    "languages": [
+      "Arabic"
+    ],
+    "isoCode": "YE",
+    "familiar": false,
+    "image": "assets/flags/ye.png",
+    "imageSource": "https://flagcdn.com/w640/ye.png"
+  },
+  {
+    "id": "za",
+    "name": "남아프리카",
+    "englishName": "South Africa",
+    "officialName": "남아프리카 공화국",
+    "aliases": [
+      "남아프리카",
+      "남아프리카 공화국",
+      "South Africa",
+      "Republic of South Africa"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Pretoria",
+      "Bloemfontein",
+      "Cape Town"
+    ],
+    "languages": [
+      "Afrikaans",
+      "English",
+      "Southern Ndebele",
+      "Northern Sotho",
+      "Southern Sotho",
+      "Swazi",
+      "Tswana",
+      "Tsonga",
+      "Venda",
+      "Xhosa",
+      "Zulu"
+    ],
+    "isoCode": "ZA",
+    "familiar": true,
+    "image": "assets/flags/za.png",
+    "imageSource": "https://flagcdn.com/w640/za.png"
+  },
+  {
+    "id": "zm",
+    "name": "잠비아",
+    "englishName": "Zambia",
+    "officialName": "잠비아 공화국",
+    "aliases": [
+      "잠비아",
+      "잠비아 공화국",
+      "Zambia",
+      "Republic of Zambia"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Lusaka"
+    ],
+    "languages": [
+      "English"
+    ],
+    "isoCode": "ZM",
+    "familiar": false,
+    "image": "assets/flags/zm.png",
+    "imageSource": "https://flagcdn.com/w640/zm.png"
+  },
+  {
+    "id": "zw",
+    "name": "짐바브웨",
+    "englishName": "Zimbabwe",
+    "officialName": "짐바브웨 공화국",
+    "aliases": [
+      "짐바브웨",
+      "짐바브웨 공화국",
+      "Zimbabwe",
+      "Republic of Zimbabwe"
+    ],
+    "continent": "아프리카",
+    "capital": [
+      "Harare"
+    ],
+    "languages": [
+      "Chibarwe",
+      "English",
+      "Kalanga",
+      "Khoisan",
+      "Ndau",
+      "Northern Ndebele",
+      "Chewa",
+      "Shona",
+      "Sotho",
+      "Tonga",
+      "Tswana",
+      "Tsonga",
+      "Venda",
+      "Xhosa",
+      "Zimbabwean Sign Language"
+    ],
+    "isoCode": "ZW",
+    "familiar": false,
+    "image": "assets/flags/zw.png",
+    "imageSource": "https://flagcdn.com/w640/zw.png"
+  }
+]
