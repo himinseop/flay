@@ -120,6 +120,50 @@ test('leaving an active game requires a choice and cleans up the timer',async t=
  assert.equal(h.game(),null);assert.equal(h.interval(),null);assert.equal(h.w.document.querySelectorAll('#atlas-results .country-card').length,195);
 });
 
+test('country profiles have valid local map coordinates and dated population sources',()=>{
+ assert.equal(data.filter(p=>p.population).length,manifest.populationCount);
+ assert.ok(fs.readFileSync(path.join(root,'assets/world-map.svg'),'utf8').includes('viewBox="0 0 900 450"'));
+ const codes=new Set(data.map(p=>p.iso3));
+ for(const p of data){
+  assert.equal(p.coordinates.length,2);assert.ok(p.coordinates.every(Number.isFinite));
+  assert.ok(Math.abs(p.coordinates[0])<=90&&Math.abs(p.coordinates[1])<=180);
+  assert.ok(p.area>0);assert.equal(p.languageCodes.length,p.languages.length);assert.ok(p.subregion);
+  assert.ok(p.currencies.every(c=>/^[A-Z]{3}$/.test(c.code)));assert.equal(typeof p.landlocked,'boolean');
+  // The source includes some non-atlas territories; only atlas neighbors are rendered.
+  assert.ok(p.borders.every(code=>/^[A-Z]{3}$/.test(code)));
+  if(p.population){assert.ok(p.population.value>0);assert.ok(p.population.year>=2020&&p.population.year<=2026);}
+  if(p.mapPath)assert.match(p.mapPath,/^[MLZ\d.,-]+$/);
+ }
+ assert.ok(codes.has('KOR'));assert.ok(manifest.sources.population.includes('SP.POP.TOTL'));
+ assert.equal(data.find(p=>p.id==='va').population,null);
+});
+
+test('atlas map, Korean facts, source links and border navigation',async t=>{
+ const h=await harness();t.after(h.close);h.click('[data-nav="atlas"]');h.click('[data-country="kr"]');
+ const kr=data.find(p=>p.id==='kr'),pin=h.$('.map-marker');
+ assert.equal(Number(pin.getAttribute('cx')),(kr.coordinates[1]+180)*2.5);
+ assert.equal(Number(pin.getAttribute('cy')),(90-kr.coordinates[0])*2.5);
+ assert.ok(h.$('.map-country'));assert.ok(h.$('.country-facts').textContent.includes('한국어'));
+ assert.ok(h.$('.country-facts').textContent.includes(`${kr.population.year}년`));
+ const links=[...h.w.document.querySelectorAll('.country-resources a')];
+ const wiki=links.find(a=>a.href.includes('ko.wikipedia.org'));
+ assert.equal(new URL(wiki.href).searchParams.get('search'),'대한민국');
+ assert.ok(links.some(a=>a.href.includes('locations=KR')));
+ for(const a of [...links,h.$('.detail-section-heading a')]){assert.equal(a.target,'_blank');assert.ok(a.rel.includes('noopener'));}
+ h.click('.border-link[data-country="kp"]');assert.equal(h.$('#detail-title').textContent,'북한');assert.ok(h.$('#detail').open);
+});
+
+test('small island marker and missing population remain useful without external requests',async t=>{
+ const h=await harness();t.after(h.close);h.click('[data-nav="atlas"]');
+ h.w.qa("showCountry('tv')");assert.ok(h.$('.map-marker'));assert.equal(h.$('.map-country'),null);
+ assert.equal(h.w.document.querySelectorAll('.border-link').length,0);assert.ok(h.$('.section-note'));
+ h.w.qa("showCountry('va')");assert.ok(h.$('.country-facts').textContent.includes('자료 없음'));
+ assert.ok(h.w.document.querySelector('.country-resources a[href="https://data.un.org/"]'));
+ h.w.qa("showCountry('ps')");assert.ok(h.$('.map-country'));
+ h.w.qa("showCountry('ss')");assert.ok(h.$('.map-country'));
+ assert.equal(h.w.document.querySelectorAll('iframe').length,0);
+});
+
 // The upstream Korean translation previously conflated Dominica with Dominican Republic.
 test('every canonical Korean country name remains answerable after ambiguous aliases are removed',async t=>{
  const h=await harness();t.after(h.close);

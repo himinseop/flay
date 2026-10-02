@@ -1,7 +1,7 @@
 'use strict';
 const app=document.querySelector('#app');
 const difficulties={easy:{label:'쉬움',multiplier:1},normal:{label:'보통',multiplier:2},hard:{label:'어려움',multiplier:3}};
-let countries=[],view='play',mode='time',difficulty='easy',game=null,ticker=null,advance=null,recordTab='time-easy',search='',continentFilter='',sort='name';
+let countries=[],dataCollectedAt='',view='play',mode='time',difficulty='easy',game=null,ticker=null,advance=null,recordTab='time-easy',search='',continentFilter='',sort='name';
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shuffle=xs=>{const a=[...xs];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const normalize=s=>String(s).normalize('NFKC').toLocaleLowerCase('ko').replace(/[^\p{L}\p{N}]/gu,'');
@@ -155,7 +155,7 @@ const continentBadge=p=>`<span class="continent-badge" style="--continent-color:
 const countryCard=p=>`<button class="country-card" data-country="${p.id}" aria-label="${escapeHTML(p.name)} 나라 도감 보기"><img src="${p.image}" alt="${escapeHTML(p.name)} 국기" loading="lazy" width="200" height="130"><strong>${escapeHTML(p.name)}</strong><small>${escapeHTML(p.englishName)}</small>${continentBadge(p)}</button>`;
 const backButton=()=>'<button class="text-button back-to-game" data-nav="play"><span aria-hidden="true">&lt;</span> 퀴즈도전</button>';
 function renderAtlas(){
- app.innerHTML=`${backButton()}<section class="intro"><div><p class="eyebrow">WORLD FLAGS · 나라 도감</p><h1>국기로 떠나는 세계 여행</h1><p>195개 나라의 국기와 이름을 만나 보세요.</p></div></section><div class="filters"><input id="search" aria-label="나라 검색" value="${escapeHTML(search)}" placeholder="나라 이름 또는 영문 이름 검색"><select id="continent-filter" aria-label="대륙 선택"><option value="">모든 대륙</option>${Object.keys(continents).map(c=>`<option ${continentFilter===c?'selected':''}>${c}</option>`).join('')}</select><select id="sort" aria-label="정렬"><option value="name" ${sort==='name'?'selected':''}>이름순</option><option value="continent" ${sort==='continent'?'selected':''}>대륙순</option></select></div><div id="atlas-results"></div>`;
+ app.innerHTML=`${backButton()}<section class="intro"><div><p class="eyebrow">WORLD FLAGS · 나라 도감</p><h1>국기로 떠나는 세계 여행</h1><p>195개 나라의 국기, 지도와 다양한 나라 정보를 만나 보세요.</p></div></section><div class="filters"><input id="search" aria-label="나라 검색" value="${escapeHTML(search)}" placeholder="나라 이름 또는 영문 이름 검색"><select id="continent-filter" aria-label="대륙 선택"><option value="">모든 대륙</option>${Object.keys(continents).map(c=>`<option ${continentFilter===c?'selected':''}>${c}</option>`).join('')}</select><select id="sort" aria-label="정렬"><option value="name" ${sort==='name'?'selected':''}>이름순</option><option value="continent" ${sort==='continent'?'selected':''}>대륙순</option></select></div><div id="atlas-results"></div>`;
  renderAtlasResults();
 }
 function renderAtlasResults(){
@@ -163,10 +163,26 @@ function renderAtlasResults(){
  list.sort((a,b)=>sort==='continent'?Object.keys(continents).indexOf(a.continent)-Object.keys(continents).indexOf(b.continent)||a.name.localeCompare(b.name,'ko'):a.name.localeCompare(b.name,'ko'));
  document.querySelector('#atlas-results').innerHTML=`<p class="result-count">${list.length}개의 나라</p>${list.length?`<div class="country-grid">${list.map(countryCard).join('')}</div>`:'<div class="empty">찾는 나라가 없어요. 다른 이름이나 대륙으로 찾아보세요.</div>'}`;
 }
+const externalLink=(url,label,description='')=>`<a href="${escapeHTML(url)}" target="_blank" rel="noopener noreferrer">${escapeHTML(label)}<span aria-hidden="true"> ↗</span>${description?`<small>${escapeHTML(description)}</small>`:''}<span class="sr-only"> (새 탭에서 열림)</span></a>`;
+function localizedName(code,type,fallback){
+ try{return new Intl.DisplayNames(['ko'],{type}).of(code)||fallback;}catch{return fallback;}
+}
+function countryMap(p){
+ const [lat,lon]=p.coordinates,x=(lon+180)*2.5,y=(90-lat)*2.5;
+ const zoom=Math.max(2,Math.min(10,Math.round(9-Math.log2(Math.sqrt(Math.max(p.area,1)))/2)));
+ const mapURL=`https://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}#map=${zoom}/${lat}/${lon}`;
+ return `<section class="country-location" aria-labelledby="location-title"><div class="detail-section-heading"><h3 id="location-title">어디에 있는 나라일까요?</h3>${externalLink(mapURL,'지도 크게 보기')}</div><p class="location-summary">${escapeHTML(p.continent)} · ${escapeHTML(p.subregion)}</p><figure class="location-map"><svg viewBox="0 0 900 450" role="img" aria-labelledby="map-title map-description"><title id="map-title">세계지도에서 ${escapeHTML(p.name)}의 위치</title><desc id="map-description">${escapeHTML(p.subregion)}에 있는 ${escapeHTML(p.name)}의 대표 위치를 파란 점으로 표시합니다.</desc><image href="assets/world-map.svg" width="900" height="450"/>${p.mapPath?`<path class="map-country" d="${escapeHTML(p.mapPath)}"/>`:''}<circle class="map-marker-halo" cx="${x}" cy="${y}" r="13"/><circle class="map-marker" cx="${x}" cy="${y}" r="5"/></svg><figcaption><span class="map-key" aria-hidden="true"></span>${escapeHTML(p.name)}의 대표 위치 · 작은 나라와 섬은 점으로 확인해요.</figcaption></figure><p class="map-attribution">지도: ${externalLink('https://www.naturalearthdata.com/','Natural Earth')} · 간략한 세계지도이며 위치 표시는 수도와 다를 수 있어요.</p></section>`;
+}
 function showCountry(id){
  const p=countries.find(p=>p.id===id);if(!p)return;const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','detail-title');dialog.style.setProperty('--continent-color',continents[p.continent]);
  const nearby=shuffle(countries.filter(c=>c.continent===p.continent&&c.id!==id)).slice(0,4);
- dialog.innerHTML=`<div class="detail-inner country-detail"><button class="close" id="close-detail" aria-label="나라 도감 닫기">×</button><p class="eyebrow">${escapeHTML(p.continent)} · ${p.isoCode}</p><h2 id="detail-title">${escapeHTML(p.name)}</h2><p class="english-name">${escapeHTML(p.englishName)}</p><div class="detail-flag"><img src="${p.image}" alt="${escapeHTML(p.name)} 국기"></div><dl class="country-facts"><div><dt>대륙</dt><dd>${continentBadge(p)}</dd></div><div><dt>나라 코드</dt><dd>${p.isoCode}</dd></div><div><dt>정식 이름</dt><dd>${escapeHTML(p.officialName)}</dd></div><div><dt>수도·행정 중심지</dt><dd>${escapeHTML(p.capital.join(' · ')||'정보 없음')}</dd></div><div><dt>언어</dt><dd>${escapeHTML(p.languages.join(' · '))}</dd></div></dl><section class="nearby-countries"><h3>같은 대륙의 다른 나라</h3><div class="nearby-grid">${nearby.map(countryCard).join('')}</div></section></div>`;
+ const borders=p.borders.map(code=>countries.find(c=>c.iso3===code)).filter(Boolean).sort((a,b)=>a.name.localeCompare(b.name,'ko'));
+ const languages=p.languages.map((name,i)=>localizedName(p.languageCodes[i],'language',name));
+ const currencies=p.currencies.map(c=>`${localizedName(c.code,'currency',c.name)} (${c.code}${c.symbol?' · '+c.symbol:''})`).join(' · ');
+ const fact=(title,value,wide=false)=>`<div${wide?' class="fact-wide"':''}><dt>${title}</dt><dd>${escapeHTML(value||'정보 없음')}</dd></div>`;
+ const wiki=(language,name)=>`https://${language}.wikipedia.org/wiki/${language==='ko'?'특수:검색':'Special:Search'}?search=${encodeURIComponent(name)}&go=Go`;
+ dialog.innerHTML=`<div class="detail-inner country-detail"><button class="close" id="close-detail" aria-label="나라 도감 닫기">×</button><p class="eyebrow">${escapeHTML(p.continent)} · ${p.isoCode}</p><h2 id="detail-title">${escapeHTML(p.name)}</h2><p class="english-name">${escapeHTML(p.englishName)}</p><div class="detail-flag"><img src="${p.image}" alt="${escapeHTML(p.name)} 국기"></div>${countryMap(p)}<section aria-labelledby="facts-title"><h3 id="facts-title">나라를 알아봐요</h3><dl class="country-facts">${fact('정식 이름',p.officialName,true)}${fact('현지 이름',p.nativeNames.join(' · '),true)}${fact('수도·행정 중심지',p.capital.join(' · '),true)}${fact('언어',languages.join(' · '),true)}${fact('면적',`${p.area.toLocaleString('ko-KR')} km²`)}<div><dt>인구</dt><dd>${p.population?`${p.population.value.toLocaleString('ko-KR')}명<small class="fact-reference">${p.population.year}년 기준</small>`:'자료 없음'}</dd></div>${fact('통화',currencies,true)}${fact('지리적 특징',p.landlocked?'바다와 맞닿지 않은 내륙국':'바다와 맞닿은 나라')}${fact('나라 코드',`${p.isoCode} / ${p.iso3}`)}${fact('국제 전화',p.callingCodes.join(' · '))}${fact('인터넷 도메인',p.domains.join(' · '))}</dl></section><section class="border-countries" aria-labelledby="borders-title"><h3 id="borders-title">국경을 맞댄 이웃 나라</h3>${borders.length?`<div class="border-links">${borders.map(c=>`<button class="border-link" data-country="${c.id}"><img src="${c.image}" alt="" width="28" height="19">${escapeHTML(c.name)}</button>`).join('')}</div>`:'<p class="section-note">도감에 포함된 나라 중 육지 국경을 맞댄 이웃이 없어요.</p>'}</section><section class="country-resources" aria-labelledby="resources-title"><h3 id="resources-title">더 알아보기</h3><div class="resource-links">${externalLink(wiki('ko',p.name),'위키백과 · 한국어','역사와 문화, 지리를 읽어봐요')}${externalLink(wiki('en',p.englishName),'위키백과 · English','영문 자료를 더 찾아봐요')}${p.population?externalLink(`https://data.worldbank.org/indicator/SP.POP.TOTL?locations=${p.isoCode}`,'세계은행 · 인구 통계','인구 변화와 기준 연도를 확인해요'):externalLink('https://data.un.org/','UN Data · 통계 자료','유엔의 통계 자료를 찾아봐요')}</div><p class="data-note">자료 수집: ${escapeHTML(dataCollectedAt)} · 나라 정보: ${externalLink('https://github.com/mledoze/countries','mledoze/countries')} (ODbL) · 인구: ${externalLink('https://data.worldbank.org/indicator/SP.POP.TOTL','세계은행')} (${externalLink('https://creativecommons.org/licenses/by/4.0/','CC BY 4.0')}). 인구는 표시된 연도의 자료이며, 수도·언어의 원문과 현지 이름은 원본 표기를 사용해요.</p></section><section class="nearby-countries"><h3>같은 대륙의 다른 나라</h3><div class="nearby-grid">${nearby.map(countryCard).join('')}</div></section></div>`;
+ dialog.scrollTop=0;
  if(!dialog.open)dialog.showModal();
 }
 function renderRecords(){
@@ -205,7 +221,7 @@ async function init(){
   // Reject ambiguous alternative names shared by distinct countries.
   const owners=new Map();data.forEach(p=>p.aliases.forEach(name=>{const key=normalize(name);if(!owners.has(key))owners.set(key,new Set());owners.get(key).add(p.id);}));
   data.forEach(p=>p.aliases=p.aliases.filter(name=>owners.get(normalize(name)).size===1));
-  countries=data;render();
+  countries=data;dataCollectedAt=manifest.collectedAt;render();
  }catch{app.innerHTML='<div class="empty"><p>나라 도감을 불러오지 못했어요.</p><button id="retry-load" class="primary">다시 불러오기</button></div>';document.querySelector('#retry-load').onclick=init;}
 }
 init();
