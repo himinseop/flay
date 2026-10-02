@@ -62,6 +62,35 @@ test('all time difficulties: loading, exact prefetch, persistent timer, scoring 
  }
 });
 
+test('next time-attack question clears answer and pointer emphasis after correct or wrong choices',async t=>{
+ const h=await harness();t.after(h.close);h.start();await h.ready();
+ const move=(pointerType,movementX=1)=>{
+  const e=new h.w.Event('pointermove',{bubbles:true});
+  Object.defineProperties(e,{pointerType:{value:pointerType},movementX:{value:movementX},movementY:{value:0}});
+  h.$('.choice span').dispatchEvent(e);
+ };
+ for(const correct of [true,false]){
+  const g=h.game(),choices=h.$('.choices'),bar=h.$('#timer-bar'),deadline=g.deadline;
+  move('touch');assert.ok(!choices.classList.contains('hover-ready'));
+  move('mouse',0);assert.ok(!choices.classList.contains('hover-ready'));
+  move('mouse');assert.ok(choices.classList.contains('hover-ready'));
+  const selected=correct?g.question.id:g.options.find(p=>p.id!==g.question.id).id;
+  h.click(`[data-answer="${selected}"]`);assert.equal(g.locked,true);
+  assert.equal(h.w.document.querySelectorAll('.choice.correct').length,1);
+  assert.equal(h.w.document.querySelectorAll('.choice.wrong').length,correct?0:1);
+  h.advance();await h.ready();
+  assert.notEqual(h.$('.choices'),choices);assert.ok(!h.$('.choices').classList.contains('hover-ready'));
+  assert.equal(h.w.document.querySelectorAll('.choice.correct,.choice.wrong').length,0);
+  assert.equal(h.w.document.querySelectorAll('.choice:disabled').length,0);
+  assert.equal(h.$('#feedback').textContent,'');assert.equal(g.locked,false);
+  assert.equal(h.$('#timer-bar'),bar);assert.equal(g.deadline,deadline);
+ }
+ // Keyboard answers use the same question transition and reset behavior.
+ const g=h.game();move('mouse');
+ h.w.document.body.dispatchEvent(new h.w.KeyboardEvent('keydown',{key:String(g.options.findIndex(p=>p.id===g.question.id)+1),bubbles:true,cancelable:true}));
+ assert.equal(g.total,3);h.advance();await h.ready();assert.ok(!h.$('.choices').classList.contains('hover-ready'));
+});
+
 test('all master difficulties: untimed retries, alias answers, skip disclosure and completion',async t=>{
  const h=await harness();t.after(h.close);
  for(const [level,multiplier] of [['easy',1],['normal',2],['hard',3]]){

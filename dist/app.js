@@ -189,6 +189,11 @@ function renderRecords(){
  const list=leaderboard(recordTab);
  app.innerHTML=`${backButton()}<section class="intro"><div><p class="eyebrow">HALL OF EXPLORERS</p><h1>우리들의 랭킹</h1><p>멋진 세계 탐험가들의 기록을 만나 보세요!</p></div></section><div class="records-tabs">${rankingModes.map(key=>`<button data-record-tab="${key}" class="${key===recordTab?'active':''}" aria-pressed="${key===recordTab}">${rankingLabel(key)}</button>`).join('')}</div>${list.length?`<div class="ranking-scroll"><table class="ranking"><thead><tr><th scope="col">순위</th><th scope="col">탐험가</th><th scope="col">점수</th><th scope="col">정답</th><th scope="col">날짜</th></tr></thead><tbody>${list.map((r,i)=>`<tr class="${r.id===lastSavedId?'new-record':''}"><td>${i<3?['🥇','🥈','🥉'][i]:i+1}</td><td>${escapeHTML(r.name)}</td><td class="score">${r.score.toLocaleString()}</td><td>${r.correct} / ${r.total}</td><td>${new Date(r.date).toLocaleDateString('ko-KR')}</td></tr>`).join('')}</tbody></table></div><p class="result-note">모드와 난이도별 TOP 20 · 이 브라우저에 기록이 저장돼요.</p>`:`<div class="empty"><span class="empty-icon">🏆</span><p>첫 번째 기록의 주인공이 되어 보세요!</p><button class="primary" data-play-record="${recordTab}">도전 시작하기</button></div>`}`;
 }
+// A new question starts without hover emphasis, even under a stationary cursor.
+document.addEventListener('pointermove',e=>{
+ if(e.pointerType!=='mouse'||(!e.movementX&&!e.movementY))return;
+ e.target.closest('.choices')?.classList.add('hover-ready');
+});
 document.addEventListener('click',e=>{
  const b=e.target.closest('button');if(!b)return;
  if(b.dataset.nav){navigate(b.dataset.nav);return;}
