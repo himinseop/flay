@@ -10,8 +10,5 @@
   "githubRepositoryId": "1400913933",
   "githubEnvironment": "production",
   "githubOidcProviderArn": "arn:aws:iam::733625312722:oidc-provider/token.actions.githubusercontent.com",
-  "certificateArn": "arn:aws:acm:us-east-1:733625312722:certificate/9fb36dd9-9045-4591-b4cb-806e3b51a002",
-  "alternateDomainNames": [
-    "faly.pir.kr"
-  ]
+  "certificateArn": "arn:aws:acm:us-east-1:733625312722:certificate/2709b556-0a21-40b1-85a5-9267e09ad90e"
 }

@@ -1,6 +1,6 @@
 # Flay AWS 배포
 
-운영 주소는 **https://flay.pir.kr/** 입니다. 기본 도메인은 `flay.pir.kr`이고 기존 `faly.pir.kr`도 같은 배포에 연결합니다.
+운영 주소는 **https://flay.pir.kr/** 입니다.
 
 포켓몬 게임과 같은 S3 비공개 버킷 / CloudFront OAC / HTTPS / Route 53 구성입니다. 서울의 `FlayProd` 스택에서 전용 버킷, 배포, DNS A·AAAA, GitHub 배포 Role을 관리합니다. `pir.kr` 영역과 AWS 계정의 기존 GitHub OIDC Provider를 참조합니다. 서버나 데이터베이스는 추가하지 않습니다.
 
