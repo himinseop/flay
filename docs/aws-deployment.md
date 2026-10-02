@@ -1,6 +1,6 @@
 # Flay AWS 배포
 
-운영 주소는 **https://faly.pir.kr/** 입니다. 프로젝트와 저장소 이름은 `flay`이고 도메인은 요청한 철자 `faly`를 사용합니다.
+운영 주소는 **https://flay.pir.kr/** 입니다. 기본 도메인은 `flay.pir.kr`이고 기존 `faly.pir.kr`도 같은 배포에 연결합니다.
 
 포켓몬 게임과 같은 S3 비공개 버킷 / CloudFront OAC / HTTPS / Route 53 구성입니다. 서울의 `FlayProd` 스택에서 전용 버킷, 배포, DNS A·AAAA, GitHub 배포 Role을 관리합니다. `pir.kr` 영역과 AWS 계정의 기존 GitHub OIDC Provider를 참조합니다. 서버나 데이터베이스는 추가하지 않습니다.
 
@@ -40,4 +40,4 @@ npm run aws:deploy -- --profile podbbangcast
 
 CloudFront는 기존 포켓몬과 같은 `PRICE_CLASS_200` 종량제를 사용합니다. 추가 호스팅 영역과 유료 액세스 로그를 만들지 않고, 국기를 1년 immutable 캐시로 제공하며 데이터·HTML은 갱신 확인하도록 제공합니다. 기존 계정 무료 범위와 실제 전송량에 따라 비용이 발생합니다.
 
-랭킹은 브라우저에 저장합니다. localhost나 다른 도메인의 기록이 `faly.pir.kr`로 자동 이전되지는 않습니다.
+랭킹은 브라우저에 저장합니다. localhost나 다른 도메인의 기록이 `flay.pir.kr`로 자동 이전되지는 않습니다.

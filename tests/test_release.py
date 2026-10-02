@@ -46,7 +46,7 @@ class ReleaseTests(unittest.TestCase):
             self.assertEqual(len(calls),1);self.assertIn('get-caller-identity',calls[0])
     def test_publish_retains_old_assets_switches_index_last_and_waits_for_invalidation(self):
         config=json.loads((ROOT/'infra/config.json').read_text());calls=[]
-        outputs={'SiteUrl':'https://faly.pir.kr','WebBucketName':'flay-web-test','DistributionId':'EXAMPLE'}
+        outputs={'SiteUrl':'https://flay.pir.kr','WebBucketName':'flay-web-test','DistributionId':'EXAMPLE'}
         def run(args,**kwargs):
             calls.append(args)
             if 'get-caller-identity' in args:payload={'Account':config['account']}

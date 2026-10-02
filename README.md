@@ -41,4 +41,4 @@ npm test
 
 테스트는 첫 이미지 준비와 타이머 시작, 다음 이미지 미리 준비, 난이도별 보기, 주관식 별칭·오답 재도전·모르겠어요, 완료/중단 랭킹, 이름 저장, 도감 검색·대륙 필터, 지도 위치·자료 링크·이웃 나라 이동·인구 자료 없음 처리를 확인합니다.
 
-GitHub의 `main` push와 PR에서도 `.github/workflows/ci.yml`이 문법·데이터·게임·배포 설정을 검사합니다. `main`의 검증이 통과하면 [faly.pir.kr](https://faly.pir.kr/)에 자동 배포합니다. 자세한 AWS 구성과 복구 절차는 [AWS 배포 안내](docs/aws-deployment.md)를 참고하세요.
+GitHub의 `main` push와 PR에서도 `.github/workflows/ci.yml`이 문법·데이터·게임·배포 설정을 검사합니다. `main`의 검증이 통과하면 [flay.pir.kr](https://flay.pir.kr/)에 자동 배포합니다. 자세한 AWS 구성과 복구 절차는 [AWS 배포 안내](docs/aws-deployment.md)를 참고하세요.

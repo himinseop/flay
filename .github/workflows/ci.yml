@@ -39,14 +39,14 @@ jobs:
           if-no-files-found: error
 
   deploy:
-    name: Publish faly.pir.kr
+    name: Publish flay.pir.kr
     needs: verify
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && vars.AWS_DEPLOY_ENABLED == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     environment:
       name: production
-      url: https://faly.pir.kr
+      url: https://flay.pir.kr
     concurrency:
       group: flay-production
       cancel-in-progress: false
@@ -82,11 +82,11 @@ jobs:
         run: python3 scripts/deploy-aws.py
       - name: Verify the published site
         run: |
-          curl --fail --silent --show-error --retry 5 --retry-delay 5 https://faly.pir.kr/ -o /tmp/flay-index.html
+          curl --fail --silent --show-error --retry 5 --retry-delay 5 https://flay.pir.kr/ -o /tmp/flay-index.html
           grep -q 'Flay' /tmp/flay-index.html
-          curl --fail --silent --show-error --retry 5 --retry-delay 5 https://faly.pir.kr/countries-manifest.json -o /tmp/flay-manifest.json
+          curl --fail --silent --show-error --retry 5 --retry-delay 5 https://flay.pir.kr/countries-manifest.json -o /tmp/flay-manifest.json
           python3 - <<'PY'
           import json
           assert json.load(open('/tmp/flay-manifest.json'))['countryCount'] == 195
           PY
-          echo '### Published https://faly.pir.kr' >> "$GITHUB_STEP_SUMMARY"
+          echo '### Published https://flay.pir.kr' >> "$GITHUB_STEP_SUMMARY"
