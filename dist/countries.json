@@ -1075,11 +1075,12 @@
   },
   {
     "id": "dm",
-    "name": "도미니카 공화국",
+    "name": "도미니카연방",
     "englishName": "Dominica",
-    "officialName": "도미니카 공화국",
+    "officialName": "도미니카연방",
     "aliases": [
-      "도미니카 공화국",
+      "도미니카연방",
+      "도미니카",
       "Dominica",
       "Commonwealth of Dominica"
     ],

@@ -3,8 +3,8 @@ import concurrent.futures, datetime, json, pathlib, time, urllib.request
 ROOT=pathlib.Path(__file__).resolve().parents[1]
 SOURCE='https://raw.githubusercontent.com/mledoze/countries/master/countries.json'
 FAMILIAR='KR JP CN US GB FR DE IT ES RU BR AR CA AU NZ IN VN TH PH ID MX EG CH GR TR UA ZA SG KP NL'.split()
-OVERRIDES={'KR':'대한민국','KP':'북한','TR':'튀르키예','SZ':'에스와티니','CZ':'체코','VA':'바티칸','PS':'팔레스타인','CD':'콩고민주공화국','CG':'콩고공화국'}
-ALIASES={'KR':['한국','남한'],'KP':['조선민주주의인민공화국','북조선'],'TR':['터키'],'SZ':['스와질란드'],'VA':['바티칸시국'],'US':['아메리카합중국','미합중국'],'GB':['그레이트브리튼','영국'],'TL':['동티모르','티모르레스테'],'CV':['카보베르데','케이프베르데'],'MM':['미얀마','버마'],'CZ':['체코','체코공화국']}
+OVERRIDES={'KR':'대한민국','KP':'북한','TR':'튀르키예','SZ':'에스와티니','CZ':'체코','VA':'바티칸','PS':'팔레스타인','CD':'콩고민주공화국','CG':'콩고공화국','DM':'도미니카연방'}
+ALIASES={'KR':['한국','남한'],'KP':['조선민주주의인민공화국','북조선'],'TR':['터키'],'SZ':['스와질란드'],'VA':['바티칸시국'],'US':['아메리카합중국','미합중국'],'GB':['그레이트브리튼','영국'],'TL':['동티모르','티모르레스테'],'CV':['카보베르데','케이프베르데'],'MM':['미얀마','버마'],'CZ':['체코','체코공화국'],'DM':['도미니카']}
 REGIONS={'Asia':'아시아','Europe':'유럽','Africa':'아프리카','Oceania':'오세아니아'}
 def fetch(url):
  for attempt in range(3):
@@ -25,9 +25,11 @@ if __name__=='__main__':
  countries=[]
  for p in selected:
   code=p['cca2'];korean=p['translations']['kor'];name=OVERRIDES.get(code,korean['common'])
+  official='도미니카연방' if code=='DM' else korean['official']
+  korean_aliases=[] if code=='DM' else [korean['common'],korean['official']]
   region=REGIONS.get(p['region']) or ('남아메리카' if p['subregion']=='South America' else '북아메리카')
-  countries.append({'id':code.lower(),'name':name,'englishName':p['name']['common'],'officialName':korean['official'],
-   'aliases':list(dict.fromkeys([name,korean['common'],korean['official'],p['name']['common'],p['name']['official'],*ALIASES.get(code,[])])),
+  countries.append({'id':code.lower(),'name':name,'englishName':p['name']['common'],'officialName':official,
+   'aliases':list(dict.fromkeys([name,official,*korean_aliases,p['name']['common'],p['name']['official'],*ALIASES.get(code,[])])),
    'continent':region,'capital':p['capital'],'languages':list(p['languages'].values()),'isoCode':code,
    'familiar':code in FAMILIAR,'image':f'assets/flags/{code.lower()}.png','imageSource':f'https://flagcdn.com/w640/{code.lower()}.png'})
  countries.sort(key=lambda p:p['id']);assert len({p['id'] for p in countries})==195 and sum(p['familiar'] for p in countries)==30

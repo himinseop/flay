@@ -1,0 +1,14 @@
+{
+  "account": "733625312722",
+  "region": "ap-northeast-2",
+  "stackName": "FlayProd",
+  "domainName": "faly.pir.kr",
+  "hostedZoneId": "Z25C4QNYU409X8",
+  "zoneName": "pir.kr",
+  "githubRepository": "himinseop/flay",
+  "githubOwnerId": "1148821",
+  "githubRepositoryId": "1400913933",
+  "githubEnvironment": "production",
+  "githubOidcProviderArn": "arn:aws:iam::733625312722:oidc-provider/token.actions.githubusercontent.com",
+  "certificateArn": "arn:aws:acm:us-east-1:733625312722:certificate/2fd68ffb-b3f5-41d7-8140-ffc11209fc9c"
+}

@@ -25,6 +25,7 @@ python3 -m http.server 4174 --bind 127.0.0.1 --directory dist
 - 나라 범위: UN 회원국 193개와 비회원 옵서버 2개(바티칸/교황청, 팔레스타인). 영토·속령은 포함하지 않습니다. [UN 회원국](https://www.un.org/en/about-us/member-states), [비회원 옵서버](https://www.un.org/en/node/123012).
 - 나라 정보: [mledoze/countries](https://github.com/mledoze/countries), [ODbL-1.0](dist/COUNTRIES-LICENSE.txt). 이 프로젝트의 `dist/countries.json` 파생 데이터베이스도 ODbL-1.0으로 제공합니다. UI/게임 코드는 이 데이터 라이선스와 구분됩니다. 원본의 바티칸 회원국 표기는 UN 자료에 따라 옵서버로 정정해 집계했습니다.
 - 국기: [Flagpedia / Flagcdn](https://flagcdn.com/). 원본 국기는 Wikimedia Commons 벡터 자료에 기반합니다. 각 이미지의 URL을 `countries.json`의 `imageSource`에 기록했습니다.
+- 도미니카연방의 한글 이름은 [외교부 국가 정보](https://www.mofat.go.kr/www/nation/m_3458/view.do?seq=49)에 맞춰 원본 번역 오류를 보정했습니다. 도미니카공화국과 구분하여 정답을 처리합니다.
 - 수집 날짜와 전체 개수는 `dist/countries-manifest.json`에 기록합니다. 수도·언어·대륙은 수집 시점의 데이터이며 실시간 정보가 아닙니다. 대륙은 원본의 region/subregion 분류를 사용합니다.
 
 `python3 scripts/import-countries.py`로 자료와 PNG 국기를 다시 수집할 수 있습니다. 게임에는 195개 국기를 모두 로컬 파일로 포함합니다.
@@ -38,4 +39,4 @@ npm test
 
 테스트는 첫 이미지 준비와 타이머 시작, 다음 이미지 미리 준비, 난이도별 보기, 주관식 별칭·오답 재도전·모르겠어요, 완료/중단 랭킹, 이름 저장, 도감 검색·대륙 필터를 확인합니다.
 
-GitHub의 `main` push와 PR에서도 `.github/workflows/ci.yml`이 문법 검사와 동일한 게임 테스트를 자동 실행합니다.
+GitHub의 `main` push와 PR에서도 `.github/workflows/ci.yml`이 문법·데이터·게임·배포 설정을 검사합니다. `main`의 검증이 통과하면 [faly.pir.kr](https://faly.pir.kr/)에 자동 배포합니다. 자세한 AWS 구성과 복구 절차는 [AWS 배포 안내](docs/aws-deployment.md)를 참고하세요.

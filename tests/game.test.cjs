@@ -119,3 +119,12 @@ test('leaving an active game requires a choice and cleans up the timer',async t=
  h.click('#keep-playing');assert.equal(h.game().status,'playing');assert.ok(h.interval());h.click('[data-nav="atlas"]');h.click('#leave-game');
  assert.equal(h.game(),null);assert.equal(h.interval(),null);assert.equal(h.w.document.querySelectorAll('#atlas-results .country-card').length,195);
 });
+
+// The upstream Korean translation previously conflated Dominica with Dominican Republic.
+test('every canonical Korean country name remains answerable after ambiguous aliases are removed',async t=>{
+ const h=await harness();t.after(h.close);
+ assert.equal(h.w.qa("countries.find(p=>p.id==='dm').name"),'도미니카연방');
+ assert.equal(h.w.qa("countries.find(p=>p.id==='do').name"),'도미니카 공화국');
+ assert.equal(h.w.qa("countries.find(p=>p.id==='dm').aliases.some(name=>normalize(name)===normalize('도미니카 공화국'))"),false);
+ assert.ok(h.w.qa("countries.every(p=>p.aliases.some(name=>normalize(name)===normalize(p.name)))"));
+});
