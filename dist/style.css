@@ -162,6 +162,6 @@ body.explorer-entry #app{display:grid;place-items:center;max-width:none;min-heig
 .explorer-welcome .result-note{margin-top:18px}
 
 /* CC0 Robinson world map: keep borders visible without competing with the flags. */
-body::before{content:'';position:fixed;inset:0;z-index:-1;background:url("assets/robinson-world.svg") center / contain no-repeat;filter:grayscale(1);opacity:.27;pointer-events:none}
+body::before{content:'';position:fixed;inset:0;z-index:-1;background:url("assets/robinson-world.svg") center / auto 100% no-repeat;filter:grayscale(1);opacity:.27;pointer-events:none}
 body{isolation:isolate}
 body.game-focused .flag-stage{background:radial-gradient(circle at center,#ffffffb8,#f9fbff80 75%)}
