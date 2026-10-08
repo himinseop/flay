@@ -1,6 +1,7 @@
 'use strict';
 const app=document.querySelector('#app');
 const difficulties={easy:{label:'쉬움',multiplier:1},normal:{label:'보통',multiplier:2},hard:{label:'어려움',multiplier:3}};
+const MASTER_BONUS_DURATION=20000;
 let countries=[],dataCollectedAt='',view='play',mode='time',difficulty='easy',game=null,ticker=null,advance=null,recordTab='time-easy',search='',continentFilter='',sort='name';
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shuffle=xs=>{const a=[...xs];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
@@ -8,8 +9,10 @@ const normalize=s=>String(s).normalize('NFKC').toLocaleLowerCase('ko').replace(/
 const RANKING_LIMIT=20;
 const rankingModes=['time-easy','time-normal','time-hard','write-easy','write-normal','write-hard'];
 let records=[],lastSavedId=null;
+let explorerName='';
+try{explorerName=(localStorage.getItem('flag-play-explorer-name')||'').slice(0,12);}catch{}
 function readRecords(){const stored=JSON.parse(localStorage.getItem('flag-play-records')||'[]');return Array.isArray(stored)?stored.filter(r=>r&&typeof r.name==='string'&&Number.isFinite(r.score)&&Number.isFinite(r.correct)&&Number.isFinite(r.total)&&typeof r.date==='string'&&Number.isFinite(Date.parse(r.date))&&rankingModes.includes(r.mode)):[];}
-function compareRecords(a,b){return b.score-a.score||b.correct-a.correct||a.date.localeCompare(b.date);}
+function compareRecords(a,b){return b.score-a.score||Date.parse(b.date)-Date.parse(a.date)||String(a.id||'').localeCompare(String(b.id||''));}
 function leaderboard(key,items=records){return items.filter(r=>r.mode===key).sort(compareRecords).slice(0,RANKING_LIMIT);}
 function rankOf(record,items=records){return leaderboard(record.mode,[...items,record]).indexOf(record)+1;}
 function rankingLabel(key){const [kind,level]=key.split('-');return `${kind==='time'?'타임어택':'마스터'} · ${difficulties[level].label}`;}
@@ -22,22 +25,43 @@ function cleanup(){clearInterval(ticker);clearTimeout(advance);ticker=null;advan
 let leaveAction=null;
 function confirmLeave(action){const dialog=document.querySelector('#detail');leaveAction=action;dialog.setAttribute('aria-labelledby','leave-title');dialog.innerHTML='<div class="detail-inner"><h2 id="leave-title" style="font-size:22px">진행 중인 게임을 끝낼까요?</h2><p>이동하면 이번 게임의 기록은 저장되지 않아요.</p><div class="result-actions"><button class="secondary" id="keep-playing">계속 플레이</button><button class="primary" id="leave-game">게임 끝내고 이동</button></div></div>';dialog.showModal();}
 function navigate(next){if(activeGame()){confirmLeave(()=>{cleanup();game=null;view=next;render();});return;}cleanup();game=null;view=next;render();}
-function render(){if(view==='play')renderPlay();else if(view==='atlas')renderAtlas();else renderRecords();}
+function fitGameViewport(){
+ const viewport=window.visualViewport,root=document.documentElement;
+ root.style.setProperty('--game-visible-height',`${viewport?.height||window.innerHeight}px`);
+ root.style.setProperty('--game-viewport-top',`${viewport?.offsetTop||0}px`);
+ root.style.setProperty('--layer-visible-width',`${Math.min(window.innerWidth,viewport?.width||window.innerWidth)}px`);
+ root.style.setProperty('--layer-left',`${viewport?.offsetLeft||0}px`);
+ const form=document.querySelector('#answer-form');
+ if(form)root.style.setProperty('--master-form-height',`${form.offsetHeight}px`);
+ const dialog=document.querySelector('#high-score');
+ if(dialog?.open&&document.activeElement?.id==='trainer-name')dialog.querySelector('.my-entry')?.scrollIntoView({block:'nearest'});
+}
+window.addEventListener('resize',fitGameViewport);
+window.visualViewport?.addEventListener('resize',fitGameViewport);
+window.visualViewport?.addEventListener('scroll',fitGameViewport);
+function updateGameFocus(){
+ const focused=view==='play'&&!!activeGame(),entering=focused&&!document.body.classList.contains('game-focused');
+ document.body.classList.toggle('game-focused',focused);
+ if(focused)document.body.dataset.gameMode=game.mode;else delete document.body.dataset.gameMode;
+ fitGameViewport();if(entering)app.scrollIntoView({block:'start'});
+}
+function render(){updateGameFocus();if(view==='play')renderPlay();else if(view==='atlas')renderAtlas();else renderRecords();}
 function renderPlay(){
 previewChoices={easy:shuffle(countries.filter(p=>p.familiar))[0],normal:shuffle(countries)[0],hard:shuffle(countries.filter(p=>!p.familiar))[0]};previewCountry=previewChoices[difficulty];
-app.innerHTML=`<section class="intro"><div><p class="eyebrow">FLAY · 세계 국기 여행</p><h1>이 국기, 어느 나라일까요?</h1><p>국기를 보고 나라 이름을 맞혀 보세요!</p></div></section>
+app.innerHTML=`<section class="intro"><div><p class="eyebrow">FLAY · 세계 국기 여행</p><h1>이 국기, 어느 나라일까요?</h1><p>국기를 보고 나라 이름을 맞혀 보세요!</p><button class="explorer-profile" id="edit-explorer">${explorerName?'🧭 '+escapeHTML(explorerName)+' · 이름 변경':'🧭 탐험가 이름 등록'}</button></div></section>
 <div class="play-grid"><section class="game-card" aria-label="나라 퀴즈"><div class="game-tabs"><button class="game-tab ${mode==='time'?'active':''}" data-mode="time">⚡ 타임어택</button><button class="game-tab ${mode==='write'?'active':''}" data-mode="write">✎ 마스터 도전</button></div><div id="game-body" class="game-body"></div></section></div>
 <div class="quick-links"><button class="shortcut shortcut-dex" data-nav="atlas"><span class="shortcut-icon" aria-hidden="true">📖</span><span>나라 도감</span></button><button class="shortcut shortcut-ranking" data-nav="records"><span class="shortcut-icon" aria-hidden="true">🏆</span><span>랭킹</span></button></div>`;
 renderGameBody();
 }
-function renderGameBody(){const body=document.querySelector('#game-body');if(!body)return;
+const gameExit=()=>'<button class="game-exit" id="quit-game" aria-label="게임 그만하기" title="그만하기"><span aria-hidden="true">×</span></button>';
+function renderGameBody(){updateGameFocus();const body=document.querySelector('#game-body');if(!body)return;
 if(game?.status==='ended'){renderResult(body);return;}
 if(game?.status==='playing'){renderQuestion(body);return;}
-if(game?.status==='loading'){body.innerHTML='<div class="quiz-start-loading" role="status" aria-live="polite"><span class="quiz-spinner" aria-hidden="true"></span><p>첫 문제를 불러오는 중이에요…</p></div><div class="loading-actions"><button class="game-control quit-control" id="quit-game"><span aria-hidden="true">■</span>그만하기</button></div>';return;}
+if(game?.status==='loading'){body.innerHTML=`<div class="focus-loading">${gameExit()}<div class="quiz-start-loading" role="status" aria-live="polite"><span class="quiz-spinner" aria-hidden="true"></span><p>첫 국기를 준비하고 있어요…</p></div></div>`;return;}
 body.innerHTML=`<div class="game-setup"><h2>${mode==='time'?'60초 타임어택':'국기 마스터 도전'}</h2>
 ${mode==='write'?`<div class="difficulty difficulty-cards" aria-label="난이도 선택">${Object.entries(difficulties).map(([key,d])=>`<button data-difficulty="${key}" class="difficulty-choice ${difficulty===key?'active':''}" aria-pressed="${difficulty===key}"><span class="difficulty-preview "><img src="${previewChoices[key].image}" alt="국기 미리보기" width="100" height="100"></span><strong>${d.label}</strong><small>${d.multiplier}배 점수</small></button>`).join('')}</div>`:`<div class="difficulty difficulty-time" aria-label="타임어택 난이도 선택">${Object.entries(difficulties).map(([key,d])=>`<button data-difficulty="${key}" class="difficulty-choice ${difficulty===key?'active':''}" aria-pressed="${difficulty===key}"><strong>${d.label}</strong><small>${key==='easy'?'친숙한 30개 나라':key==='normal'?'세계 195개 나라':'낯선 나라 · 같은 대륙 보기'}</small></button>`).join('')}</div>`}
 ${mode==='time'?`<div class="flag-stage setup-stage "><img src="${previewCountry.image}" alt="랜덤 국기 미리보기" width="230" height="230"></div>`:''}
-<button class="primary setup-start" id="start-game">시작</button><p class="setup-note">${mode==='time'?'60초 동안 최대한 많이 맞추기 · 정답 100점 · 연속 정답 보너스':'10문제 · 시간 제한 없이 도전해요'}</p></div>`;
+<button class="primary setup-start" id="start-game">시작</button><p class="setup-note">${mode==='time'?'60초 동안 최대한 많이 맞추기 · 정답 100점 · 연속 정답 보너스':'10문제 · 시간 제한 없이 도전해요<br>빨리 맞추면 보너스! 한 글자 힌트도 있어요.'}</p><button class="text-button" id="game-help">게임 방법과 점수 안내</button></div>`;
 }
 function prepareQuestionImages(g){
  // Keep the exact next questions warm, including the next shuffled deck.
@@ -64,8 +88,14 @@ function prepareQuestionImage(g,p,priority){
 }
 function selectQuestion(g){
  if(!g.deck.length)g.deck=shuffle(g.pool.filter(p=>p.id!==g.question?.id));
- g.question=g.deck.pop();g.locked=false;g.imageReady=false;prepareQuestionImages(g);
- const candidates=g.pool.filter(p=>p.id!==g.question.id),nearby=shuffle(candidates.filter(p=>p.continent===g.question.continent));const distractors=g.difficulty==='hard'?[...nearby,...shuffle(candidates.filter(p=>p.continent!==g.question.continent))].slice(0,3):shuffle(candidates).slice(0,3);g.options=shuffle([g.question,...distractors]);
+ g.question=g.deck.pop();g.questionNumber=g.total+1;g.locked=false;g.imageReady=false;
+ g.questionStartedAt=null;g.elapsedAtAnswer=null;g.bonusAwarded=0;g.judgement=null;g.awaitingNext=false;
+ g.checkedLetters=null;g.lastAttempt='';g.answerLength=Array.from(normalize(g.question.name)).length;
+ g.answerComposing=false;g.answerRevealed=false;g.hintUsed=false;g.hint=null;g.selectedAnswer=null;
+ prepareQuestionImages(g);
+ const candidates=g.pool.filter(p=>p.id!==g.question.id),neighbors=shuffle(candidates.filter(p=>g.question.borders.includes(p.iso3)&&p.continent===g.question.continent));
+ const sameContinent=shuffle(candidates.filter(p=>p.continent===g.question.continent&&!neighbors.includes(p)));
+ const distractors=g.difficulty==='hard'?[...neighbors,...sameContinent,...shuffle(candidates.filter(p=>p.continent!==g.question.continent&&!neighbors.includes(p)))].slice(0,3):shuffle(candidates).slice(0,3);g.options=shuffle([g.question,...distractors]);
 }
 function questionPool(level){return level==='easy'?countries.filter(p=>p.familiar):level==='hard'?countries.filter(p=>!p.familiar):countries;}
 function startGame(){cleanup();const pool=questionPool(difficulty);
@@ -75,45 +105,208 @@ function startGame(){cleanup();const pool=questionPool(difficulty);
 function prepareFirstQuestion(g){
  if(game!==g||g.status!=='loading')return;selectQuestion(g);renderGameBody();
  const entry=g.images.get(g.question.id);
- const begin=()=>{if(game!==g||g.status!=='loading')return;g.status='playing';g.deadline=g.mode==='time'?performance.now()+60000:null;renderGameBody();if(g.mode==='time')ticker=setInterval(tick,100);};
+ const begin=()=>{if(game!==g||g.status!=='loading')return;g.status='playing';g.deadline=g.mode==='time'?performance.now()+60000:null;renderGameBody();ticker=setInterval(tick,100);};
  const failed=()=>{if(game!==g||g.status!=='loading')return;g.imageFailures++;if(g.imageFailures>=5){g.imageError=true;endGame('error');}else prepareFirstQuestion(g);};
  if(entry.ready)begin();else entry.loaded.then(ok=>ok?begin():failed());
 }
 function nextQuestion(){if(!game||game.status!=='playing')return;if(game.mode==='write'&&game.total>=10){endGame();return;}if(game.mode==='time'&&performance.now()>=game.deadline){endGame();return;}
  selectQuestion(game);renderGameBody();}
 function timerState(g){const duration=60000;const remaining=Math.max(0,g.deadline-performance.now());return {seconds:Math.ceil(remaining/1000),percent:Math.min(100,remaining/duration*100)};}
-function renderQuestion(body){const g=game;const timeState=g.mode==='time'?timerState(g):null;const previousProgress=g.mode==='time'?body.querySelector('.progress'):null;
-body.innerHTML=`<div class="game-heading"><div><h2>${g.mode==='time'?'이 국기는 어느 나라일까요?':'나라 이름을 적어 주세요'}</h2><small>${g.mode==='time'?difficulties[g.difficulty].label+' · 네 개의 이름 중 정답을 골라요':difficulties[g.difficulty].label+' · 나라 이름으로 답해요'}</small></div><button class="game-control quit-control" id="quit-game"><span aria-hidden="true">■</span>그만하기</button></div>
-<div class="flag-stage "><span class="stage-tag">WORLD FLAG CHALLENGE</span><span id="question-image-slot"></span></div>
-<div class="question-score"><div class="game-stats"><span><strong id="score">${g.score.toLocaleString()}</strong> 점</span><span>${g.mode==='time'?`연속 <b id="streak">${g.streak}</b> 정답`:`${g.total+1} / 10 문제`}</span>${timeState?`<span class="time">⏱ <strong id="time">${timeState.seconds}</strong> 초</span>`:''}</div>${timeState?`<div class="progress" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${timeState.percent}"><div id="timer-bar" style="width:${timeState.percent}%"></div></div>`:''}</div>
-${g.mode==='time'?`<div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" disabled><span>${i+1}</span>${escapeHTML(p.name)}</button>`).join('')}</div>`:`<form class="text-form" id="answer-form"><input id="answer-input" autocomplete="off" maxlength="30" placeholder="나라 이름" aria-label="나라 이름" disabled><button class="primary" type="submit" disabled>확인</button></form>`}
-<div id="feedback" class="feedback" role="status" aria-live="polite">국기를 불러오는 중…</div>${g.mode==='write'?'<div class="play-actions"><button class="game-control skip-control" id="skip-question"><span aria-hidden="true">?</span>모르겠어요</button></div>':''}`;
-// Keep the time-attack bar itself alive when replacing the question.
-if(previousProgress){body.querySelector('.progress').replaceWith(previousProgress);previousProgress.querySelector('#timer-bar').style.width=timeState.percent+'%';previousProgress.setAttribute('aria-valuenow',timeState.percent);}
-const current=g.question.id,entry=g.images.get(current),img=entry.image;
-img.id='question-image';body.querySelector('#question-image-slot').replaceWith(img);
-const active=()=>game===g&&g.status==='playing'&&g.question.id===current&&!g.locked&&body.querySelector('#question-image')===img;
-const ready=()=>{if(!active())return;g.imageReady=true;body.querySelectorAll('.choice,.text-form input,.text-form button').forEach(b=>b.disabled=false);body.querySelector('#feedback').textContent='';if(g.mode==='write')body.querySelector('#answer-input').focus({preventScroll:true});};
-const failed=()=>{if(!active())return;g.imageFailures++;if(g.imageFailures>=5){g.imageError=true;endGame();}else nextQuestion();};
-if(entry.ready)ready();else entry.loaded.then(ok=>ok?ready():failed());}
-function tick(){if(!game||game.status!=='playing'||game.mode!=='time')return;const state=timerState(game);const time=document.querySelector('#time');if(time)time.textContent=state.seconds;const bar=document.querySelector('#timer-bar');if(bar){bar.style.width=state.percent+'%';bar.parentElement.setAttribute('aria-valuenow',state.percent);}if(state.seconds<=0)endGame();}
-function submitAnswer(value,skipped=false){const g=game;if(!g||g.status!=='playing'||g.locked||!g.imageReady)return;if(g.mode==='time'&&performance.now()>=g.deadline){endGame();return;}
-const correct=!skipped&&(g.mode==='time'?value===g.question.id:g.question.aliases.some(name=>normalize(value)===normalize(name)));const feedback=document.querySelector('#feedback');
-// A wrong typed guess leaves the same question open for another try.
-if(g.mode==='write'&&!correct&&!skipped){feedback.className='feedback bad';feedback.textContent='다시 도전해 보세요!';const input=document.querySelector('#answer-input');input.focus({preventScroll:true});input.select();return;}
-g.locked=true;g.total++;if(correct){g.correct++;g.streak++;g.maxStreak=Math.max(g.maxStreak,g.streak);g.score+=g.mode==='time'?100+Math.min(g.streak-1,10)*10:100*difficulties[g.difficulty].multiplier;}else g.streak=0;
-const answerRevealed=g.mode==='time'||correct||skipped;g.history.push({country:g.question,correct,answer:String(value),answerRevealed});feedback.className='feedback '+(correct?'good':'bad');feedback.textContent=g.mode==='write'?(correct?'정답이에요! 잘 알고 있네요!':`정답은 ${g.question.name}! 다음 문제에 도전해 보세요!`):(correct?`정답! ${g.question.name}, 잘 알고 있네요!`:`괜찮아요! 정답은 ${g.question.name}`);
-if(answerRevealed)document.querySelector('.flag-stage')?.classList.add('reveal');document.querySelectorAll('[data-answer]').forEach(b=>{b.disabled=true;if(b.dataset.answer===g.question.id)b.classList.add('correct');else if(b.dataset.answer===value)b.classList.add('wrong');});document.querySelectorAll('.text-form input,.text-form button,#skip-question').forEach(b=>b.disabled=true);document.querySelector('#score').textContent=g.score.toLocaleString();const streak=document.querySelector('#streak');if(streak)streak.textContent=g.streak;
-advance=setTimeout(nextQuestion,correct?550:1300);}
+function masterElapsed(g){return Math.min(MASTER_BONUS_DURATION,Math.max(0,Math.floor(performance.now()-(g.questionStartedAt??performance.now()))));}
+const masterPoints=(g,hinted=g.hintUsed)=>100*difficulties[g.difficulty].multiplier/(hinted?2:1);
+const masterBonusMax=g=>50*difficulties[g.difficulty].multiplier;
+function masterBonus(g,elapsed=masterElapsed(g)){
+ const maximum=masterBonusMax(g);
+ return g.hintUsed?0:maximum-Math.floor(Math.min(MASTER_BONUS_DURATION,Math.max(0,elapsed))*maximum/(MASTER_BONUS_DURATION*10))*10;
+}
+function updateMasterBonus(g){
+ const gauge=document.querySelector('#master-bonus');if(!gauge)return;
+ gauge.hidden=g.hintUsed||g.judgement==='skipped';
+ const elapsed=g.elapsedAtAnswer??masterElapsed(g),points=g.locked?g.bonusAwarded:masterBonus(g,elapsed);
+ gauge.querySelector('.bonus-fill').style.width=(g.hintUsed?0:(MASTER_BONUS_DURATION-elapsed)/MASTER_BONUS_DURATION*100)+'%';
+ gauge.querySelector('[role="progressbar"]').setAttribute('aria-valuenow',points);
+ gauge.querySelector('.bonus-current').textContent=points+'점';
+ gauge.classList.toggle('bonus-earned',g.locked&&points>0);gauge.classList.toggle('bonus-expired',elapsed>=MASTER_BONUS_DURATION);
+ const hint=document.querySelector('#hint-question'),available=g.imageReady&&!g.locked&&!g.hintUsed&&points===0;
+ if(hint){hint.classList.toggle('hint-ready',available);hint.querySelector('.hint-nudge').hidden=!available;}
+}
+function resetMasterAttempt(){
+ const g=game;if(!g||g.mode!=='write'||g.locked)return;
+ g.judgement=null;g.awaitingNext=false;g.checkedLetters=null;
+ const button=document.querySelector('#answer-submit');if(button)button.textContent='확인';
+ const feedback=document.querySelector('#feedback');if(feedback){feedback.textContent='';feedback.className='feedback';}
+ const effect=document.querySelector('#judgement-effect');if(effect)effect.hidden=true;
+}
+function completeMasterMiss(g){
+ if(g?.mode!=='write'||g.judgement!=='wrong')return;
+ g.total++;g.history.push({country:g.question,correct:false,answer:g.lastAttempt,answerRevealed:false,hintUsed:g.hintUsed,elapsedMs:masterElapsed(g)});
+ g.judgement='passed';
+}
+function advanceMasterQuestion(){
+ const g=game;if(!g||g.mode!=='write'||g.status!=='playing'||!g.awaitingNext||g.answerComposing)return;
+ g.awaitingNext=false;completeMasterMiss(g);nextQuestion();
+}
+const typedLetters=value=>Array.from(String(value).normalize('NFKC').replace(/\s+/g,''));
+const isCountryAnswer=(g,value)=>g.question.aliases.some(name=>normalize(value)===normalize(name));
+function masterAnswer(g,value){
+ if(!g?.hintUsed||g.freeInput||isCountryAnswer(g,value))return value;
+ const letters=typedLetters(value);let cursor=0;
+ return Array.from({length:g.answerLength},(_,index)=>index===g.hint.index?g.hint.letter:(letters[cursor++]||'')).join('');
+}
+function finishAnswerComposition(){
+ const input=document.querySelector('#answer-input');if(!input||!game?.answerComposing)return;
+ input.blur();game.answerComposing=false;input.focus({preventScroll:true});
+}
+function updateAnswerSlots(fromInput=false){
+ const g=game,input=document.querySelector('#answer-input'),slots=document.querySelector('#answer-slots');if(!input||!slots||g?.mode!=='write')return;
+ const length=g.answerLength,revealed=g.answerRevealed;
+ if(revealed){input.value=g.question.name.normalize('NFKC').replace(/\s+/g,'');input.readOnly=true;}
+ let letters=typedLetters(input.value);
+ // An English or longer alternative name gets a visible native input instead of clipped boxes.
+ if(fromInput&&!g.answerComposing&&!revealed&&!g.freeInput&&(/[a-z]/i.test(input.value)||letters.length>length))g.freeInput=true;
+ const hintFixed=g.hintUsed&&!revealed&&!g.freeInput;
+ if(fromInput&&hintFixed&&!g.answerComposing&&letters.length===length&&isCountryAnswer(g,input.value)){
+  letters.splice(g.hint.index,1);input.value=letters.join('');
+ }
+ const editable=Array.from({length},(_,index)=>index).filter(index=>!hintFixed||index!==g.hint.index);
+ const value=typedLetters(input.value),start=typedLetters(input.value.slice(0,input.selectionStart??input.value.length)).length,end=typedLetters(input.value.slice(0,input.selectionEnd??input.value.length)).length;
+ if(slots.children.length!==length)slots.replaceChildren(...Array.from({length},()=>{const span=document.createElement('span');span.className='answer-slot';return span;}));
+ const entry=input.parentElement;entry.style.setProperty('--answer-length',length);entry.classList.toggle('free-input',!!g.freeInput&&!revealed);
+ entry.classList.toggle('long-answer',length>=9);
+ input.setAttribute('aria-label',revealed?'정답 나라 이름':g.freeInput?'나라 이름 · 별칭과 영문도 가능':hintFixed?`나라 이름 · 남은 ${editable.length}글자`:`나라 이름 · ${length}글자`);
+ const toggle=document.querySelector('#toggle-answer-mode');if(toggle){toggle.textContent=g.freeInput?'글자 칸으로 입력':'별칭·영문으로 입력';toggle.disabled=g.locked;}
+ const focused=document.activeElement===input&&!input.disabled&&!revealed&&!g.locked,active=editable[Math.min(start,Math.max(0,editable.length-1))],answerLetters=Array.from(normalize(g.question.name));
+ [...slots.children].forEach((cell,index)=>{
+  const hinted=hintFixed&&g.hint.index===index,position=editable.indexOf(index),letter=revealed?answerLetters[index]:hinted?g.hint.letter:(value[position]||'');
+  const checked=!!g.checkedLetters,matched=checked&&g.checkedLetters[index]===answerLetters[index];
+  cell.textContent=letter;cell.classList.toggle('filled',!!letter);cell.classList.toggle('hint-target',hinted);cell.classList.toggle('revealed-answer',revealed);
+  cell.classList.toggle('checked-correct',checked&&matched);cell.classList.toggle('checked-wrong',checked&&!matched);
+  cell.classList.toggle('active',!hinted&&focused&&start===end&&index===active);cell.classList.toggle('selected',!hinted&&focused&&start!==end&&position>=start&&position<end);
+ });
+ if(g.hintUsed&&!revealed&&g.judgement!=='wrong'){
+  const message=document.querySelector('#hint-message');
+  message.textContent=g.freeInput?`힌트: ${g.hint.index+1}번째 글자는 “${g.hint.letter}”. 정답은 ${masterPoints(g)}점이에요.`:'힌트를 채웠어요! 남은 빈칸을 적어 주세요.';
+  message.hidden=false;
+ }
+ fitGameViewport();
+}
+function focusAnswerSlot(event){
+ const input=event.target;if(input.id!=='answer-input'||input.disabled||game?.freeInput)return;
+ event.preventDefault();input.focus({preventScroll:true});
+ const cells=[...document.querySelectorAll('.answer-slot')],index=cells.findIndex(cell=>{const rect=cell.getBoundingClientRect();return event.clientX>=rect.left&&event.clientX<=rect.right;});
+ if(index===game?.hint?.index&&game.hintUsed)return;
+ const editIndex=game?.hintUsed&&index>game.hint.index?index-1:index;
+ const letters=Array.from(input.value),position=editIndex<0?input.value.length:letters.slice(0,editIndex).join('').length;
+ input.setSelectionRange(position,position);updateAnswerSlots();
+}
+function toggleAnswerMode(){
+ const g=game;if(!g||g.mode!=='write'||g.locked||!g.imageReady)return;
+ finishAnswerComposition();resetMasterAttempt();g.freeInput=!g.freeInput;
+ const input=document.querySelector('#answer-input');input.value='';input.focus({preventScroll:true});updateAnswerSlots();
+}
+function showQuestionHint(){
+ const g=game;if(!g||g.status!=='playing'||g.mode!=='write'||g.locked||!g.imageReady||g.hintUsed)return;
+ finishAnswerComposition();resetMasterAttempt();
+ const input=document.querySelector('#answer-input'),entered=typedLetters(input.value),letters=Array.from(normalize(g.question.name));
+ const index=g.difficulty==='hard'?Math.floor(Math.random()*letters.length):0;
+ g.hintUsed=true;g.hint={index,letter:letters[index]};
+ if(!g.freeInput){if(entered.length>index)entered.splice(index,1);input.value=entered.join('');}
+ const message=document.querySelector('#hint-message'),button=document.querySelector('#hint-question');
+ message.textContent=g.freeInput?`힌트: ${index+1}번째 글자는 “${letters[index]}”. 정답은 ${masterPoints(g)}점이에요.`:'힌트를 채웠어요! 남은 빈칸을 적어 주세요.';message.hidden=false;
+ button.disabled=true;button.classList.add('used');button.setAttribute('aria-label','힌트 사용 완료');button.title='이 문제의 힌트는 이미 사용했어요.';
+ input.focus({preventScroll:true});updateAnswerSlots();updateMasterBonus(g);
+}
+function masterHint(g){return `<button class="stage-hint" id="hint-question" aria-label="한 글자 힌트 · 보너스 없이 ${masterPoints(g,true)}점" title="한 글자 힌트 · 보너스 없이 ${masterPoints(g,true)}점" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 15c0-2-3-2-3-6a6 6 0 0 1 12 0c0 4-3 4-3 6ZM9 18h6m-5 3h4"/></svg><span class="hint-nudge" hidden aria-hidden="true">힌트보기</span></button>`;}
+function masterScore(g){
+ const maximum=masterBonusMax(g);
+ return `<div class="master-bonus" id="master-bonus"><div class="bonus-heading"><span>빨리 맞추기 보너스</span><strong class="bonus-current">${maximum}점</strong></div><div class="bonus-track" role="progressbar" aria-label="빨리 맞추기 보너스" aria-valuemin="0" aria-valuemax="${maximum}" aria-valuenow="${maximum}"><div class="bonus-fill" style="width:100%"></div></div><div class="bonus-scale" aria-hidden="true">${Array.from({length:maximum/10+1},(_,index)=>`<span style="left:${index*10/maximum*100}%">${index*10}</span>`).join('')}</div></div><div class="game-stats"><span class="question-count">${g.questionNumber} / 10 문제</span><button class="pass-button" id="skip-question" aria-label="패스 · 정답 보기"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M5 21V3m0 1c5-4 9 4 14 0v10c-5 4-9-4-14 0"/></svg><span>패스</span></button><span class="master-score"><strong id="score">${g.score.toLocaleString()}</strong> 점</span></div>`;
+}
+function showJudgement(correct){
+ const effect=document.querySelector('#judgement-effect');if(!effect)return;
+ effect.hidden=false;effect.className='judgement-effect '+(correct?'good':'bad');
+ effect.textContent=correct?(game.streak>=3?`${game.streak}연속 정답!`:'정답이에요!'):'다시 도전!';
+}
+function renderQuestion(body){
+ const g=game,timeState=g.mode==='time'?timerState(g):null;
+ const previousProgress=g.mode==='time'?body.querySelector('.progress'):null,previousForm=g.mode==='write'?body.querySelector('#answer-form'):null;
+ const markup=`<div class="flag-stage">${gameExit()}<span class="stage-tag">${g.mode==='time'?'60초 타임어택':'나라 이름 맞히기'} · ${difficulties[g.difficulty].label}</span>${g.mode==='write'?masterHint(g)+'<div class="master-feedback"><div id="feedback" class="feedback" role="status" aria-live="polite">국기를 불러오는 중…</div><p id="hint-message" class="hint-message" role="status" hidden></p></div>':''}<span id="question-image-slot"></span><span id="judgement-effect" class="judgement-effect" aria-hidden="true" hidden></span></div>
+ <div class="question-score">${g.mode==='write'?masterScore(g):`<div class="game-stats"><span class="time">⏱ <strong id="time">${timeState.seconds}</strong> 초</span><span>연속 <b id="streak">${g.streak}</b> 정답</span><span class="attack-score"><strong id="score">${g.score.toLocaleString()}</strong> 점</span></div><div class="progress" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${timeState.percent}"><div id="timer-bar" style="width:${timeState.percent}%"></div></div>`}</div>
+ ${g.mode==='time'?`<div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" data-question="${g.question.id}" aria-pressed="false" disabled><span>${i+1}</span>${escapeHTML(p.name)}</button>`).join('')}</div>`:`<form class="text-form" id="answer-form"><div class="answer-fields"><div class="letter-entry"><div class="answer-slots" id="answer-slots" aria-hidden="true"></div><input id="answer-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="80" placeholder="나라 이름" aria-label="나라 이름" disabled></div><button class="input-mode-toggle" type="button" id="toggle-answer-mode" disabled>별칭·영문으로 입력</button></div><button class="primary" type="submit" id="answer-submit" disabled>확인</button></form>`}
+ ${g.mode==='time'?'<div id="feedback" class="feedback attack-feedback" role="status" aria-live="polite">국기를 불러오는 중…</div>':''}`;
+ // Keep the actual text input in place so Korean composition and the keyboard survive.
+ if(previousForm){
+  const template=document.createElement('template');template.innerHTML=markup;
+  for(const child of [...body.children])if(child!==previousForm)child.remove();
+  for(const child of [...template.content.children])if(child.id!=='answer-form')body.insertBefore(child,previousForm);
+  const input=previousForm.querySelector('input');input.value='';input.readOnly=true;
+  previousForm.querySelectorAll('button').forEach(button=>button.disabled=true);previousForm.querySelector('#answer-submit').textContent='확인';
+ }else body.innerHTML=markup;
+ if(g.mode==='write')updateAnswerSlots();
+ if(previousProgress){body.querySelector('.progress').replaceWith(previousProgress);previousProgress.querySelector('#timer-bar').style.width=timeState.percent+'%';previousProgress.setAttribute('aria-valuenow',timeState.percent);}
+ const current=g.question.id,entry=g.images.get(current),img=entry.image;
+ img.id='question-image';body.querySelector('#question-image-slot').replaceWith(img);
+ const active=()=>game===g&&g.status==='playing'&&g.question.id===current&&!g.locked&&body.querySelector('#question-image')===img;
+ const ready=()=>{
+  if(!active())return;g.imageReady=true;body.querySelectorAll('.choice,.text-form input,.text-form button,#hint-question,#skip-question').forEach(button=>button.disabled=false);
+  body.querySelector('#feedback').textContent='';
+  if(g.mode==='write'){
+   if(g.questionStartedAt===null)g.questionStartedAt=performance.now();
+   const input=body.querySelector('#answer-input');input.readOnly=false;if(document.activeElement!==input)input.focus({preventScroll:true});
+   updateAnswerSlots();updateMasterBonus(g);
+  }
+  fitGameViewport();
+ };
+ const failed=()=>{if(!active())return;g.imageFailures++;if(g.imageFailures>=5){g.imageError=true;endGame('error');}else nextQuestion();};
+ if(entry.ready)ready();else entry.loaded.then(ok=>ok?ready():failed());
+}
+function tick(){
+ if(!game||game.status!=='playing')return;
+ if(game.mode==='write'){if(game.imageReady)updateMasterBonus(game);return;}
+ const state=timerState(game),time=document.querySelector('#time'),bar=document.querySelector('#timer-bar');
+ if(time)time.textContent=state.seconds;
+ if(bar){bar.style.width=state.percent+'%';bar.parentElement.setAttribute('aria-valuenow',state.percent);}
+ if(state.seconds<=0)endGame();
+}
+function submitMasterAnswer(value,skipped){
+ const g=game,correct=!skipped&&isCountryAnswer(g,value),feedback=document.querySelector('#feedback'),input=document.querySelector('#answer-input');
+ g.lastAttempt=String(value);g.checkedLetters=skipped?null:Array.from(normalize(value));g.awaitingNext=true;g.judgement=correct?'correct':skipped?'skipped':'wrong';
+ document.querySelector('#answer-submit').textContent='다음문제';document.querySelector('#hint-message').hidden=true;
+ if(!correct&&!skipped){
+  g.streak=0;showJudgement(false);feedback.className='feedback bad';feedback.textContent='괜찮아요! 고쳐서 다시 확인해 보세요.';
+  input.focus({preventScroll:true});updateAnswerSlots();return;
+ }
+ g.locked=true;g.total++;g.elapsedAtAnswer=masterElapsed(g);g.bonusAwarded=correct?masterBonus(g,g.elapsedAtAnswer):0;
+ if(correct)g.checkedLetters=Array.from(normalize(g.question.name));
+ if(correct){g.correct++;g.streak++;g.maxStreak=Math.max(g.maxStreak,g.streak);g.score+=masterPoints(g)+g.bonusAwarded;}else g.streak=0;
+ g.answerRevealed=true;input.readOnly=true;
+ g.history.push({country:g.question,correct,answer:String(value),answerRevealed:true,hintUsed:g.hintUsed,elapsedMs:g.elapsedAtAnswer});
+ showJudgement(correct);feedback.className='feedback '+(correct?'good':'bad');feedback.textContent=correct?`정답! +${masterPoints(g)+g.bonusAwarded}점`:'';
+ document.querySelectorAll('#skip-question,#hint-question').forEach(button=>button.disabled=true);
+ document.querySelector('#score').textContent=g.score.toLocaleString();updateAnswerSlots();updateMasterBonus(g);
+}
+function submitAnswer(value,skipped=false){
+ const g=game;if(!g||g.status!=='playing'||g.locked||!g.imageReady)return;
+ if(g.mode==='time'&&performance.now()>=g.deadline){endGame();return;}
+ if(g.mode==='write'){if(g.answerComposing&&!skipped)return;if(skipped)finishAnswerComposition();submitMasterAnswer(value,skipped);return;}
+ const correct=value===g.question.id,feedback=document.querySelector('#feedback');
+ g.locked=true;g.selectedAnswer=value;g.total++;
+ const points=correct?100+Math.min(g.streak,10)*10:0;
+ if(correct){g.correct++;g.streak++;g.maxStreak=Math.max(g.maxStreak,g.streak);g.score+=points;}else g.streak=0;
+ g.history.push({country:g.question,correct,answer:String(value),answerRevealed:true,hintUsed:false});
+ showJudgement(correct);feedback.className='feedback attack-feedback '+(correct?'good':'bad');feedback.textContent=correct?`정답! ${g.question.name} · +${points}점`:`정답은 ${g.question.name}예요. 다음 문제에 도전해요!`;
+ document.querySelectorAll('[data-answer]').forEach(button=>{button.disabled=true;button.setAttribute('aria-pressed',String(button.dataset.answer===value));if(button.dataset.answer===g.question.id)button.classList.add('correct');else if(button.dataset.answer===value)button.classList.add('wrong');});
+ document.querySelector('#score').textContent=g.score.toLocaleString();document.querySelector('#streak').textContent=g.streak;
+ advance=setTimeout(nextQuestion,correct?550:1300);
+}
 function endGame(reason='complete'){
  if(!game||game.status==='ended')return;
- cleanup();game.status='ended';game.completed=reason==='complete';
+ completeMasterMiss(game);cleanup();game.status='ended';game.quit=reason==='quit';game.completed=reason==='complete'||game.quit;
  game.record={id:typeof crypto.randomUUID==='function'?crypto.randomUUID():`${Date.now()}-${Math.random()}`,score:game.score,correct:game.correct,total:game.total,mode:rankingKey(game),date:new Date().toISOString()};
  try{records=readRecords();}catch{}
  game.rank=game.completed&&!game.imageError&&game.score>0?rankOf(game.record):0;
  // Replace an open details/navigation panel with the end-of-game registration.
  leaveAction=null;document.querySelector('#detail').close();
- renderGameBody();if(game.rank)showRankingEntry();
+ renderGameBody();if(game.rank||game.quit)showRankingEntry();
 }
 function resultRanking(g){
  if(g.imageError)return '<p class="result-note">국기를 불러오지 못했어요. 다시 도전해 주세요.</p>';
@@ -124,30 +317,60 @@ function resultRanking(g){
  return `<p class="result-note">${g.score===0?'다음에는 정답을 맞히고 랭킹에 도전해 보세요!':`이번에는 TOP ${RANKING_LIMIT}에 조금 못 미쳤어요. ${cutoff?`현재 ${RANKING_LIMIT}위는 ${cutoff.score.toLocaleString()}점이에요.`:''}`}</p>`;
 }
 function renderResult(body){const g=game;const mistakes=g.history.filter(x=>!x.correct&&(g.mode==='time'||x.answerRevealed));body.innerHTML=`<div class="result"><div class="result-icon">${g.imageError?'☁️':g.correct>0?'🏆':'🌱'}</div><h2>${g.imageError?'국기를 불러오지 못했어요':g.correct>=8?'멋진 세계 탐험가!':'즐거운 도전이었어요!'}</h2><div class="big-score">${g.score.toLocaleString()}<small>점</small></div><p class="summary">${g.mode==='time'?'60초 타임어택 · '+difficulties[g.difficulty].label:difficulties[g.difficulty].label+' 마스터 도전'} · ${g.total}문제 중 ${g.correct}개 정답 · 최고 ${g.maxStreak}연속</p>${resultRanking(g)}
-${mistakes.length?`<div class="review-list"><strong style="font-size:13px">다음에는 기억할 수 있어요!</strong>${mistakes.map(m=>`<div class="review-row"><img src="${m.country.image}" alt="" width="38" height="38"><strong>${escapeHTML(m.country.name)}</strong><span>다시 만나기</span><button data-country="${m.country.id}">도감 보기</button></div>`).join('')}</div>`:''}<div class="result-actions"><button class="primary" id="start-game">다시 도전!</button><button class="secondary" data-nav="records">랭킹 보기</button></div></div>`;}
-function showRankingEntry(){
- if(!game||game.status!=='ended'||!game.rank)return;
- const g=game,dialog=document.querySelector('#high-score');
- const list=g.saved?leaderboard(g.record.mode):leaderboard(g.record.mode,[...records,g.record]);
- const rank=g.saved?g.savedRank:g.rank;
- dialog.innerHTML=`<div class="arcade-entry leaderboard-entry"><button class="close" id="close-ranking" aria-label="랭킹 닫기">×</button><h2 id="high-score-title">${g.saved?'우리들의 랭킹':'랭킹에 이름을 남겨요!'}</h2><div class="entry-summary"><span>${rankingLabel(g.record.mode)} · TOP ${RANKING_LIMIT}</span><strong>내 순위 ${rank}위 <span>· ${g.score.toLocaleString()}점</span></strong></div><form id="save-form"></form><div class="entry-list"><table class="entry-ranking"><thead><tr><th scope="col">순위</th><th scope="col">탐험가</th><th scope="col">점수</th></tr></thead><tbody>${list.map((r,i)=>{const me=r.id===g.record.id;return `<tr class="${me?'my-entry':''}" ${me?'aria-label="내 기록"':''}><td>${i+1}${me?'<span class="my-tag">나</span>':''}</td><td>${me&&!g.saved?'<div class="entry-input"><input id="trainer-name" form="save-form" aria-label="탐험가 이름" placeholder="탐험가 이름" maxlength="12" autocomplete="off"><button type="submit" form="save-form" class="save-name" aria-label="탐험가 이름 저장" title="저장">✓</button></div>':escapeHTML(r.name)}</td><td class="entry-points">${r.score.toLocaleString()}</td></tr>`;}).join('')}</tbody></table></div><p id="save-message" class="result-note" role="status">${g.saved?'이름을 저장했어요.':''}</p>${g.saved?'<button class="primary" id="ranking-replay">다시 도전!</button>':''}</div>`;
- if(!dialog.open)dialog.showModal();
- const input=dialog.querySelector('#trainer-name');if(input)input.focus({preventScroll:true});
- const ownRow=dialog.querySelector('.my-entry');if(ownRow)ownRow.scrollIntoView({block:'nearest'});
+${mistakes.length?`<div class="review-list"><strong style="font-size:13px">다음에는 기억할 수 있어요!</strong>${mistakes.map(m=>`<div class="review-row"><img src="${m.country.image}" alt="" width="38" height="38"><strong>${escapeHTML(m.country.name)}</strong><span>다시 만나기</span><button data-country="${m.country.id}">도감 보기</button></div>`).join('')}</div>`:''}<div class="result-actions"><button class="primary" id="result-replay">다시 도전!</button><button class="secondary" data-nav="records">랭킹 보기</button></div></div>`;}
+function returnToLobby(){
+ if(game){mode=game.mode;difficulty=game.difficulty;}
+ cleanup();document.querySelector('#high-score').close();game=null;view='play';render();app.focus({preventScroll:true});
 }
+function saveRankingAndReturnHome(){
+ if(game?.rank&&!game.saved&&!saveRecord())return;
+ returnToLobby();
+}
+const rankBadge=rank=>rank<=3?`<span class="rank-medal" role="img" aria-label="${rank}위">${['🥇','🥈','🥉'][rank-1]}</span>`:String(rank);
+const recordDate=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'});
+const recordTime=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hourCycle:'h23'});
+function rankingDate(date,now=new Date()){
+ const then=new Date(date),parts=value=>Object.fromEntries(recordDate.formatToParts(value).filter(part=>['year','month','day'].includes(part.type)).map(part=>[part.type,Number(part.value)])),a=parts(then),b=parts(now);
+ const days=Math.max(0,Math.round((Date.UTC(b.year,b.month-1,b.day)-Date.UTC(a.year,a.month-1,a.day))/86400000));
+ if(!days)return recordTime.format(then);if(days<7)return `${days}일 전`;
+ const anniversary=Math.min(a.day,new Date(Date.UTC(b.year,b.month,0)).getUTCDate()),months=Math.max(0,(b.year-a.year)*12+b.month-a.month-(b.day<anniversary?1:0));
+ if(months>=12)return `${Math.floor(months/12)}년 전`;if(months)return `${months}개월 전`;return `${Math.floor(days/7)}주 전`;
+}
+const rankingDateCell=r=>`<time datetime="${escapeHTML(r.date)}" title="${escapeHTML(recordDate.format(new Date(r.date)))}">${rankingDate(r.date)}</time>`;
+function showRankingEntry(){
+ if(!game||game.status!=='ended'||(!game.rank&&!game.quit))return;
+ const g=game,dialog=document.querySelector('#high-score');
+ const list=g.saved||!g.rank?leaderboard(g.record.mode):leaderboard(g.record.mode,[...records,g.record]);
+ dialog.innerHTML=`<div class="arcade-entry leaderboard-entry"><button class="close" id="close-ranking" aria-label="랭킹 닫기">×</button><h2 id="high-score-title">${g.saved||g.quit?'우리들의 랭킹':'랭킹에 이름을 남겨요!'}</h2><p class="entry-mode">${rankingLabel(g.record.mode)} · TOP ${RANKING_LIMIT}</p><form id="save-form"></form><div class="entry-list"><table class="entry-ranking"><thead><tr><th scope="col">순위</th><th scope="col">탐험가</th><th scope="col">점수</th><th scope="col">날짜</th></tr></thead><tbody>${list.map((r,i)=>{const me=r.id===g.record.id;return `<tr class="${me?'my-entry':''}" ${me?'aria-label="내 기록"':''}><td>${rankBadge(i+1)}</td><td>${me&&!g.saved?`<div class="entry-input"><input id="trainer-name" form="save-form" aria-label="탐험가 이름" placeholder="탐험가 이름" value="${escapeHTML(g.rankingName??explorerName)}" maxlength="12" autocomplete="nickname"><span class="my-tag">나</span><button type="submit" form="save-form" class="save-name" aria-label="탐험가 이름 저장" title="저장">✓</button></div>`:`<span class="record-name">${escapeHTML(r.name)}${me?'<span class="my-tag">나</span>':''}</span>`}</td><td class="entry-points">${r.score.toLocaleString()}</td><td class="entry-date">${rankingDateCell(r)}</td></tr>`;}).join('')}</tbody></table>${list.length?'':'<p class="empty">아직 기록이 없어요. 첫 번째 탐험가가 되어 보세요!</p>'}</div><p id="save-message" class="result-note" role="status">${g.saved?'이름을 저장했어요.':g.quit?'즐거운 도전이었어요!':''}</p><button class="primary" id="ranking-replay">다시 도전!</button></div>`;
+ if(!dialog.open)dialog.showModal();
+ const input=dialog.querySelector('#trainer-name');if(input){input.focus({preventScroll:true});input.select();}
+ dialog.querySelector('.my-entry')?.scrollIntoView({block:'nearest'});fitGameViewport();
+}
+function rememberExplorer(name){explorerName=name;try{localStorage.setItem('flag-play-explorer-name',name);}catch{}}
 function saveRecord(){
- if(!game||game.status!=='ended'||game.saved||!game.rank)return;
- const input=document.querySelector('#trainer-name');if(!input)return;
- const name=input.value.trim()||shuffle(countries.filter(p=>p.name.length<=12))[0].name;if(name.length>12){input.setCustomValidity('이름은 12자까지 적어 주세요.');input.reportValidity();return;}input.setCustomValidity('');input.value=name;
+ if(!game||game.status!=='ended'||game.saved||!game.rank)return !!game?.saved;
+ const input=document.querySelector('#trainer-name');if(!input)return false;
+ const name=input.value.normalize('NFKC').trim()||shuffle(countries.filter(p=>p.name.length<=12))[0].name;
+ if(name.length>12){input.setCustomValidity('이름은 12자까지 적어 주세요.');input.reportValidity();return false;}
+ input.setCustomValidity('');input.value=name;game.rankingName=name;
  const record={...game.record,name};
  try{
-  // Recheck the current board, including scores saved in another tab.
-  const latest=readRecords();const rank=rankOf(record,latest);
-  if(!rank){records=latest;game.rank=0;document.querySelector('#high-score').close();renderGameBody();return;}
+  const latest=readRecords(),rank=rankOf(record,latest);
+  if(!rank){records=latest;game.rank=0;document.querySelector('#high-score').close();renderGameBody();return true;}
   const updated=rankingModes.flatMap(key=>leaderboard(key,[...latest,record]));
   localStorage.setItem('flag-play-records',JSON.stringify(updated));records=updated;game.record=record;game.saved=true;game.savedRank=rank;lastSavedId=record.id;recordTab=record.mode;
-  renderGameBody();showRankingEntry();
- }catch{document.querySelector('#save-message').textContent='랭킹을 저장하지 못했어요. 브라우저의 저장 설정을 확인한 뒤 다시 눌러 주세요.';}
+  rememberExplorer(name);renderGameBody();showRankingEntry();return true;
+ }catch{document.querySelector('#save-message').textContent='랭킹을 저장하지 못했어요. 다시 저장해 주세요.';return false;}
+}
+function showExplorerProfile(){
+ const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','profile-title');
+ dialog.innerHTML=`<div class="detail-inner"><button class="close" id="close-detail" aria-label="이름 설정 닫기">×</button><h2 id="profile-title">탐험가 이름</h2><p>이름을 기억하고 다음 랭킹에 미리 채워 드려요. 이름 없이도 바로 플레이할 수 있어요.</p><form id="explorer-form" class="profile-form"><input id="explorer-name" aria-label="탐험가 이름" maxlength="12" autocomplete="nickname" placeholder="12자까지" value="${escapeHTML(explorerName)}"><button class="primary" type="submit">저장</button></form></div>`;
+ dialog.showModal();dialog.querySelector('input').focus({preventScroll:true});
+}
+function showGameHelp(){
+ const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','help-title');
+ dialog.innerHTML='<div class="detail-inner game-help"><button class="close" id="close-detail" aria-label="게임 방법 닫기">×</button><h2 id="help-title">세계 탐험 안내</h2><h3>60초 타임어택</h3><p>4개의 나라 중 정답을 골라요. 정답은 100점, 연속 정답마다 10점씩 보너스가 늘어나 최대 100점이 더해져요. 키보드 1–4로도 선택할 수 있어요.</p><h3>마스터 도전</h3><p>시간 제한 없이 10문제를 풀어요. 쉬움·보통·어려움의 기본 점수는 100·200·300점이에요. 국기가 준비된 뒤 20초 동안 최대 50·100·150점의 보너스가 10점씩 줄어들어요. 보너스가 끝나도 계속 풀 수 있어요.</p><p>한 글자 힌트는 문제마다 한 번! 쉬움·보통은 첫 글자, 어려움은 임의의 한 글자를 채워 줘요. 힌트를 쓰면 보너스는 사라지고 기본 점수는 절반이 돼요.</p><p>오답은 글자별로 맞은 곳과 틀린 곳을 표시해요. 고치고 다시 확인하거나 다음 문제로 넘어갈 수 있어요. 패스는 정답을 채워 주며, 정답·패스 후에는 직접 다음문제를 눌러요.</p><p>글자 칸으로 입력하거나 “별칭·영문으로 입력”을 선택해요. 한국/대한민국, 터키/튀르키예와 영문 이름도 정답으로 인정해요. Enter로 확인·다음문제를 사용할 수 있어요.</p><p class="result-note">랭킹은 이 브라우저에 저장돼요. 그만하기도 획득한 점수로 등록할 수 있어요.</p></div>';
+ dialog.showModal();
 }
 
 const continents={'아시아':'#eaa743','유럽':'#558ee8','아프리카':'#59a675','북아메리카':'#9670c7','남아메리카':'#dd7d61','오세아니아':'#4da9af'};
@@ -186,8 +409,8 @@ function showCountry(id){
  if(!dialog.open)dialog.showModal();
 }
 function renderRecords(){
- const list=leaderboard(recordTab);
- app.innerHTML=`${backButton()}<section class="intro"><div><p class="eyebrow">HALL OF EXPLORERS</p><h1>우리들의 랭킹</h1><p>멋진 세계 탐험가들의 기록을 만나 보세요!</p></div></section><div class="records-tabs">${rankingModes.map(key=>`<button data-record-tab="${key}" class="${key===recordTab?'active':''}" aria-pressed="${key===recordTab}">${rankingLabel(key)}</button>`).join('')}</div>${list.length?`<div class="ranking-scroll"><table class="ranking"><thead><tr><th scope="col">순위</th><th scope="col">탐험가</th><th scope="col">점수</th><th scope="col">정답</th><th scope="col">날짜</th></tr></thead><tbody>${list.map((r,i)=>`<tr class="${r.id===lastSavedId?'new-record':''}"><td>${i<3?['🥇','🥈','🥉'][i]:i+1}</td><td>${escapeHTML(r.name)}</td><td class="score">${r.score.toLocaleString()}</td><td>${r.correct} / ${r.total}</td><td>${new Date(r.date).toLocaleDateString('ko-KR')}</td></tr>`).join('')}</tbody></table></div><p class="result-note">모드와 난이도별 TOP 20 · 이 브라우저에 기록이 저장돼요.</p>`:`<div class="empty"><span class="empty-icon">🏆</span><p>첫 번째 기록의 주인공이 되어 보세요!</p><button class="primary" data-play-record="${recordTab}">도전 시작하기</button></div>`}`;
+ const [kind,level]=recordTab.split('-'),list=leaderboard(recordTab);
+ app.innerHTML=`${backButton()}<section class="intro"><p class="eyebrow">HALL OF EXPLORERS</p><h1>우리들의 랭킹</h1><p>멋진 세계 탐험가들의 기록을 만나 보세요!</p></section><div class="ranking-controls"><div class="ranking-mode-tabs game-tabs">${['time','write'].map(key=>`<button class="game-tab ${key===kind?'active':''}" data-ranking-mode="${key}" aria-pressed="${key===kind}">${key==='time'?'⏱ 타임어택':'🏆 마스터 도전'}</button>`).join('')}</div><div class="ranking-difficulties">${Object.entries(difficulties).map(([key,value])=>`<button class="difficulty-choice ${key===level?'active':''}" data-ranking-difficulty="${key}" aria-pressed="${key===level}">${value.label}</button>`).join('')}</div></div>${list.length?`<div class="ranking-scroll"><table class="ranking"><thead><tr><th scope="col">순위</th><th scope="col">탐험가</th><th scope="col">점수</th><th scope="col">정답</th><th scope="col">날짜</th></tr></thead><tbody>${list.map((r,i)=>`<tr class="${r.id===lastSavedId?'new-record':''}"><td>${rankBadge(i+1)}</td><td>${escapeHTML(r.name)}</td><td class="score">${r.score.toLocaleString()}</td><td>${r.correct} / ${r.total}</td><td class="record-date">${rankingDateCell(r)}</td></tr>`).join('')}</tbody></table></div><p class="result-note">${rankingLabel(recordTab)} TOP 20 · 같은 점수라면 최근 기록이 먼저 보여요. 이 브라우저에 저장돼요.</p>`:`<div class="empty"><span class="empty-icon">🏆</span><p>첫 번째 기록의 주인공이 되어 보세요!</p><button class="primary" data-play-record="${recordTab}">도전 시작하기</button></div>`}`;
 }
 // A new question starts without hover emphasis, even under a stationary cursor.
 document.addEventListener('pointermove',e=>{
@@ -200,21 +423,52 @@ document.addEventListener('click',e=>{
  if(b.dataset.mode){const switchMode=()=>{cleanup();game=null;mode=b.dataset.mode;renderPlay();};if(activeGame())confirmLeave(switchMode);else switchMode();return;}
  if(b.dataset.difficulty){difficulty=b.dataset.difficulty;renderPlay();return;}
  if(b.id==='start-game'){startGame();return;}
- if(b.dataset.answer){submitAnswer(b.dataset.answer);return;}
+ if(b.id==='edit-explorer'){showExplorerProfile();return;}
+ if(b.id==='game-help'){showGameHelp();return;}
+ if(b.dataset.answer){if(b.dataset.question===game?.question.id)submitAnswer(b.dataset.answer);return;}
+ if(b.id==='hint-question'){showQuestionHint();return;}
+ if(b.id==='toggle-answer-mode'){toggleAnswerMode();return;}
  if(b.id==='skip-question'){submitAnswer('',true);return;}
  if(b.id==='quit-game'){endGame('quit');return;}
  if(b.id==='enter-ranking'){showRankingEntry();return;}
  if(b.id==='close-ranking'){document.querySelector('#high-score').close();return;}
- if(b.id==='ranking-replay'){document.querySelector('#high-score').close();startGame();return;}
+ if(b.id==='ranking-replay'){saveRankingAndReturnHome();return;}
+ if(b.id==='result-replay'){returnToLobby();return;}
  if(b.id==='keep-playing'){leaveAction=null;document.querySelector('#detail').close();return;}
  if(b.id==='leave-game'){const action=leaveAction;leaveAction=null;document.querySelector('#detail').close();if(action)action();return;}
  if(b.dataset.country){showCountry(b.dataset.country);return;}
  if(b.id==='close-detail'){document.querySelector('#detail').close();return;}
  if(b.dataset.recordTab){recordTab=b.dataset.recordTab;renderRecords();return;}
+ if(b.dataset.rankingMode){recordTab=b.dataset.rankingMode+'-'+recordTab.split('-')[1];renderRecords();return;}
+ if(b.dataset.rankingDifficulty){recordTab=recordTab.split('-')[0]+'-'+b.dataset.rankingDifficulty;renderRecords();return;}
  if(b.dataset.playRecord){[mode,difficulty]=b.dataset.playRecord.split('-');view='play';game=null;render();}
 });
-document.addEventListener('submit',e=>{if(e.target.id==='answer-form'){e.preventDefault();const value=document.querySelector('#answer-input').value.trim();if(value)submitAnswer(value);}if(e.target.id==='save-form'){e.preventDefault();saveRecord();}});
-document.addEventListener('input',e=>{if(e.target.id==='search'){search=e.target.value;renderAtlasResults();}if(e.target.id==='trainer-name')e.target.setCustomValidity('');});
+document.addEventListener('submit',e=>{
+ if(e.target.id==='answer-form'){
+  e.preventDefault();if(game?.answerComposing)return;
+  if(game?.awaitingNext){advanceMasterQuestion();return;}
+  const entered=document.querySelector('#answer-input').value.trim();if(entered)submitAnswer(masterAnswer(game,entered));
+ }
+ if(e.target.id==='save-form'){e.preventDefault();saveRecord();}
+ if(e.target.id==='explorer-form'){e.preventDefault();const input=document.querySelector('#explorer-name'),name=input.value.normalize('NFKC').trim();if(name.length>12){input.setCustomValidity('이름은 12자까지 적어 주세요.');input.reportValidity();return;}rememberExplorer(name);document.querySelector('#detail').close();renderPlay();}
+});
+document.addEventListener('input',e=>{
+ if(e.target.id==='search'){search=e.target.value;renderAtlasResults();}
+ if(e.target.id==='answer-input'){if(game?.judgement==='wrong')resetMasterAttempt();updateAnswerSlots(true);}
+ if(e.target.id==='trainer-name'){e.target.setCustomValidity('');if(game)game.rankingName=e.target.value;}
+ if(e.target.id==='explorer-name')e.target.setCustomValidity('');
+});
+document.addEventListener('pointerdown',e=>{
+ if(e.target.id==='answer-input'){focusAnswerSlot(e);return;}
+ if(document.activeElement?.id==='answer-input'&&e.target.closest('#answer-form button,#skip-question,#hint-question')){finishAnswerComposition();e.preventDefault();}
+});
+document.addEventListener('compositionstart',e=>{if(e.target.id==='answer-input'&&game){if(game.judgement==='wrong')resetMasterAttempt();game.answerComposing=true;}});
+document.addEventListener('compositionend',e=>{if(e.target.id==='answer-input'&&game){game.answerComposing=false;updateAnswerSlots(true);}});
+document.addEventListener('focusin',e=>{if(e.target.id==='answer-input')updateAnswerSlots();});
+document.addEventListener('focusout',e=>{if(e.target.id==='answer-input')updateAnswerSlots();});
+document.addEventListener('selectionchange',()=>{if(document.activeElement?.id==='answer-input')updateAnswerSlots();});
+document.addEventListener('select',e=>{if(e.target.id==='answer-input')updateAnswerSlots();},true);
+document.addEventListener('keyup',e=>{if(e.target.id==='answer-input')updateAnswerSlots();});
 document.addEventListener('change',e=>{if(e.target.id==='continent-filter'){continentFilter=e.target.value;renderAtlasResults();}if(e.target.id==='sort'){sort=e.target.value;renderAtlasResults();}});
 document.addEventListener('keydown',e=>{if(document.querySelector('#detail').open||document.querySelector('#high-score').open||e.target.matches('input,select,textarea')||e.isComposing)return;if(game?.status==='playing'&&game.mode==='time'&&!game.locked&&/^[1-4]$/.test(e.key)){e.preventDefault();submitAnswer(game.options[Number(e.key)-1].id);}});
 for(const id of ['detail','high-score'])document.querySelector('#'+id).addEventListener('click',e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close();}});
