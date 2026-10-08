@@ -8,8 +8,9 @@ const data=JSON.parse(fs.readFileSync(path.join(root,'countries.json')));
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'countries-manifest.json')));
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
-async function harness(){
+async function harness({firstVisit=false,storedName='테스트 탐험가'}={}){
  const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'http://localhost/',runScripts:'outside-only'}),w=dom.window;
+ if(!firstVisit)w.localStorage.setItem('flag-play-explorer-name',storedName);
  let now=0,interval=null,advance=null;
  w.fetch=async url=>({ok:true,json:async()=>JSON.parse(JSON.stringify(url==='countries.json'?data:manifest))});
  Object.defineProperty(w.performance,'now',{value:()=>now});
@@ -51,7 +52,7 @@ test('all time difficulties: loading, exact prefetch, persistent timer, scoring 
   h.clock(0);h.start('time',level);assert.ok(h.$('.quiz-spinner'));assert.equal(h.interval(),null);
   const g=h.game();assert.equal(g.pool.length,count);assert.equal(g.images.size,4);
   assert.equal(new Set(g.options.map(p=>p.id)).size,4);assert.ok(g.options.includes(g.question));
-  if(level==='hard')assert.ok(g.options.every(p=>p.continent===g.question.continent));
+  assert.ok(g.options.every(p=>p.continent===g.question.continent));
   h.clock(20000);await h.ready();assert.equal(g.deadline,80000);assert.equal(g.status,'playing');assert.ok(h.interval());
   const next=g.images.get(g.deck.at(-1).id).image;await h.load(next);
   const bar=h.$('#timer-bar');h.clock(30000);h.tick();h.click(`[data-answer="${g.question.id}"]`);h.advance();
@@ -278,7 +279,7 @@ test('aliases and English answers remain accepted, including after hints, and lo
  const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
  h.submit('한국');assert.equal(h.game().correct,1);assert.equal(h.$('#answer-slots').textContent,'대한민국');assert.equal(h.w.document.querySelectorAll('.checked-wrong').length,0);
  h.click('#answer-submit');await h.ready();await forceCountry(h,'tr');h.setInput('#answer-input',h.game().question.englishName.toUpperCase());
- assert.ok(h.$('.letter-entry').classList.contains('free-input'));h.click('#hint-question');h.submit(h.game().question.englishName);assert.equal(h.game().score,200);
+ assert.ok(!h.$('.letter-entry').classList.contains('free-input'));h.click('#hint-question');h.submit(h.game().question.englishName);assert.equal(h.game().score,200);
  h.click('#answer-submit');await h.ready();await forceCountry(h,'vc');
  assert.equal(h.w.document.querySelectorAll('.answer-slot').length,h.game().answerLength);
  h.submit(h.game().question.englishName);assert.equal(h.game().correct,3);assert.equal(h.w.document.querySelectorAll('.checked-wrong').length,0);
@@ -309,7 +310,7 @@ test('ranking ties show recent scores first and dates use Korean calendar bounda
  assert.equal(h.w.qa("rankingDate('2026-10-07T14:59:00Z',new Date('2026-10-08T14:00:00Z'))"),'1일 전');
 });
 
-test('public play does not require a profile, and optional profile and score help use no access tracking',async t=>{
+test('remembered explorers can edit their name and open score help without access tracking',async t=>{
  const h=await harness();t.after(h.close);h.click('#game-help');assert.ok(h.$('#detail').textContent.includes('20초'));assert.ok(h.$('#detail').textContent.includes('절반'));h.click('#close-detail');
  h.click('#edit-explorer');h.setInput('#explorer-name','우리 탐험가');h.$('#explorer-form').dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));assert.ok(h.$('#edit-explorer').textContent.includes('우리 탐험가'));
  h.start('write');await h.ready();assert.equal(h.game().status,'playing');assert.ok(h.w.document.body.classList.contains('game-focused'));
@@ -317,9 +318,43 @@ test('public play does not require a profile, and optional profile and score hel
  assert.equal(h.w.localStorage.getItem('pokemon-play-trainer-name'),null);
 });
 
-test('hinted empty submissions do nothing and switching input mode keeps the hint readable',async t=>{
+test('hinted empty submissions do nothing and English aliases stay in letter slots',async t=>{
  const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
  h.click('#hint-question');h.submit('');assert.equal(h.game().judgement,null);assert.equal(h.game().awaitingNext,false);assert.equal(h.game().total,0);
- h.click('#toggle-answer-mode');assert.ok(h.$('#hint-message').textContent.includes('“대”'));
  h.submit('South Korea');assert.equal(h.game().score,50);assert.equal(h.game().correct,1);
+});
+
+test('letter entry stays visible for typing and composition, with no alternative-input toggle',async t=>{
+ const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
+ const input=h.$('#answer-input');
+ for(const value of ['대','대한','대한민국','대한민국ㄱ','South Korea']){
+  h.setInput('#answer-input',value);assert.ok(!h.$('.letter-entry').classList.contains('free-input'));
+  assert.equal(h.$('#answer-slots').textContent,value.normalize('NFC').replace(/\s+/g,''));assert.equal(h.$('#toggle-answer-mode'),null);
+ }
+ input.dispatchEvent(new h.w.CompositionEvent('compositionstart',{bubbles:true}));
+ h.setInput('#answer-input','대한민국ㄱ');input.dispatchEvent(new h.w.CompositionEvent('compositionend',{bubbles:true}));
+ assert.ok(!h.$('.letter-entry').classList.contains('free-input'));assert.equal(input.value,'대한민국ㄱ');
+ h.submit('대한민국');assert.equal(h.game().correct,1);assert.equal(h.$('.stage-tag'),null);
+ assert.equal(h.$('#question-image').parentElement.className,'flag-image-frame');
+});
+
+test('first visit requires a valid explorer name and a remembered visit goes straight to play',async t=>{
+ const h=await harness({firstVisit:true});t.after(h.close);assert.ok(h.$('#explorer-entry-form'));assert.equal(h.$('#start-game'),null);
+ const form=h.$('#explorer-entry-form');form.dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));assert.ok(h.$('#entry-explorer-name').validationMessage);
+ h.setInput('#entry-explorer-name',' 새 탐험가 ');form.dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));
+ assert.equal(h.w.localStorage.getItem('flag-play-explorer-name'),'새 탐험가');assert.ok(h.$('#start-game'));assert.equal(h.$('#explorer-entry-form'),null);
+ const remembered=await harness({storedName:'다시 온 탐험가'});t.after(remembered.close);assert.ok(remembered.$('#start-game'));assert.equal(remembered.$('#explorer-entry-form'),null);
+});
+
+test('easy oceanian questions still get four unique choices from the same continent',async t=>{
+ const h=await harness();t.after(h.close);h.start('time','easy');await h.ready();await forceCountry(h,'au');
+ const g=h.game();assert.equal(g.question.continent,'오세아니아');assert.equal(g.options.length,4);assert.equal(new Set(g.options.map(p=>p.id)).size,4);
+ assert.ok(g.options.every(p=>p.continent==='오세아니아'));assert.ok(g.options.some(p=>!p.familiar));assert.ok(g.options.includes(g.question));
+});
+
+test('button and area focus is blurred while answer input focus remains available',async t=>{
+ const h=await harness();t.after(h.close);h.$('#app').focus();assert.notEqual(h.w.document.activeElement,h.$('#app'));
+ h.$('#start-game').focus();assert.notEqual(h.w.document.activeElement,h.$('#start-game'));
+ h.start('write');await h.ready();const input=h.$('#answer-input');input.focus();assert.equal(h.w.document.activeElement,input);
+ h.$('#answer-submit').focus();assert.notEqual(h.w.document.activeElement,h.$('#answer-submit'));input.focus();assert.equal(h.w.document.activeElement,input);
 });

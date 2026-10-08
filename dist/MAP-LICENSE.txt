@@ -1,0 +1,8 @@
+Blank world map Robinson projection
+Author: Justinkunimune
+Source: https://commons.wikimedia.org/wiki/File:Blank_world_map_Robinson_projection.svg
+Original: https://upload.wikimedia.org/wikipedia/commons/f/fc/Blank_world_map_Robinson_projection.svg
+License: CC0 1.0 Universal (public domain dedication)
+License URL: https://creativecommons.org/publicdomain/zero/1.0/
+Created: 2023-12-28; de facto borders from Natural Earth (2022).
+Flay adapts the land fill and border stroke to gray, with grayscale and opacity styling.

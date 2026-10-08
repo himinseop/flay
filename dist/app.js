@@ -10,7 +10,7 @@ const RANKING_LIMIT=20;
 const rankingModes=['time-easy','time-normal','time-hard','write-easy','write-normal','write-hard'];
 let records=[],lastSavedId=null;
 let explorerName='';
-try{explorerName=(localStorage.getItem('flag-play-explorer-name')||'').slice(0,12);}catch{}
+try{const stored=(localStorage.getItem('flag-play-explorer-name')||'').normalize('NFKC').trim();if(stored&&stored.length<=12)explorerName=stored;}catch{}
 function readRecords(){const stored=JSON.parse(localStorage.getItem('flag-play-records')||'[]');return Array.isArray(stored)?stored.filter(r=>r&&typeof r.name==='string'&&Number.isFinite(r.score)&&Number.isFinite(r.correct)&&Number.isFinite(r.total)&&typeof r.date==='string'&&Number.isFinite(Date.parse(r.date))&&rankingModes.includes(r.mode)):[];}
 function compareRecords(a,b){return b.score-a.score||Date.parse(b.date)-Date.parse(a.date)||String(a.id||'').localeCompare(String(b.id||''));}
 function leaderboard(key,items=records){return items.filter(r=>r.mode===key).sort(compareRecords).slice(0,RANKING_LIMIT);}
@@ -45,8 +45,9 @@ function updateGameFocus(){
  if(focused)document.body.dataset.gameMode=game.mode;else delete document.body.dataset.gameMode;
  fitGameViewport();if(entering)app.scrollIntoView({block:'start'});
 }
-function render(){updateGameFocus();if(view==='play')renderPlay();else if(view==='atlas')renderAtlas();else renderRecords();}
+function render(){if(!explorerName){renderExplorerEntry();return;}document.body.classList.remove('explorer-entry');updateGameFocus();if(view==='play')renderPlay();else if(view==='atlas')renderAtlas();else renderRecords();}
 function renderPlay(){
+if(!explorerName){renderExplorerEntry();return;}
 previewChoices={easy:shuffle(countries.filter(p=>p.familiar))[0],normal:shuffle(countries)[0],hard:shuffle(countries.filter(p=>!p.familiar))[0]};previewCountry=previewChoices[difficulty];
 app.innerHTML=`<section class="intro"><div><p class="eyebrow">FLAY · 세계 국기 여행</p><h1>이 국기, 어느 나라일까요?</h1><p>국기를 보고 나라 이름을 맞혀 보세요!</p><button class="explorer-profile" id="edit-explorer">${explorerName?'🧭 '+escapeHTML(explorerName)+' · 이름 변경':'🧭 탐험가 이름 등록'}</button></div></section>
 <div class="play-grid"><section class="game-card" aria-label="나라 퀴즈"><div class="game-tabs"><button class="game-tab ${mode==='time'?'active':''}" data-mode="time">⚡ 타임어택</button><button class="game-tab ${mode==='write'?'active':''}" data-mode="write">✎ 마스터 도전</button></div><div id="game-body" class="game-body"></div></section></div>
@@ -93,12 +94,14 @@ function selectQuestion(g){
  g.checkedLetters=null;g.lastAttempt='';g.answerLength=Array.from(normalize(g.question.name)).length;
  g.answerComposing=false;g.answerRevealed=false;g.hintUsed=false;g.hint=null;g.selectedAnswer=null;
  prepareQuestionImages(g);
- const candidates=g.pool.filter(p=>p.id!==g.question.id),neighbors=shuffle(candidates.filter(p=>g.question.borders.includes(p.iso3)&&p.continent===g.question.continent));
- const sameContinent=shuffle(candidates.filter(p=>p.continent===g.question.continent&&!neighbors.includes(p)));
- const distractors=g.difficulty==='hard'?[...neighbors,...sameContinent,...shuffle(candidates.filter(p=>p.continent!==g.question.continent&&!neighbors.includes(p)))].slice(0,3):shuffle(candidates).slice(0,3);g.options=shuffle([g.question,...distractors]);
+ const candidates=g.pool.filter(p=>p.id!==g.question.id&&p.continent===g.question.continent);
+ const neighbors=shuffle(candidates.filter(p=>g.question.borders.includes(p.iso3)));
+ const sameContinent=shuffle(candidates.filter(p=>!neighbors.includes(p)));
+ const extra=shuffle(countries.filter(p=>p.id!==g.question.id&&p.continent===g.question.continent&&!candidates.includes(p)));
+ g.options=shuffle([g.question,...[...neighbors,...sameContinent,...extra].slice(0,3)]);
 }
 function questionPool(level){return level==='easy'?countries.filter(p=>p.familiar):level==='hard'?countries.filter(p=>!p.familiar):countries;}
-function startGame(){cleanup();const pool=questionPool(difficulty);
+function startGame(){if(!explorerName){renderExplorerEntry();return;}cleanup();const pool=questionPool(difficulty);
  game={status:'loading',mode,difficulty,pool,deck:shuffle(pool),images:new Map(),question:null,score:0,correct:0,total:0,streak:0,maxStreak:0,history:[],locked:false,saved:false,deadline:0,imageReady:false,imageFailures:0};
  prepareFirstQuestion(game);
 }
@@ -146,10 +149,10 @@ function advanceMasterQuestion(){
  const g=game;if(!g||g.mode!=='write'||g.status!=='playing'||!g.awaitingNext||g.answerComposing)return;
  g.awaitingNext=false;completeMasterMiss(g);nextQuestion();
 }
-const typedLetters=value=>Array.from(String(value).normalize('NFKC').replace(/\s+/g,''));
+const typedLetters=value=>Array.from(String(value).normalize('NFC').replace(/\s+/g,''));
 const isCountryAnswer=(g,value)=>g.question.aliases.some(name=>normalize(value)===normalize(name));
 function masterAnswer(g,value){
- if(!g?.hintUsed||g.freeInput||isCountryAnswer(g,value))return value;
+ if(!g?.hintUsed||isCountryAnswer(g,value))return value;
  const letters=typedLetters(value);let cursor=0;
  return Array.from({length:g.answerLength},(_,index)=>index===g.hint.index?g.hint.letter:(letters[cursor++]||'')).join('');
 }
@@ -159,23 +162,23 @@ function finishAnswerComposition(){
 }
 function updateAnswerSlots(fromInput=false){
  const g=game,input=document.querySelector('#answer-input'),slots=document.querySelector('#answer-slots');if(!input||!slots||g?.mode!=='write')return;
- const length=g.answerLength,revealed=g.answerRevealed;
- if(revealed){input.value=g.question.name.normalize('NFKC').replace(/\s+/g,'');input.readOnly=true;}
+ const revealed=g.answerRevealed;
+ if(revealed){input.value=normalize(g.question.name);input.readOnly=true;}
  let letters=typedLetters(input.value);
- // An English or longer alternative name gets a visible native input instead of clipped boxes.
- if(fromInput&&!g.answerComposing&&!revealed&&!g.freeInput&&(/[a-z]/i.test(input.value)||letters.length>length))g.freeInput=true;
- const hintFixed=g.hintUsed&&!revealed&&!g.freeInput;
- if(fromInput&&hintFixed&&!g.answerComposing&&letters.length===length&&isCountryAnswer(g,input.value)){
+ if(fromInput&&g.hintUsed&&!revealed&&!g.answerComposing&&normalize(input.value)===normalize(g.question.name)){
   letters.splice(g.hint.index,1);input.value=letters.join('');
  }
+ const fullAlias=!revealed&&!!input.value&&isCountryAnswer(g,input.value);
+ const hintFixed=g.hintUsed&&!revealed&&!fullAlias;
+ const value=typedLetters(input.value),length=revealed?g.answerLength:Math.max(g.answerLength,value.length+(hintFixed?1:0));
  const editable=Array.from({length},(_,index)=>index).filter(index=>!hintFixed||index!==g.hint.index);
- const value=typedLetters(input.value),start=typedLetters(input.value.slice(0,input.selectionStart??input.value.length)).length,end=typedLetters(input.value.slice(0,input.selectionEnd??input.value.length)).length;
+ const start=typedLetters(input.value.slice(0,input.selectionStart??input.value.length)).length,end=typedLetters(input.value.slice(0,input.selectionEnd??input.value.length)).length;
  if(slots.children.length!==length)slots.replaceChildren(...Array.from({length},()=>{const span=document.createElement('span');span.className='answer-slot';return span;}));
- const entry=input.parentElement;entry.style.setProperty('--answer-length',length);entry.classList.toggle('free-input',!!g.freeInput&&!revealed);
- entry.classList.toggle('long-answer',length>=9);
- input.setAttribute('aria-label',revealed?'정답 나라 이름':g.freeInput?'나라 이름 · 별칭과 영문도 가능':hintFixed?`나라 이름 · 남은 ${editable.length}글자`:`나라 이름 · ${length}글자`);
- const toggle=document.querySelector('#toggle-answer-mode');if(toggle){toggle.textContent=g.freeInput?'글자 칸으로 입력':'별칭·영문으로 입력';toggle.disabled=g.locked;}
- const focused=document.activeElement===input&&!input.disabled&&!revealed&&!g.locked,active=editable[Math.min(start,Math.max(0,editable.length-1))],answerLetters=Array.from(normalize(g.question.name));
+ const columns=Math.min(length,12),entry=input.parentElement;
+ entry.style.setProperty('--answer-columns',columns);entry.classList.toggle('long-answer',columns>=9);
+ input.closest('form').style.setProperty('--answer-width',`${columns*44+(columns-1)*5}px`);
+ input.setAttribute('aria-label',revealed?'정답 나라 이름':hintFixed?`나라 이름 · 남은 ${g.answerLength-1}글자`:`나라 이름 · ${g.answerLength}글자`);
+ const focused=document.activeElement===input&&!input.disabled&&!revealed&&!g.locked,active=editable[Math.min(start,editable.length-1)],answerLetters=Array.from(normalize(g.question.name));
  [...slots.children].forEach((cell,index)=>{
   const hinted=hintFixed&&g.hint.index===index,position=editable.indexOf(index),letter=revealed?answerLetters[index]:hinted?g.hint.letter:(value[position]||'');
   const checked=!!g.checkedLetters,matched=checked&&g.checkedLetters[index]===answerLetters[index];
@@ -184,25 +187,19 @@ function updateAnswerSlots(fromInput=false){
   cell.classList.toggle('active',!hinted&&focused&&start===end&&index===active);cell.classList.toggle('selected',!hinted&&focused&&start!==end&&position>=start&&position<end);
  });
  if(g.hintUsed&&!revealed&&g.judgement!=='wrong'){
-  const message=document.querySelector('#hint-message');
-  message.textContent=g.freeInput?`힌트: ${g.hint.index+1}번째 글자는 “${g.hint.letter}”. 정답은 ${masterPoints(g)}점이에요.`:'힌트를 채웠어요! 남은 빈칸을 적어 주세요.';
-  message.hidden=false;
+  const message=document.querySelector('#hint-message');message.textContent=fullAlias?`힌트: ${g.hint.index+1}번째 글자는 “${g.hint.letter}”. 정답은 ${masterPoints(g)}점이에요.`:'힌트를 채웠어요! 남은 빈칸을 적어 주세요.';message.hidden=false;
  }
  fitGameViewport();
 }
 function focusAnswerSlot(event){
- const input=event.target;if(input.id!=='answer-input'||input.disabled||game?.freeInput)return;
+ const input=event.target;if(input.id!=='answer-input'||input.disabled)return;
  event.preventDefault();input.focus({preventScroll:true});
- const cells=[...document.querySelectorAll('.answer-slot')],index=cells.findIndex(cell=>{const rect=cell.getBoundingClientRect();return event.clientX>=rect.left&&event.clientX<=rect.right;});
- if(index===game?.hint?.index&&game.hintUsed)return;
- const editIndex=game?.hintUsed&&index>game.hint.index?index-1:index;
+ const cells=[...document.querySelectorAll('.answer-slot')],index=cells.findIndex(cell=>{const rect=cell.getBoundingClientRect();return event.clientX>=rect.left&&event.clientX<=rect.right&&event.clientY>=rect.top&&event.clientY<=rect.bottom;});
+ const hintFixed=game?.hintUsed&&!game.answerRevealed&&!isCountryAnswer(game,input.value);
+ if(hintFixed&&index===game.hint.index)return;
+ const editIndex=hintFixed&&index>game.hint.index?index-1:index;
  const letters=Array.from(input.value),position=editIndex<0?input.value.length:letters.slice(0,editIndex).join('').length;
  input.setSelectionRange(position,position);updateAnswerSlots();
-}
-function toggleAnswerMode(){
- const g=game;if(!g||g.mode!=='write'||g.locked||!g.imageReady)return;
- finishAnswerComposition();resetMasterAttempt();g.freeInput=!g.freeInput;
- const input=document.querySelector('#answer-input');input.value='';input.focus({preventScroll:true});updateAnswerSlots();
 }
 function showQuestionHint(){
  const g=game;if(!g||g.status!=='playing'||g.mode!=='write'||g.locked||!g.imageReady||g.hintUsed)return;
@@ -210,9 +207,9 @@ function showQuestionHint(){
  const input=document.querySelector('#answer-input'),entered=typedLetters(input.value),letters=Array.from(normalize(g.question.name));
  const index=g.difficulty==='hard'?Math.floor(Math.random()*letters.length):0;
  g.hintUsed=true;g.hint={index,letter:letters[index]};
- if(!g.freeInput){if(entered.length>index)entered.splice(index,1);input.value=entered.join('');}
+ if(entered.length>index)entered.splice(index,1);input.value=entered.join('');
  const message=document.querySelector('#hint-message'),button=document.querySelector('#hint-question');
- message.textContent=g.freeInput?`힌트: ${index+1}번째 글자는 “${letters[index]}”. 정답은 ${masterPoints(g)}점이에요.`:'힌트를 채웠어요! 남은 빈칸을 적어 주세요.';message.hidden=false;
+ message.textContent='힌트를 채웠어요! 남은 빈칸을 적어 주세요.';message.hidden=false;
  button.disabled=true;button.classList.add('used');button.setAttribute('aria-label','힌트 사용 완료');button.title='이 문제의 힌트는 이미 사용했어요.';
  input.focus({preventScroll:true});updateAnswerSlots();updateMasterBonus(g);
 }
@@ -229,9 +226,9 @@ function showJudgement(correct){
 function renderQuestion(body){
  const g=game,timeState=g.mode==='time'?timerState(g):null;
  const previousProgress=g.mode==='time'?body.querySelector('.progress'):null,previousForm=g.mode==='write'?body.querySelector('#answer-form'):null;
- const markup=`<div class="flag-stage">${gameExit()}<span class="stage-tag">${g.mode==='time'?'60초 타임어택':'나라 이름 맞히기'} · ${difficulties[g.difficulty].label}</span>${g.mode==='write'?masterHint(g)+'<div class="master-feedback"><div id="feedback" class="feedback" role="status" aria-live="polite">국기를 불러오는 중…</div><p id="hint-message" class="hint-message" role="status" hidden></p></div>':''}<span id="question-image-slot"></span><span id="judgement-effect" class="judgement-effect" aria-hidden="true" hidden></span></div>
+ const markup=`<div class="flag-stage">${gameExit()}${g.mode==='write'?masterHint(g)+'<div class="master-feedback"><div id="feedback" class="feedback" role="status" aria-live="polite">국기를 불러오는 중…</div><p id="hint-message" class="hint-message" role="status" hidden></p></div>':''}<div class="flag-image-frame"><span id="question-image-slot"></span></div><span id="judgement-effect" class="judgement-effect" aria-hidden="true" hidden></span></div>
  <div class="question-score">${g.mode==='write'?masterScore(g):`<div class="game-stats"><span class="time">⏱ <strong id="time">${timeState.seconds}</strong> 초</span><span>연속 <b id="streak">${g.streak}</b> 정답</span><span class="attack-score"><strong id="score">${g.score.toLocaleString()}</strong> 점</span></div><div class="progress" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${timeState.percent}"><div id="timer-bar" style="width:${timeState.percent}%"></div></div>`}</div>
- ${g.mode==='time'?`<div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" data-question="${g.question.id}" aria-pressed="false" disabled><span>${i+1}</span>${escapeHTML(p.name)}</button>`).join('')}</div>`:`<form class="text-form" id="answer-form"><div class="answer-fields"><div class="letter-entry"><div class="answer-slots" id="answer-slots" aria-hidden="true"></div><input id="answer-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="80" placeholder="나라 이름" aria-label="나라 이름" disabled></div><button class="input-mode-toggle" type="button" id="toggle-answer-mode" disabled>별칭·영문으로 입력</button></div><button class="primary" type="submit" id="answer-submit" disabled>확인</button></form>`}
+ ${g.mode==='time'?`<div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" data-question="${g.question.id}" aria-pressed="false" disabled><span>${i+1}</span>${escapeHTML(p.name)}</button>`).join('')}</div>`:`<form class="text-form" id="answer-form"><div class="answer-fields"><div class="letter-entry"><div class="answer-slots" id="answer-slots" aria-hidden="true"></div><input id="answer-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" enterkeyhint="done" maxlength="80" placeholder="나라 이름" aria-label="나라 이름" disabled></div></div><button class="primary" type="submit" id="answer-submit" disabled>확인</button></form>`}
  ${g.mode==='time'?'<div id="feedback" class="feedback attack-feedback" role="status" aria-live="polite">국기를 불러오는 중…</div>':''}`;
  // Keep the actual text input in place so Korean composition and the keyboard survive.
  if(previousForm){
@@ -362,14 +359,25 @@ function saveRecord(){
   rememberExplorer(name);renderGameBody();showRankingEntry();return true;
  }catch{document.querySelector('#save-message').textContent='랭킹을 저장하지 못했어요. 다시 저장해 주세요.';return false;}
 }
+function renderExplorerEntry(){
+ cleanup();document.body.classList.remove('game-focused');delete document.body.dataset.gameMode;document.body.classList.add('explorer-entry');
+ app.innerHTML='<section class="explorer-welcome"><div class="welcome-compass" aria-hidden="true">🧭</div><h1>탐험가 이름을 알려 주세요.</h1><form id="explorer-entry-form"><input id="entry-explorer-name" aria-label="탐험가 이름" placeholder="탐험가 이름" maxlength="12" autocomplete="nickname" required><button class="primary" type="submit">세계 탐험 시작!</button></form><p id="explorer-entry-message" class="result-note" role="status">이름은 이 브라우저에 기억해요.</p></section>';
+ fitGameViewport();
+}
+function enterExplorer(){
+ const input=document.querySelector('#entry-explorer-name'),name=input?.value.normalize('NFKC').trim();if(!input)return;
+ if(!name||name.length>12){input.setCustomValidity('탐험가 이름을 1~12자로 적어 주세요.');input.reportValidity();return;}
+ if(!countries.length){document.querySelector('#explorer-entry-message').textContent='나라 도감을 준비하고 있어요. 잠시 뒤 다시 눌러 주세요.';return;}
+ input.setCustomValidity('');rememberExplorer(name);document.body.classList.remove('explorer-entry');render();
+}
 function showExplorerProfile(){
  const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','profile-title');
- dialog.innerHTML=`<div class="detail-inner"><button class="close" id="close-detail" aria-label="이름 설정 닫기">×</button><h2 id="profile-title">탐험가 이름</h2><p>이름을 기억하고 다음 랭킹에 미리 채워 드려요. 이름 없이도 바로 플레이할 수 있어요.</p><form id="explorer-form" class="profile-form"><input id="explorer-name" aria-label="탐험가 이름" maxlength="12" autocomplete="nickname" placeholder="12자까지" value="${escapeHTML(explorerName)}"><button class="primary" type="submit">저장</button></form></div>`;
+ dialog.innerHTML=`<div class="detail-inner"><button class="close" id="close-detail" aria-label="이름 설정 닫기">×</button><h2 id="profile-title">탐험가 이름</h2><p>이름을 기억하고 다음 랭킹에 미리 채워 드려요. 등록한 이름은 이 브라우저에 기억해요.</p><form id="explorer-form" class="profile-form"><input id="explorer-name" aria-label="탐험가 이름" maxlength="12" autocomplete="nickname" placeholder="12자까지" value="${escapeHTML(explorerName)}"><button class="primary" type="submit">저장</button></form></div>`;
  dialog.showModal();dialog.querySelector('input').focus({preventScroll:true});
 }
 function showGameHelp(){
  const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','help-title');
- dialog.innerHTML='<div class="detail-inner game-help"><button class="close" id="close-detail" aria-label="게임 방법 닫기">×</button><h2 id="help-title">세계 탐험 안내</h2><h3>60초 타임어택</h3><p>4개의 나라 중 정답을 골라요. 정답은 100점, 연속 정답마다 10점씩 보너스가 늘어나 최대 100점이 더해져요. 키보드 1–4로도 선택할 수 있어요.</p><h3>마스터 도전</h3><p>시간 제한 없이 10문제를 풀어요. 쉬움·보통·어려움의 기본 점수는 100·200·300점이에요. 국기가 준비된 뒤 20초 동안 최대 50·100·150점의 보너스가 10점씩 줄어들어요. 보너스가 끝나도 계속 풀 수 있어요.</p><p>한 글자 힌트는 문제마다 한 번! 쉬움·보통은 첫 글자, 어려움은 임의의 한 글자를 채워 줘요. 힌트를 쓰면 보너스는 사라지고 기본 점수는 절반이 돼요.</p><p>오답은 글자별로 맞은 곳과 틀린 곳을 표시해요. 고치고 다시 확인하거나 다음 문제로 넘어갈 수 있어요. 패스는 정답을 채워 주며, 정답·패스 후에는 직접 다음문제를 눌러요.</p><p>글자 칸으로 입력하거나 “별칭·영문으로 입력”을 선택해요. 한국/대한민국, 터키/튀르키예와 영문 이름도 정답으로 인정해요. Enter로 확인·다음문제를 사용할 수 있어요.</p><p class="result-note">랭킹은 이 브라우저에 저장돼요. 그만하기도 획득한 점수로 등록할 수 있어요.</p></div>';
+ dialog.innerHTML='<div class="detail-inner game-help"><button class="close" id="close-detail" aria-label="게임 방법 닫기">×</button><h2 id="help-title">세계 탐험 안내</h2><h3>60초 타임어택</h3><p>4개의 나라 중 정답을 골라요. 정답은 100점, 연속 정답마다 10점씩 보너스가 늘어나 최대 100점이 더해져요. 키보드 1–4로도 선택할 수 있어요.</p><h3>마스터 도전</h3><p>시간 제한 없이 10문제를 풀어요. 쉬움·보통·어려움의 기본 점수는 100·200·300점이에요. 국기가 준비된 뒤 20초 동안 최대 50·100·150점의 보너스가 10점씩 줄어들어요. 보너스가 끝나도 계속 풀 수 있어요.</p><p>한 글자 힌트는 문제마다 한 번! 쉬움·보통은 첫 글자, 어려움은 임의의 한 글자를 채워 줘요. 힌트를 쓰면 보너스는 사라지고 기본 점수는 절반이 돼요.</p><p>오답은 글자별로 맞은 곳과 틀린 곳을 표시해요. 고치고 다시 확인하거나 다음 문제로 넘어갈 수 있어요. 패스는 정답을 채워 주며, 정답·패스 후에는 직접 다음문제를 눌러요.</p><p>나라 이름은 글자 칸에 입력해요. 한국/대한민국, 터키/튀르키예와 영문 이름도 정답으로 인정해요. Enter로 확인·다음문제를 사용할 수 있어요.</p><p class="result-note">랭킹은 이 브라우저에 저장돼요. 그만하기도 획득한 점수로 등록할 수 있어요.</p></div>';
  dialog.showModal();
 }
 
@@ -418,7 +426,7 @@ document.addEventListener('pointermove',e=>{
  e.target.closest('.choices')?.classList.add('hover-ready');
 });
 document.addEventListener('click',e=>{
- const b=e.target.closest('button');if(!b)return;
+ const b=e.target.closest('button');if(!b)return;b.blur();
  if(b.dataset.nav){navigate(b.dataset.nav);return;}
  if(b.dataset.mode){const switchMode=()=>{cleanup();game=null;mode=b.dataset.mode;renderPlay();};if(activeGame())confirmLeave(switchMode);else switchMode();return;}
  if(b.dataset.difficulty){difficulty=b.dataset.difficulty;renderPlay();return;}
@@ -427,7 +435,6 @@ document.addEventListener('click',e=>{
  if(b.id==='game-help'){showGameHelp();return;}
  if(b.dataset.answer){if(b.dataset.question===game?.question.id)submitAnswer(b.dataset.answer);return;}
  if(b.id==='hint-question'){showQuestionHint();return;}
- if(b.id==='toggle-answer-mode'){toggleAnswerMode();return;}
  if(b.id==='skip-question'){submitAnswer('',true);return;}
  if(b.id==='quit-game'){endGame('quit');return;}
  if(b.id==='enter-ranking'){showRankingEntry();return;}
@@ -444,19 +451,21 @@ document.addEventListener('click',e=>{
  if(b.dataset.playRecord){[mode,difficulty]=b.dataset.playRecord.split('-');view='play';game=null;render();}
 });
 document.addEventListener('submit',e=>{
+ if(e.target.id==='explorer-entry-form'){e.preventDefault();enterExplorer();return;}
  if(e.target.id==='answer-form'){
   e.preventDefault();if(game?.answerComposing)return;
   if(game?.awaitingNext){advanceMasterQuestion();return;}
   const entered=document.querySelector('#answer-input').value.trim();if(entered)submitAnswer(masterAnswer(game,entered));
  }
  if(e.target.id==='save-form'){e.preventDefault();saveRecord();}
- if(e.target.id==='explorer-form'){e.preventDefault();const input=document.querySelector('#explorer-name'),name=input.value.normalize('NFKC').trim();if(name.length>12){input.setCustomValidity('이름은 12자까지 적어 주세요.');input.reportValidity();return;}rememberExplorer(name);document.querySelector('#detail').close();renderPlay();}
+ if(e.target.id==='explorer-form'){e.preventDefault();const input=document.querySelector('#explorer-name'),name=input.value.normalize('NFKC').trim();if(!name||name.length>12){input.setCustomValidity('이름은 1~12자로 적어 주세요.');input.reportValidity();return;}rememberExplorer(name);document.querySelector('#detail').close();renderPlay();}
 });
 document.addEventListener('input',e=>{
  if(e.target.id==='search'){search=e.target.value;renderAtlasResults();}
  if(e.target.id==='answer-input'){if(game?.judgement==='wrong')resetMasterAttempt();updateAnswerSlots(true);}
  if(e.target.id==='trainer-name'){e.target.setCustomValidity('');if(game)game.rankingName=e.target.value;}
  if(e.target.id==='explorer-name')e.target.setCustomValidity('');
+ if(e.target.id==='entry-explorer-name')e.target.setCustomValidity('');
 });
 document.addEventListener('pointerdown',e=>{
  if(e.target.id==='answer-input'){focusAnswerSlot(e);return;}
@@ -464,7 +473,7 @@ document.addEventListener('pointerdown',e=>{
 });
 document.addEventListener('compositionstart',e=>{if(e.target.id==='answer-input'&&game){if(game.judgement==='wrong')resetMasterAttempt();game.answerComposing=true;}});
 document.addEventListener('compositionend',e=>{if(e.target.id==='answer-input'&&game){game.answerComposing=false;updateAnswerSlots(true);}});
-document.addEventListener('focusin',e=>{if(e.target.id==='answer-input')updateAnswerSlots();});
+document.addEventListener('focusin',e=>{if(!e.target.matches('input,textarea,select')){e.target.blur?.();return;}if(e.target.id==='answer-input')updateAnswerSlots();});
 document.addEventListener('focusout',e=>{if(e.target.id==='answer-input')updateAnswerSlots();});
 document.addEventListener('selectionchange',()=>{if(document.activeElement?.id==='answer-input')updateAnswerSlots();});
 document.addEventListener('select',e=>{if(e.target.id==='answer-input')updateAnswerSlots();},true);
