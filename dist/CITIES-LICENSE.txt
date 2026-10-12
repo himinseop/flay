@@ -11,7 +11,7 @@ Attribution: GeoNames, https://www.geonames.org/
 Source: https://download.geonames.org/export/dump/cities500.zip
 License: Creative Commons Attribution 4.0 International (CC BY 4.0)
 License URL: https://creativecommons.org/licenses/by/4.0/
-Changes: selected populated places, merged duplicate names, selected Korean names when supplied, and reviewed capital corrections listed in scripts/capital-overrides.json.
+Changes: retained all country-matched Natural Earth places, added GeoNames places with population at least 15,000 or national/regional-capital status, included smaller places in countries with sparse coverage, merged duplicate names, selected Korean names when supplied, and reviewed capital corrections listed in scripts/capital-overrides.json.
 Population values are only used to select major places; they are not current population estimates.
 The source snapshot URLs and SHA-256 hashes are recorded in capital-cities.json.
 

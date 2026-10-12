@@ -33,7 +33,11 @@ def run(ne_path,gn_path):
             return city
         for p in sorted(rows,key=lambda x:-(x.get('POP_MAX') or 0)):
             add({'id':f'{cid}-ne-{p["NE_ID"]}','countryId':cid,'name':p.get('NAME_KO') or p['NAME'],'englishName':p['NAME'],'aliases':list(filter(None,[p.get('NAME'),p.get('NAMEASCII'),p.get('NAMEALT')])),'population':p.get('POP_MAX') or 0,'geonamesId':p.get('GEONAMESID'),'source':'naturalEarth','sourceId':str(p['NE_ID'])})
+        # Keep the full curated Natural Earth list, plus sizeable cities and regional seats.
+        # Countries with sparse coverage also retain the smaller populated places.
+        sparse=len(rows)<8
         for p in sorted(gn[country['isoCode']],key=lambda x:-int(x[14])):
+            if not (sparse or int(p[14])>=15000 or p[7] in {'PPLC','PPLA'}): continue
             add({'id':f'{cid}-gn-{p[0]}','countryId':cid,'name':city_name(p),'englishName':p[2] or p[1],'aliases':[p[1],p[2],*p[3].split(',')],'population':int(p[14]),'geonamesId':int(p[0]),'source':'geoNames','sourceId':p[0]})
         wanted=override.get('capital',country['capital'][0]);aliases=[wanted,*override.get('aliases',[])]
         capital=next((by_alias[norm(x)] for x in aliases if norm(x) in by_alias),None)
@@ -49,14 +53,22 @@ def run(ne_path,gn_path):
         excluded=[x['id'] for x in cities if any(norm(a) in {norm(y) for y in [x['name'],x['englishName'],*x['aliases']]} for a in override.get('otherCapitals',[])) and x is not capital]
         # City states have no separate cities; use external city options rather than districts.
         candidates=[] if cid in {'mc','sg','va'} else [x for x in sorted(cities,key=lambda x:-x['population']) if x is not capital and x['id'] not in excluded]
-        selected=[capital,*candidates[:7]]
+        selected=[capital,*candidates]
         # Keep other genuine capitals available to the atlas, but never as wrong answers.
         selected += [x for x in cities if x['id'] in excluded and x not in selected]
-        for x in selected:
-            x['aliases']=[a for a in x['aliases'] if a][:20]
+        # Runtime questions only need canonical labels and source identifiers.
+        selected=[{k:v for k,v in city.items() if k not in {'aliases','geonamesId','capital'}} for city in selected]
         profiles[cid]={'capitalId':capital['id'],'questionLabel':override.get('questionLabel','수도'),'note':override.get('note',''),'capitalSource':override.get('source','https://github.com/mledoze/countries'),'excludedIds':excluded,'cities':selected}
     payload={'collectedAt':'2026-10-12','countryCount':len(profiles),'cityCount':sum(len(x['cities']) for x in profiles.values()),'sources':[{'id':'naturalEarth','url':'https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/','downloadUrl':NE_URL,'license':'Public domain','sha256':hashlib.sha256(ne_bytes).hexdigest()},{'id':'geoNames','url':'https://download.geonames.org/export/dump/','downloadUrl':GN_URL,'license':'CC BY 4.0','sha256':hashlib.sha256(gn_bytes).hexdigest()}],'countries':profiles}
-    (ROOT/'dist/capital-cities.json').write_text(json.dumps(payload,ensure_ascii=False,indent=2)+'\n')
+    # One city per line keeps the expanded database compact and reviewable.
+    compact_profiles={}
+    for cid,profile in profiles.items():
+        compact_profiles[cid]={**profile,'cities':f'__CITY_ROWS_{cid}__'}
+    text=json.dumps({**payload,'countries':compact_profiles},ensure_ascii=False,indent=2)
+    for cid,profile in profiles.items():
+        rows=',\n'.join('        '+json.dumps(city,ensure_ascii=False,separators=(',',':')) for city in profile['cities'])
+        text=text.replace(json.dumps(f'__CITY_ROWS_{cid}__'),'[\n'+rows+'\n      ]')
+    (ROOT/'dist/capital-cities.json').write_text(text+'\n')
     print('Collected',payload['countryCount'],'countries,',payload['cityCount'],'cities')
     print('Foreign-city fallback:',[(cid,len([c for c in p['cities'] if c['id'] not in p['excludedIds']])) for cid,p in profiles.items() if len([c for c in p['cities'] if c['id'] not in p['excludedIds']])<4])
 if __name__=='__main__':

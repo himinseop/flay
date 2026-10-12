@@ -2,7 +2,7 @@
 const app=document.querySelector('#app');
 const difficulties={easy:{label:'쉬움',multiplier:1},normal:{label:'보통',multiplier:2},hard:{label:'어려움',multiplier:3}};
 const CAPITAL_BONUS_DURATION=20000;
-let countries=[],cityProfiles={},cityCollectedAt='',allCities=[],dataCollectedAt='',view='play',mode='time',difficulty='easy',game=null,ticker=null,advance=null,recordTab='time-easy',search='',continentFilter='',sort='name';
+let countries=[],citiesByContinent=new Map(),cityProfiles={},cityCollectedAt='',allCities=[],dataCollectedAt='',view='play',mode='time',difficulty='easy',game=null,ticker=null,advance=null,recordTab='time-easy',search='',continentFilter='',sort='name';
 const escapeHTML=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const shuffle=xs=>{const a=[...xs];for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
 const normalize=s=>String(s).normalize('NFKC').toLocaleLowerCase('ko').replace(/[^\p{L}\p{N}]/gu,'');
@@ -101,27 +101,56 @@ function selectQuestion(g){
 }
 function questionPool(level){return level==='easy'?countries.filter(p=>p.familiar):level==='hard'?countries.filter(p=>!p.familiar):countries;}
 const cityStates=new Set(['mc','sg','va']);
+const capitalOptionPools=new Map(),capitalChoiceHistory=new Map();
 function citySimilarity(a,b){
  const x=Array.from(normalize(a).normalize('NFKD')),y=Array.from(normalize(b).normalize('NFKD'));
  const grams=letters=>new Set(letters.slice(1).map((v,i)=>letters[i]+v)),gx=grams(x),gy=grams(y);
  const common=[...gx].filter(v=>gy.has(v)).length;let prefix=0;while(prefix<Math.min(x.length,y.length)&&x[prefix]===y[prefix])prefix++;
  return common*2/Math.max(1,gx.size+gy.size)+prefix/Math.max(1,x.length,y.length);
 }
-function capitalOptions(country){
+function capitalPool(country){
+ if(capitalOptionPools.has(country.id))return capitalOptionPools.get(country.id);
  const profile=cityProfiles[country.id],capital=profile.cities.find(c=>c.id===profile.capitalId);
- const forbidden=new Set(profile.cities.filter(c=>c.id===capital.id||profile.excludedIds.includes(c.id)).map(c=>normalize(c.name)));
- const own=shuffle(profile.cities.filter(c=>c.id!==capital.id&&!profile.excludedIds.includes(c.id)&&!forbidden.has(normalize(c.name))));
- const selected=[capital],names=new Set([normalize(capital.name)]);
- const add=city=>{const name=normalize(city.name);if(!names.has(name)&&!forbidden.has(name)){selected.push(city);names.add(name);}};
- own.forEach(c=>{if(selected.length<4)add(c);});
- if(selected.length<4){
-  const eligible=shuffle(allCities.filter(c=>c.countryId!==country.id&&(countries.find(p=>p.id===c.countryId)?.continent===country.continent||cityStates.has(c.countryId))&&!forbidden.has(normalize(c.name))));
-  eligible.sort((a,b)=>citySimilarity(capital.name,b.name)-citySimilarity(capital.name,a.name)||citySimilarity(capital.englishName,b.englishName)-citySimilarity(capital.englishName,a.englishName));
-  for(const city of shuffle(eligible.slice(0,12)))if(selected.length<4)add(city);
-  for(const city of eligible)if(selected.length<4)add(city);
+ const keys=city=>[normalize(city.name),normalize(city.englishName)];
+ const forbidden=new Set(profile.cities.filter(c=>c.id===capital.id||profile.excludedIds.includes(c.id)).flatMap(keys));
+ const unique=cities=>{const seen=new Set(forbidden),result=[];for(const city of cities){const labels=keys(city);if(labels.some(name=>seen.has(name)))continue;result.push(city);labels.forEach(name=>seen.add(name));}return result;};
+ const own=unique(profile.cities.filter(c=>c.id!==capital.id&&!profile.excludedIds.includes(c.id)));
+ let foreignBands=[];
+ if(own.length<=3){
+  const foreign=unique([...(citiesByContinent.get(country.continent)||[]),...allCities.filter(c=>cityStates.has(c.countryId))].filter(c=>c.countryId!==country.id));
+  const bands=new Map();
+  for(const city of foreign){const similarity=Math.max(citySimilarity(capital.name,city.name),citySimilarity(capital.englishName,city.englishName)*.8),band=Math.floor(similarity*10);if(!bands.has(band))bands.set(band,[]);bands.get(band).push(city);}
+  foreignBands=[...bands.entries()].sort((a,b)=>b[0]-a[0]).map(([,cities])=>cities);
  }
- if(selected.length!==4)throw Error('incomplete capital options');return shuffle(selected);
+ const pool={capital,own,foreignBands};capitalOptionPools.set(country.id,pool);return pool;
 }
+function capitalOptions(country){
+ const pool=capitalPool(country),state=capitalChoiceHistory.get(country.id)||{own:[],foreign:[],last:''};
+ const labels=city=>[normalize(city.name),normalize(city.englishName)];
+ const selected=[],names=new Set(labels(pool.capital)),available=city=>labels(city).every(name=>!names.has(name));
+ const refill=key=>key==='own'?shuffle(pool.own):pool.foreignBands.flatMap(shuffle);
+ const draw=key=>{
+  let index=state[key].findIndex(available);
+  if(index<0){state[key]=refill(key);index=state[key].findIndex(available);}
+  if(index<0)return null;const city=state[key].splice(index,1)[0];selected.push(city);labels(city).forEach(name=>names.add(name));return city;
+ };
+ for(let i=0;i<Math.min(3,pool.own.length);i++)draw('own');
+ while(selected.length<3)if(!draw('foreign'))throw Error('incomplete capital options');
+ const signature=()=>selected.map(c=>c.id).sort().join('|');
+ // The same three distractors must not recur merely because their order changed.
+ if(signature()===state.last){
+  const key=pool.own.length>3?'own':'foreign';
+  if(!state[key].length)state[key]=refill(key);
+  const index=state[key].findIndex(available);
+  if(index>=0){const replaceIndex=key==='foreign'&&pool.own.length===3?selected.length-1:selected.findLastIndex(c=>key==='own'?c.countryId===country.id:c.countryId!==country.id);
+   if(replaceIndex>=0){const replacement=state[key].splice(index,1)[0];state[key].push(selected[replaceIndex]);selected[replaceIndex]=replacement;}
+  }
+ }
+ state.last=signature();capitalChoiceHistory.set(country.id,state);
+ const options=[pool.capital,...selected],korean=options.every(city=>/[가-힣]/.test(city.name));
+ return shuffle(options.map(city=>({...city,displayName:korean?city.name:city.englishName})));
+}
+
 function startGame(){if(!explorerName){renderExplorerEntry();return;}cleanup();const pool=questionPool(difficulty);
  game={status:'loading',mode,difficulty,pool,deck:shuffle(pool),images:new Map(),question:null,score:0,correct:0,total:0,streak:0,maxStreak:0,history:[],locked:false,saved:false,deadline:0,imageReady:false,imageFailures:0};
  prepareFirstQuestion(game);
@@ -177,7 +206,7 @@ function renderQuestion(body){
  body.innerHTML=`<div class="flag-stage">${gameExit()}${g.mode==='capital'?capitalHint(g):''}<div class="flag-image-frame"><span id="question-image-slot"></span></div><span id="judgement-effect" class="judgement-effect" aria-hidden="true" hidden></span></div>
  ${g.mode==='capital'?`<p class="capital-prompt">이 나라의 <strong>${escapeHTML(g.cityProfile.questionLabel)}</strong>는 어디일까요?</p>`:''}
  <div class="question-score">${g.mode==='capital'?capitalScore(g):`<div class="game-stats"><span class="time">⏱ <strong id="time">${timeState.seconds}</strong> 초</span><span>연속 <b id="streak">${g.streak}</b> 정답</span><span class="attack-score"><strong id="score">${g.score.toLocaleString()}</strong> 점</span></div><div class="progress" role="progressbar" aria-label="남은 시간" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${timeState.percent}"><div id="timer-bar" style="width:${timeState.percent}%"></div></div>`}</div>
- <div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" data-question="${g.question.id}" aria-pressed="false" disabled><span>${i+1}</span>${escapeHTML(p.name)}</button>`).join('')}</div>
+ <div class="choices">${g.options.map((p,i)=>`<button class="choice" data-answer="${p.id}" data-question="${g.question.id}" aria-pressed="false" disabled><span>${i+1}</span>${escapeHTML(p.displayName||p.name)}</button>`).join('')}</div>
  <div id="feedback" class="feedback attack-feedback" role="status" aria-live="polite">국기를 불러오는 중…</div>`;
  if(previousProgress){body.querySelector('.progress').replaceWith(previousProgress);previousProgress.querySelector('#timer-bar').style.width=timeState.percent+'%';previousProgress.setAttribute('aria-valuenow',timeState.percent);}
  const current=g.question.id,entry=g.images.get(current),img=entry.image;img.id='question-image';body.querySelector('#question-image-slot').replaceWith(img);
@@ -303,7 +332,7 @@ function showExplorerProfile(){
 }
 function showGameHelp(){
  const dialog=document.querySelector('#detail');dialog.setAttribute('aria-labelledby','help-title');
- dialog.innerHTML='<div class="detail-inner game-help"><button class="close" id="close-detail" aria-label="게임 방법 닫기">×</button><h2 id="help-title">세계 탐험 안내</h2><h3>60초 타임어택</h3><p>4개의 나라 중 정답을 골라요. 정답은 100점, 연속 정답마다 10점씩 보너스가 늘어나 최대 100점이 더해져요.</p><h3>수도퀴즈</h3><p>국기를 보고 4개의 도시 중 수도를 골라요. 시간 제한 없이 10문제를 풀며 정답과 오답 확인 후 자동으로 다음 문제로 넘어가요. 쉬움·보통·어려움의 기본 점수는 100·200·300점이에요.</p><p>국기가 준비된 뒤 20초 동안 최대 50·100·150점의 보너스가 10점씩 줄어들어요. 보너스가 끝나도 계속 풀 수 있어요. 힌트는 문제마다 한 번, 오답 보기 2개를 지워 줘요. 힌트를 쓰면 보너스는 사라지고 기본 점수는 절반이 돼요.</p><p>보기는 해당 나라의 주요 도시를 우선 사용해요. 도시가 부족하면 같은 대륙이나 다른 도시국가의 도시를 보충해요. 수도가 여러 개인 나라에서는 묻는 수도의 역할을 표시하고 다른 수도를 오답으로 넣지 않아요.</p><p>두 게임 모두 키보드 1–4로 선택할 수 있어요. 패스는 정답을 알려 주고 다음 문제로 넘어가요.</p><p class="result-note">랭킹은 이 브라우저에 저장돼요. 수도퀴즈는 새로운 랭킹으로 시작하며 이전 마스터 기록은 보존해요.</p></div>';
+ dialog.innerHTML='<div class="detail-inner game-help"><button class="close" id="close-detail" aria-label="게임 방법 닫기">×</button><h2 id="help-title">세계 탐험 안내</h2><h3>60초 타임어택</h3><p>4개의 나라 중 정답을 골라요. 정답은 100점, 연속 정답마다 10점씩 보너스가 늘어나 최대 100점이 더해져요.</p><h3>수도퀴즈</h3><p>국기를 보고 4개의 도시 중 수도를 골라요. 시간 제한 없이 10문제를 풀며 정답과 오답 확인 후 자동으로 다음 문제로 넘어가요. 쉬움·보통·어려움의 기본 점수는 100·200·300점이에요.</p><p>국기가 준비된 뒤 20초 동안 최대 50·100·150점의 보너스가 10점씩 줄어들어요. 보너스가 끝나도 계속 풀 수 있어요. 힌트는 문제마다 한 번, 오답 보기 2개를 지워 줘요. 힌트를 쓰면 보너스는 사라지고 기본 점수는 절반이 돼요.</p><p>보기는 해당 나라의 주요 도시를 우선 사용하며, 같은 나라가 다시 나와도 아직 나오지 않은 도시부터 골라요. 도시가 부족하면 같은 대륙이나 다른 도시국가의 도시를 보충해요. 수도가 여러 개인 나라에서는 묻는 수도의 역할을 표시하고 다른 수도를 오답으로 넣지 않아요.</p><p>두 게임 모두 키보드 1–4로 선택할 수 있어요. 패스는 정답을 알려 주고 다음 문제로 넘어가요.</p><p class="result-note">랭킹은 이 브라우저에 저장돼요. 수도퀴즈는 새로운 랭킹으로 시작하며 이전 마스터 기록은 보존해요.</p></div>';
  dialog.showModal();
 }
 
@@ -339,7 +368,7 @@ function showCountry(id){
  const cityProfile=cityProfiles[p.id],capitalCity=cityProfile.cities.find(c=>c.id===cityProfile.capitalId);
  const fact=(title,value,wide=false)=>`<div${wide?' class="fact-wide"':''}><dt>${title}</dt><dd>${escapeHTML(value||'정보 없음')}</dd></div>`;
  const wiki=(language,name)=>`https://${language}.wikipedia.org/wiki/${language==='ko'?'특수:검색':'Special:Search'}?search=${encodeURIComponent(name)}&go=Go`;
- dialog.innerHTML=`<div class="detail-inner country-detail"><button class="close" id="close-detail" aria-label="나라 도감 닫기">×</button><p class="eyebrow">${escapeHTML(p.continent)} · ${p.isoCode}</p><h2 id="detail-title">${escapeHTML(p.name)}</h2><p class="english-name">${escapeHTML(p.englishName)}</p><div class="detail-flag"><img src="${p.image}" alt="${escapeHTML(p.name)} 국기"></div>${countryMap(p)}<section aria-labelledby="facts-title"><h3 id="facts-title">나라를 알아봐요</h3><dl class="country-facts">${fact('정식 이름',p.officialName,true)}${fact('현지 이름',p.nativeNames.join(' · '),true)}${fact(cityProfile.questionLabel,capitalCity.name,true)}${fact('주요 도시',cityProfile.cities.map(c=>c.name).join(' · '),true)}${cityProfile.note?fact('수도 참고',cityProfile.note,true):''}${fact('언어',languages.join(' · '),true)}${fact('면적',`${p.area.toLocaleString('ko-KR')} km²`)}<div><dt>인구</dt><dd>${p.population?`${p.population.value.toLocaleString('ko-KR')}명<small class="fact-reference">${p.population.year}년 기준</small>`:'자료 없음'}</dd></div>${fact('통화',currencies,true)}${fact('지리적 특징',p.landlocked?'바다와 맞닿지 않은 내륙국':'바다와 맞닿은 나라')}${fact('나라 코드',`${p.isoCode} / ${p.iso3}`)}${fact('국제 전화',p.callingCodes.join(' · '))}${fact('인터넷 도메인',p.domains.join(' · '))}</dl></section><section class="border-countries" aria-labelledby="borders-title"><h3 id="borders-title">국경을 맞댄 이웃 나라</h3>${borders.length?`<div class="border-links">${borders.map(c=>`<button class="border-link" data-country="${c.id}"><img src="${c.image}" alt="" width="28" height="19">${escapeHTML(c.name)}</button>`).join('')}</div>`:'<p class="section-note">도감에 포함된 나라 중 육지 국경을 맞댄 이웃이 없어요.</p>'}</section><section class="country-resources" aria-labelledby="resources-title"><h3 id="resources-title">더 알아보기</h3><div class="resource-links">${externalLink(cityProfile.capitalSource,'수도 자료','수도와 행정 중심지의 근거를 확인해요')}${externalLink('https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/','Natural Earth · 도시 자료','세계 주요 도시를 살펴봐요')}${externalLink('https://www.geonames.org/','GeoNames · 도시 자료','도시와 지명을 찾아봐요')}${externalLink(wiki('ko',p.name),'위키백과 · 한국어','역사와 문화, 지리를 읽어봐요')}${externalLink(wiki('en',p.englishName),'위키백과 · English','영문 자료를 더 찾아봐요')}${p.population?externalLink(`https://data.worldbank.org/indicator/SP.POP.TOTL?locations=${p.isoCode}`,'세계은행 · 인구 통계','인구 변화와 기준 연도를 확인해요'):externalLink('https://data.un.org/','UN Data · 통계 자료','유엔의 통계 자료를 찾아봐요')}</div><p class="data-note">자료 수집: ${escapeHTML(dataCollectedAt)} · 나라 정보: ${externalLink('https://github.com/mledoze/countries','mledoze/countries')} (ODbL) · 인구: ${externalLink('https://data.worldbank.org/indicator/SP.POP.TOTL','세계은행')} (${externalLink('https://creativecommons.org/licenses/by/4.0/','CC BY 4.0')}). 인구는 표시된 연도의 자료이며, 도시 자료 수집: ${escapeHTML(cityCollectedAt)} · 주요 도시: Natural Earth (퍼블릭 도메인), GeoNames (CC BY 4.0). 한글 이름이 없는 도시는 원문으로 표시해요.</p></section><section class="nearby-countries"><h3>같은 대륙의 다른 나라</h3><div class="nearby-grid">${nearby.map(countryCard).join('')}</div></section></div>`;
+ dialog.innerHTML=`<div class="detail-inner country-detail"><button class="close" id="close-detail" aria-label="나라 도감 닫기">×</button><p class="eyebrow">${escapeHTML(p.continent)} · ${p.isoCode}</p><h2 id="detail-title">${escapeHTML(p.name)}</h2><p class="english-name">${escapeHTML(p.englishName)}</p><div class="detail-flag"><img src="${p.image}" alt="${escapeHTML(p.name)} 국기"></div>${countryMap(p)}<section aria-labelledby="facts-title"><h3 id="facts-title">나라를 알아봐요</h3><dl class="country-facts">${fact('정식 이름',p.officialName,true)}${fact('현지 이름',p.nativeNames.join(' · '),true)}${fact(cityProfile.questionLabel,capitalCity.name,true)}${fact('주요 도시',cityProfile.cities.slice(0,12).map(c=>c.name).join(' · ')+(cityProfile.cities.length>12?` · 외 ${(cityProfile.cities.length-12).toLocaleString('ko-KR')}개`:''),true)}${cityProfile.note?fact('수도 참고',cityProfile.note,true):''}${fact('언어',languages.join(' · '),true)}${fact('면적',`${p.area.toLocaleString('ko-KR')} km²`)}<div><dt>인구</dt><dd>${p.population?`${p.population.value.toLocaleString('ko-KR')}명<small class="fact-reference">${p.population.year}년 기준</small>`:'자료 없음'}</dd></div>${fact('통화',currencies,true)}${fact('지리적 특징',p.landlocked?'바다와 맞닿지 않은 내륙국':'바다와 맞닿은 나라')}${fact('나라 코드',`${p.isoCode} / ${p.iso3}`)}${fact('국제 전화',p.callingCodes.join(' · '))}${fact('인터넷 도메인',p.domains.join(' · '))}</dl></section><section class="border-countries" aria-labelledby="borders-title"><h3 id="borders-title">국경을 맞댄 이웃 나라</h3>${borders.length?`<div class="border-links">${borders.map(c=>`<button class="border-link" data-country="${c.id}"><img src="${c.image}" alt="" width="28" height="19">${escapeHTML(c.name)}</button>`).join('')}</div>`:'<p class="section-note">도감에 포함된 나라 중 육지 국경을 맞댄 이웃이 없어요.</p>'}</section><section class="country-resources" aria-labelledby="resources-title"><h3 id="resources-title">더 알아보기</h3><div class="resource-links">${externalLink(cityProfile.capitalSource,'수도 자료','수도와 행정 중심지의 근거를 확인해요')}${externalLink('https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/','Natural Earth · 도시 자료','세계 주요 도시를 살펴봐요')}${externalLink('https://www.geonames.org/','GeoNames · 도시 자료','도시와 지명을 찾아봐요')}${externalLink(wiki('ko',p.name),'위키백과 · 한국어','역사와 문화, 지리를 읽어봐요')}${externalLink(wiki('en',p.englishName),'위키백과 · English','영문 자료를 더 찾아봐요')}${p.population?externalLink(`https://data.worldbank.org/indicator/SP.POP.TOTL?locations=${p.isoCode}`,'세계은행 · 인구 통계','인구 변화와 기준 연도를 확인해요'):externalLink('https://data.un.org/','UN Data · 통계 자료','유엔의 통계 자료를 찾아봐요')}</div><p class="data-note">자료 수집: ${escapeHTML(dataCollectedAt)} · 나라 정보: ${externalLink('https://github.com/mledoze/countries','mledoze/countries')} (ODbL) · 인구: ${externalLink('https://data.worldbank.org/indicator/SP.POP.TOTL','세계은행')} (${externalLink('https://creativecommons.org/licenses/by/4.0/','CC BY 4.0')}). 인구는 표시된 연도의 자료이며, 도시 자료 수집: ${escapeHTML(cityCollectedAt)} · 주요 도시: Natural Earth (퍼블릭 도메인), GeoNames (CC BY 4.0). 한글 이름이 없는 도시는 원문으로 표시해요.</p></section><section class="nearby-countries"><h3>같은 대륙의 다른 나라</h3><div class="nearby-grid">${nearby.map(countryCard).join('')}</div></section></div>`;
  dialog.scrollTop=0;
  if(!dialog.open)dialog.showModal();
 }
@@ -401,7 +430,7 @@ async function init(){
   const owners=new Map();data.forEach(p=>p.aliases.forEach(name=>{const key=normalize(name);if(!owners.has(key))owners.set(key,new Set());owners.get(key).add(p.id);}));
   data.forEach(p=>p.aliases=p.aliases.filter(name=>owners.get(normalize(name)).size===1));
   if(cityData.countryCount!==195||!data.every(p=>{const profile=cityData.countries?.[p.id];return profile&&Array.isArray(profile.cities)&&profile.cities.some(c=>c.id===profile.capitalId)&&profile.cities.every(c=>c.countryId===p.id&&c.id&&c.name&&c.englishName)&&Array.isArray(profile.excludedIds);}))throw Error('cities');
-  countries=data;cityProfiles=cityData.countries;cityCollectedAt=cityData.collectedAt;allCities=Object.values(cityProfiles).flatMap(p=>p.cities);dataCollectedAt=manifest.collectedAt;render();
+  countries=data;cityProfiles=cityData.countries;cityCollectedAt=cityData.collectedAt;allCities=Object.values(cityProfiles).flatMap(p=>p.cities);citiesByContinent=new Map(Object.keys(continents).map(continent=>[continent,data.filter(p=>p.continent===continent).flatMap(p=>cityProfiles[p.id].cities)]));capitalOptionPools.clear();capitalChoiceHistory.clear();dataCollectedAt=manifest.collectedAt;render();
  }catch{app.innerHTML='<div class="empty"><p>나라 도감을 불러오지 못했어요.</p><button id="retry-load" class="primary">다시 불러오기</button></div>';document.querySelector('#retry-load').onclick=init;}
 }
 init();

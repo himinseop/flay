@@ -251,7 +251,7 @@ test('city dataset covers all countries with traceable real cities and reviewed 
   if(!['mc','sg','va'].includes(country.id))assert.ok(p.cities.filter(c=>!p.excludedIds.includes(c.id)).length>=4,country.id);
   for(const c of p.cities){assert.equal(c.countryId,country.id);assert.ok(c.name&&c.englishName&&c.source&&c.sourceId);assert.ok(!ids.has(c.id));ids.add(c.id);count++;}
  }
- assert.equal(count,cityData.cityCount);assert.ok(count>=780);assert.ok(cityData.sources.every(s=>s.url&&s.license&&/^[a-f0-9]{64}$/.test(s.sha256)));
+ assert.equal(count,cityData.cityCount);assert.ok(count>=30000);assert.ok(cityData.countries.kr.cities.length>=100);assert.ok(cityData.countries.us.cities.length>=2000);assert.ok(cityData.sources.every(s=>s.url&&s.license&&/^[a-f0-9]{64}$/.test(s.sha256)));
  const cap=id=>{const p=cityData.countries[id];return p.cities.find(c=>c.id===p.capitalId).name;};
  assert.equal(cap('kr'),'서울');assert.equal(cap('sz'),'음바바네');assert.equal(cap('lk'),'스리자야와르데네푸라코테');assert.equal(cap('bi'),'기테가');assert.equal(cap('gq'),'시우다드데라파스');assert.equal(cap('kz'),'아스타나');assert.equal(cap('pw'),'응게룰무드');
 });
@@ -318,4 +318,53 @@ test('new capital ranking saves never remove or reuse legacy master and time rec
  h.w.localStorage.setItem('flag-play-records',JSON.stringify(old));h.w.qa('records=readRecords()');assert.equal(h.w.qa("leaderboard('capital-easy').length"),0);
  h.start('capital');await h.ready();h.click(`[data-answer="${h.game().answerKey}"]`);h.click('#quit-game');assert.equal(h.game().rank,1);h.setInput('#trainer-name','수도 탐험가');h.click('#ranking-replay');
  const saved=JSON.parse(h.w.localStorage.getItem('flag-play-records'));assert.ok(saved.some(r=>r.id==='legacy'&&r.mode==='write-easy'));assert.ok(saved.some(r=>r.id==='time'));assert.ok(saved.some(r=>r.mode==='capital-easy'));assert.equal(h.w.qa('mode'),'capital');
+});
+
+
+test('city choices rotate through the full pool and retain variety across game replays',async t=>{
+ const h=await harness();t.after(h.close);const poolSize=h.w.qa("capitalPool(countries.find(p=>p.id==='kr')).own.length"),seen=new Set();let previous='';
+ for(let i=0;i<Math.floor(poolSize/3);i++){
+  const options=h.w.qa("capitalOptions(countries.find(p=>p.id==='kr'))"),wrong=options.filter(c=>c.id!==cityData.countries.kr.capitalId),signature=wrong.map(c=>c.id).sort().join('|');
+  assert.notEqual(signature,previous);previous=signature;
+  for(const c of wrong){assert.ok(!seen.has(c.id),'a new city should appear before reuse');seen.add(c.id);}
+ }
+ assert.ok(seen.size>=100);
+ h.start('capital');await h.ready();if(h.game().question.id!=='kr')await forceCountry(h,'kr');const signature=()=>h.game().options.filter(c=>c.id!==h.game().answerKey).map(c=>c.id).sort().join('|');
+ const before=signature();h.w.qa('endGame("quit");returnToLobby()');h.start('capital');await h.ready();if(h.game().question.id!=='kr')await forceCountry(h,'kr');assert.notEqual(signature(),before);
+});
+
+test('every country gets different consecutive distractor combinations, including city states',async t=>{
+ const h=await harness();t.after(h.close);
+ for(const country of data){let previous='';
+  for(let i=0;i<8;i++){
+   const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${country.id}'))`),signature=options.filter(c=>c.id!==cityData.countries[country.id].capitalId).map(c=>c.id).sort().join('|');
+   assert.notEqual(signature,previous,country.id);previous=signature;
+  }
+ }
+});
+
+test('four-city and exact bag-boundary cases change the actual cities, not just their order',async t=>{
+ const h=await harness();t.after(h.close);
+ for(const count of [4,7]){
+  h.w.qa(`cityProfiles.kr.cities=${JSON.stringify(cityData.countries.kr.cities.slice(0,count))};cityProfiles.kr.excludedIds=[];capitalOptionPools.clear();capitalChoiceHistory.clear()`);
+  let previous='';
+  for(let i=0;i<30;i++){
+   const options=h.w.qa("capitalOptions(countries.find(p=>p.id==='kr'))"),signature=options.filter(c=>c.id!==cityData.countries.kr.capitalId).map(c=>c.id).sort().join('|');
+   assert.equal(options.length,4);assert.equal(new Set(options.map(c=>c.name)).size,4);assert.notEqual(signature,previous);previous=signature;
+  }
+ }
+});
+
+
+test('mixed-language city data uses consistent option labels without giving away the capital',async t=>{
+ const h=await harness();t.after(h.close);
+ for(const id of ['kr','us','ad','cn','va']){
+  for(let i=0;i<6;i++){
+   const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${id}'))`),korean=options.every(c=>/[가-힣]/.test(c.name));
+   assert.ok(options.every(c=>c.displayName===(korean?c.name:c.englishName)));assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.displayName)})`))).size,4);
+  }
+ }
+ h.start('capital');await h.ready();await forceCountry(h,'ad');
+ const labels=[...h.w.document.querySelectorAll('.choice')].map(button=>button.textContent.slice(1));
+ assert.deepEqual(labels,Array.from(h.game().options,c=>c.displayName));
 });
