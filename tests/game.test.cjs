@@ -256,17 +256,18 @@ test('city dataset covers all countries with traceable real cities and reviewed 
  assert.equal(cap('kr'),'서울');assert.equal(cap('sz'),'음바바네');assert.equal(cap('lk'),'스리자야와르데네푸라코테');assert.equal(cap('bi'),'기테가');assert.equal(cap('gq'),'시우다드데라파스');assert.equal(cap('kz'),'아스타나');assert.equal(cap('pw'),'응게룰무드');
 });
 
-test('all 195 capitals have four unique options, domestic cities first, and safe city-state fallback',async t=>{
- const h=await harness();t.after(h.close);const cityStates=new Set(['mc','sg','va']);
+test('all capitals combine two major domestic cities and foreign capitals with sparse-country fallback',async t=>{
+ const h=await harness();t.after(h.close);
  for(const country of data){
   for(let iteration=0;iteration<5;iteration++){
    const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${country.id}'))`),profile=cityData.countries[country.id];
    assert.equal(options.length,4);assert.equal(new Set(options.map(c=>c.id)).size,4);assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.name)})`))).size,4);
    assert.equal(options.filter(c=>c.id===profile.capitalId).length,1);assert.ok(options.every(c=>!profile.excludedIds.includes(c.id)));
-   const domestic=h.w.qa(`capitalPool(countries.find(p=>p.id==='${country.id}')).own.length`);
-   if(domestic>3)assert.ok(options.every(c=>c.countryId===country.id),country.id);
-   else assert.ok(options.filter(c=>c.id!==profile.capitalId&&c.countryId===country.id).length>=Math.min(2,domestic),country.id);
-   assert.ok(options.filter(c=>c.countryId!==country.id).every(c=>data.find(p=>p.id===c.countryId).continent===country.continent||cityStates.has(c.countryId)));
+   const pool=h.w.qa(`capitalPool(countries.find(p=>p.id==='${country.id}'))`),own=options.filter(c=>c.id!==profile.capitalId&&c.countryId===country.id),foreign=options.filter(c=>c.countryId!==country.id);
+   assert.ok(pool.own.length<=6);assert.equal(own.length,Math.min(2,pool.own.length),country.id);
+   assert.ok(own.every(c=>pool.own.some(candidate=>candidate.id===c.id)),country.id);
+   assert.equal(foreign.length,3-own.length,country.id);
+   assert.ok(foreign.every(c=>cityData.countries[c.countryId].capitalId===c.id),country.id);
   }
  }
 });
@@ -323,14 +324,17 @@ test('new capital ranking saves never remove or reuse legacy master and time rec
 });
 
 
-test('city choices rotate through the full pool and retain variety across game replays',async t=>{
+test('major-city and foreign-capital choices rotate and retain variety across game replays',async t=>{
  const h=await harness();t.after(h.close);const poolSize=h.w.qa("capitalPool(countries.find(p=>p.id==='kr')).own.length"),seen=new Set();let previous='';
- for(let i=0;i<Math.floor(poolSize/3);i++){
+ const capitals=new Set();assert.equal(poolSize,6);
+ for(let i=0;i<poolSize/2;i++){
   const options=h.w.qa("capitalOptions(countries.find(p=>p.id==='kr'))"),wrong=options.filter(c=>c.id!==cityData.countries.kr.capitalId),signature=wrong.map(c=>c.id).sort().join('|');
   assert.notEqual(signature,previous);previous=signature;
-  for(const c of wrong){assert.ok(!seen.has(c.id),'a new city should appear before reuse');seen.add(c.id);}
+  const domestic=wrong.filter(c=>c.countryId==='kr'),foreign=wrong.filter(c=>c.countryId!=='kr');assert.equal(domestic.length,2);assert.equal(foreign.length,1);
+  for(const c of domestic){assert.ok(!seen.has(c.id),'a new major city should appear before reuse');seen.add(c.id);}
+  assert.ok(!capitals.has(foreign[0].id),'a new foreign capital should appear before reuse');capitals.add(foreign[0].id);
  }
- assert.ok(seen.size>=100);
+ assert.equal(seen.size,6);
  h.start('capital');await h.ready();if(h.game().question.id!=='kr')await forceCountry(h,'kr');const signature=()=>h.game().options.filter(c=>c.id!==h.game().answerKey).map(c=>c.id).sort().join('|');
  const before=signature();h.w.qa('endGame("quit");returnToLobby()');h.start('capital');await h.ready();if(h.game().question.id!=='kr')await forceCountry(h,'kr');assert.notEqual(signature(),before);
 });
@@ -345,7 +349,7 @@ test('every country gets different consecutive distractor combinations, includin
  }
 });
 
-test('four-city and exact bag-boundary cases change the actual cities, not just their order',async t=>{
+test('small major-city pools and exact bag-boundary cases vary without changing option roles',async t=>{
  const h=await harness();t.after(h.close);
  for(const count of [4,7]){
   h.w.qa(`cityProfiles.kr.cities=${JSON.stringify(cityData.countries.kr.cities.slice(0,count))};cityProfiles.kr.excludedIds=[];capitalOptionPools.clear();capitalChoiceHistory.clear()`);
@@ -353,6 +357,22 @@ test('four-city and exact bag-boundary cases change the actual cities, not just 
   for(let i=0;i<30;i++){
    const options=h.w.qa("capitalOptions(countries.find(p=>p.id==='kr'))"),signature=options.filter(c=>c.id!==cityData.countries.kr.capitalId).map(c=>c.id).sort().join('|');
    assert.equal(options.length,4);assert.equal(new Set(options.map(c=>c.name)).size,4);assert.notEqual(signature,previous);previous=signature;
+   assert.equal(options.filter(c=>c.countryId==='kr'&&c.id!==cityData.countries.kr.capitalId).length,2);assert.equal(options.filter(c=>c.countryId!=='kr').length,1);
+  }
+ }
+});
+
+test('US choices use familiar major cities and countries with too few cities receive extra foreign capitals',async t=>{
+ const h=await harness();t.after(h.close);
+ const us=h.w.qa("capitalPool(countries.find(p=>p.id==='us'))");
+ assert.deepEqual(Array.from(us.own,c=>c.name),['뉴욕','로스앤젤레스','시카고','마이애미','필라델피아','댈러스']);
+ for(const count of [1,2,3]){
+  h.w.qa(`cityProfiles.kr.cities=${JSON.stringify(cityData.countries.kr.cities.slice(0,count))};cityProfiles.kr.excludedIds=[];capitalOptionPools.clear();capitalChoiceHistory.clear()`);
+  for(let i=0;i<10;i++){
+   const options=h.w.qa("capitalOptions(countries.find(p=>p.id==='kr'))"),foreign=options.filter(c=>c.countryId!=='kr');
+   assert.equal(options.length,4);assert.equal(options.filter(c=>c.countryId==='kr').length,count);
+   assert.equal(foreign.length,4-count);assert.ok(foreign.every(c=>cityData.countries[c.countryId].capitalId===c.id));
+   assert.equal(new Set(options.map(c=>c.displayName)).size,4);
   }
  }
 });
