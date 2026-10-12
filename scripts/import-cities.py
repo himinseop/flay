@@ -24,13 +24,15 @@ def run(ne_path,gn_path):
             existing=next((by_alias[k] for k in keys if k in by_alias),None) or by_gn.get(city.get('geonamesId'))
             if existing:
                 existing['aliases']=sorted(set(existing['aliases']+city['aliases']+[city['englishName'],city['name']]))
+                for key in keys: by_alias[key]=existing
+                if city.get('geonamesId'): by_gn[city['geonamesId']]=existing
                 return existing
             cities.append(city)
             for key in keys: by_alias[key]=city
             if city.get('geonamesId'):by_gn[city['geonamesId']]=city
             return city
         for p in sorted(rows,key=lambda x:-(x.get('POP_MAX') or 0)):
-            add({'id':f'{cid}-ne-{p["NE_ID"]}','countryId':cid,'name':p.get('NAME_KO') or p['NAME'],'englishName':p.get('NAME_EN') or p['NAME'],'aliases':list(filter(None,[p.get('NAME'),p.get('NAMEASCII'),p.get('NAMEALT')])),'population':p.get('POP_MAX') or 0,'geonamesId':p.get('GEONAMESID'),'source':'naturalEarth','sourceId':str(p['NE_ID'])})
+            add({'id':f'{cid}-ne-{p["NE_ID"]}','countryId':cid,'name':p.get('NAME_KO') or p['NAME'],'englishName':p['NAME'],'aliases':list(filter(None,[p.get('NAME'),p.get('NAMEASCII'),p.get('NAMEALT')])),'population':p.get('POP_MAX') or 0,'geonamesId':p.get('GEONAMESID'),'source':'naturalEarth','sourceId':str(p['NE_ID'])})
         for p in sorted(gn[country['isoCode']],key=lambda x:-int(x[14])):
             add({'id':f'{cid}-gn-{p[0]}','countryId':cid,'name':city_name(p),'englishName':p[2] or p[1],'aliases':[p[1],p[2],*p[3].split(',')],'population':int(p[14]),'geonamesId':int(p[0]),'source':'geoNames','sourceId':p[0]})
         wanted=override.get('capital',country['capital'][0]);aliases=[wanted,*override.get('aliases',[])]

@@ -1,22 +1,157 @@
 {
-  "kr": {"name":"서울"},
-  "us": {"name":"워싱턴 D.C."},
-  "ad": {"name":"안도라라베야"},
-  "za": {"capital":"Pretoria","name":"프리토리아","questionLabel":"행정 수도","otherCapitals":["Cape Town","Bloemfontein"],"note":"남아프리카공화국의 행정 수도는 프리토리아이며, 입법 수도는 케이프타운, 사법 수도는 블룸폰테인이에요.","source":"https://www.gov.za/south-africa-glance"},
-  "lk": {"capital":"Sri Jayawardenepura Kotte","name":"스리자야와르데네푸라코테","questionLabel":"행정 수도","otherCapitals":["Colombo"],"note":"행정 수도는 스리자야와르데네푸라코테이며, 콜롬보는 가장 큰 도시예요.","source":"https://www.mfa.gov.lk/en/national-profile-and-geography"},
-  "bo": {"questionLabel":"헌법상 수도","otherCapitals":["La Paz"],"note":"헌법상 수도는 수크레이며, 정부와 의회는 라파스에 있어요."},
-  "nl": {"questionLabel":"수도","otherCapitals":["The Hague"],"note":"수도는 암스테르담이며, 정부와 의회는 헤이그에 있어요."},
-  "my": {"otherCapitals":["Putrajaya"],"note":"수도는 쿠알라룸푸르이며, 푸트라자야는 행정 중심지예요."},
-  "bi": {"capital":"Gitega","name":"기테가","questionLabel":"정치 수도","otherCapitals":["Bujumbura"],"note":"2019년부터 정치 수도는 기테가이며, 부줌부라는 경제 중심지예요.","source":"https://primature.gov.bi/presentation-generale/"},
-  "gq": {"capital":"Ciudad de la Paz","aliases":["Oyala","Djibloho"],"name":"시우다드데라파스","note":"2026년 1월 2일 수도가 말라보에서 시우다드데라파스로 옮겨졌어요.","source":"https://www.guineaecuatorialpress.com/index.php/noticias/el_presidente_de_la_republica_proclama_la_ciudad_de_la_paz_como_capital_de_la_republica_de_guinea_ecuatorial_con_la_firma_de_un_decreto_ley"},
-  "kz": {"capital":"Astana","aliases":["Nur-Sultan"],"name":"아스타나","note":"2022년 수도 이름이 누르술탄에서 아스타나로 바뀌었어요.","source":"https://www.gov.kz/memleket/entities/adilet/press/news/details/428101?lang=ru"},
-  "pw": {"capital":"Ngerulmud","name":"응게룰무드","note":"팔라우의 수도는 응게룰무드예요.","source":"https://www.palaugov.pw/home/"},
-  "nr": {"name":"야렌","questionLabel":"정부 소재지","note":"나우루는 공식 수도가 없으며, 정부 소재지는 야렌이에요."},
-  "ch": {"questionLabel":"연방 정부 소재지","note":"스위스는 공식 수도 대신 연방 정부 소재지인 베른을 두고 있어요."},
-  "ps": {"questionLabel":"행정 중심지","note":"팔레스타인의 행정 중심지는 라말라예요. 선언 수도인 동예루살렘과 구분해 출제해요."},
-  "ki": {"capital":"South Tarawa","aliases":["Tarawa"],"name":"사우스타라와"},
-  "sm": {"capital":"City of San Marino","aliases":["San Marino"],"name":"산마리노"},
-  "va": {"name":"바티칸 시국"},
-  "sg": {"name":"싱가포르"},
-  "mc": {"name":"모나코"}
+  "kr": {
+    "name": "서울"
+  },
+  "us": {
+    "name": "워싱턴 D.C."
+  },
+  "ad": {
+    "name": "안도라라베야"
+  },
+  "za": {
+    "capital": "Pretoria",
+    "name": "프리토리아",
+    "questionLabel": "행정 수도",
+    "otherCapitals": [
+      "Cape Town",
+      "Bloemfontein"
+    ],
+    "note": "남아프리카공화국의 행정 수도는 프리토리아이며, 입법 수도는 케이프타운, 사법 수도는 블룸폰테인이에요.",
+    "source": "https://www.gov.za/south-africa-glance"
+  },
+  "lk": {
+    "capital": "Sri Jayawardenepura Kotte",
+    "name": "스리자야와르데네푸라코테",
+    "questionLabel": "행정 수도",
+    "otherCapitals": [
+      "Colombo"
+    ],
+    "note": "행정 수도는 스리자야와르데네푸라코테이며, 콜롬보는 가장 큰 도시예요.",
+    "source": "https://www.mfa.gov.lk/en/national-profile-and-geography"
+  },
+  "bo": {
+    "questionLabel": "헌법상 수도",
+    "otherCapitals": [
+      "La Paz"
+    ],
+    "note": "헌법상 수도는 수크레이며, 정부와 의회는 라파스에 있어요."
+  },
+  "nl": {
+    "questionLabel": "수도",
+    "otherCapitals": [
+      "The Hague"
+    ],
+    "note": "수도는 암스테르담이며, 정부와 의회는 헤이그에 있어요."
+  },
+  "my": {
+    "otherCapitals": [
+      "Putrajaya"
+    ],
+    "note": "수도는 쿠알라룸푸르이며, 푸트라자야는 행정 중심지예요."
+  },
+  "bi": {
+    "capital": "Gitega",
+    "name": "기테가",
+    "questionLabel": "정치 수도",
+    "otherCapitals": [
+      "Bujumbura"
+    ],
+    "note": "2019년부터 정치 수도는 기테가이며, 부줌부라는 경제 중심지예요.",
+    "source": "https://primature.gov.bi/presentation-generale/"
+  },
+  "gq": {
+    "capital": "Ciudad de la Paz",
+    "aliases": [
+      "Oyala",
+      "Djibloho"
+    ],
+    "name": "시우다드데라파스",
+    "note": "2026년 1월 2일 수도가 말라보에서 시우다드데라파스로 옮겨졌어요.",
+    "source": "https://www.guineaecuatorialpress.com/index.php/noticias/el_presidente_de_la_republica_proclama_la_ciudad_de_la_paz_como_capital_de_la_republica_de_guinea_ecuatorial_con_la_firma_de_un_decreto_ley"
+  },
+  "kz": {
+    "capital": "Astana",
+    "aliases": [
+      "Nur-Sultan"
+    ],
+    "name": "아스타나",
+    "note": "2022년 수도 이름이 누르술탄에서 아스타나로 바뀌었어요.",
+    "source": "https://www.gov.kz/memleket/entities/adilet/press/news/details/428101?lang=ru"
+  },
+  "pw": {
+    "capital": "Ngerulmud",
+    "name": "응게룰무드",
+    "note": "팔라우의 수도는 응게룰무드예요.",
+    "source": "https://www.palaugov.pw/home/"
+  },
+  "nr": {
+    "name": "야렌",
+    "questionLabel": "정부 소재지",
+    "note": "나우루는 공식 수도가 없으며, 정부 소재지는 야렌이에요."
+  },
+  "ch": {
+    "questionLabel": "연방 정부 소재지",
+    "note": "스위스는 공식 수도 대신 연방 정부 소재지인 베른을 두고 있어요."
+  },
+  "ps": {
+    "questionLabel": "행정 중심지",
+    "note": "팔레스타인의 행정 중심지는 라말라예요. 선언 수도인 동예루살렘과 구분해 출제해요."
+  },
+  "ki": {
+    "capital": "South Tarawa",
+    "aliases": [
+      "Tarawa"
+    ],
+    "name": "사우스타라와"
+  },
+  "sm": {
+    "capital": "City of San Marino",
+    "aliases": [
+      "San Marino"
+    ],
+    "name": "산마리노"
+  },
+  "va": {
+    "name": "바티칸 시국"
+  },
+  "sg": {
+    "name": "싱가포르"
+  },
+  "mc": {
+    "name": "모나코"
+  },
+  "sz": {
+    "capital": "Mbabane",
+    "name": "음바바네",
+    "questionLabel": "행정 수도",
+    "otherCapitals": [
+      "Lobamba"
+    ],
+    "note": "행정 수도는 음바바네이며, 로밤바는 왕실과 입법부의 수도예요.",
+    "source": "https://investeswatini.org.sz/quick-facts/"
+  },
+  "me": {
+    "questionLabel": "헌법상 수도",
+    "otherCapitals": [
+      "Cetinje"
+    ],
+    "note": "수도는 포드고리차이며, 체티네는 옛 왕실 수도예요.",
+    "source": "https://www.gov.me/en/article/82430--10895"
+  },
+  "bj": {
+    "questionLabel": "정치 수도",
+    "otherCapitals": [
+      "Cotonou"
+    ],
+    "note": "정치 수도는 포르토노보이며, 정부 기관 상당수는 코토누에 있어요.",
+    "source": "https://sgg.gouv.bj/doc/decret-2024-1244/read"
+  },
+  "ci": {
+    "questionLabel": "정치 수도",
+    "otherCapitals": [
+      "Abidjan"
+    ],
+    "note": "정치·행정 수도는 야무수크로이며, 경제 중심지는 아비장이에요.",
+    "source": "https://www.presidence.ci/la-cote-divoire/notre-patrimoine-2/"
+  }
 }

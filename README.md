@@ -32,7 +32,7 @@ python3 -m http.server 4174 --bind 127.0.0.1 --directory dist
 
 ## 데이터 및 출처
 
-- 주요 도시: [Natural Earth Populated Places](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/) (퍼블릭 도메인)와 [GeoNames cities500](https://download.geonames.org/export/dump/) (CC BY 4.0). 2026-10-12 수집한 195개 나라, 1,545개 도시·주요 취락을 `dist/capital-cities.json`에 포함합니다. 모나코·싱가포르·바티칸은 별도의 도시 대신 다른 나라의 도시로 보기를 보충합니다. 다른 나라는 수도와 최소 3개 이상의 자국 도시·취락을 제공합니다. 인구 순서는 주요 도시 선택용이며 현재 인구 통계로 표시하지 않습니다.
+- 주요 도시: [Natural Earth Populated Places](https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/) (퍼블릭 도메인)와 [GeoNames cities500](https://download.geonames.org/export/dump/) (CC BY 4.0). 2026-10-12 수집한 195개 나라, 1,549개 도시·주요 취락을 `dist/capital-cities.json`에 포함합니다. 모나코·싱가포르·바티칸은 별도의 도시 대신 다른 나라의 도시로 보기를 보충합니다. 다른 나라는 수도와 최소 3개 이상의 자국 도시·취락을 제공합니다. 인구 순서는 주요 도시 선택용이며 현재 인구 통계로 표시하지 않습니다.
 - 수도 검토: 스리랑카, 부룬디, 적도기니, 카자흐스탄, 팔라우 등 기존 자료의 수도 변경·행정 역할·이름을 공식 자료에 맞춰 보정합니다. 남아프리카는 행정 수도, 볼리비아는 헌법상 수도, 나우루는 정부 소재지, 스위스는 연방 정부 소재지, 팔레스타인은 행정 중심지로 질문합니다. 상세 근거는 `scripts/capital-overrides.json`와 각 도감의 수도 자료 링크에서 확인할 수 있습니다.
 - 재수집: 원본 GeoJSON와 cities500 ZIP을 받은 뒤 `python3 scripts/import-cities.py --naturalearth <원본.geojson> --geonames <cities500.zip>`을 실행합니다. 다운로드 URL과 원본 해시는 `capital-cities.json`, 라이선스는 `CITIES-LICENSE.txt`에 기록합니다.
 

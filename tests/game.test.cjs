@@ -253,7 +253,7 @@ test('city dataset covers all countries with traceable real cities and reviewed 
  }
  assert.equal(count,cityData.cityCount);assert.ok(count>=780);assert.ok(cityData.sources.every(s=>s.url&&s.license&&/^[a-f0-9]{64}$/.test(s.sha256)));
  const cap=id=>{const p=cityData.countries[id];return p.cities.find(c=>c.id===p.capitalId).name;};
- assert.equal(cap('kr'),'서울');assert.equal(cap('lk'),'스리자야와르데네푸라코테');assert.equal(cap('bi'),'기테가');assert.equal(cap('gq'),'시우다드데라파스');assert.equal(cap('kz'),'아스타나');assert.equal(cap('pw'),'응게룰무드');
+ assert.equal(cap('kr'),'서울');assert.equal(cap('sz'),'음바바네');assert.equal(cap('lk'),'스리자야와르데네푸라코테');assert.equal(cap('bi'),'기테가');assert.equal(cap('gq'),'시우다드데라파스');assert.equal(cap('kz'),'아스타나');assert.equal(cap('pw'),'응게룰무드');
 });
 
 test('all 195 capitals have four unique options, domestic cities first, and safe city-state fallback',async t=>{
@@ -308,6 +308,7 @@ test('capital hint removes two wrong choices once, cannot be bypassed by keys, a
 test('multiple capitals have explicit roles and city facts expose source links',async t=>{
  const h=await harness();t.after(h.close);h.start('capital');await h.ready();await forceCountry(h,'za');assert.ok(h.$('.capital-prompt').textContent.includes('행정 수도'));
  const g=h.game();assert.ok(!g.options.some(c=>['Cape Town','Bloemfontein'].includes(c.englishName)));assert.ok(g.options.some(c=>c.name==='프리토리아'));
+ for(const [id,role,other] of [['sz','행정 수도','Lobamba'],['me','헌법상 수도','Cetinje'],['bj','정치 수도','Cotonou'],['ci','정치 수도','Abidjan']]){await forceCountry(h,id);assert.ok(h.$('.capital-prompt').textContent.includes(role));assert.ok(!h.game().options.some(c=>c.englishName===other));}
  h.w.qa("showCountry('gq')");assert.ok(h.$('.country-facts').textContent.includes('시우다드데라파스'));assert.ok(h.$('.country-facts').textContent.includes('주요 도시'));assert.ok(h.$('.country-facts').textContent.includes('2026년 1월 2일'));
  assert.ok(h.w.document.querySelector('a[href="https://www.geonames.org/"]'));assert.ok(h.$('#detail').textContent.includes(cityData.collectedAt));
 });
