@@ -102,6 +102,11 @@ function selectQuestion(g){
 function questionPool(level){return level==='easy'?countries.filter(p=>p.familiar):level==='hard'?countries.filter(p=>!p.familiar):countries;}
 const cityStates=new Set(['mc','sg','va']);
 const capitalOptionPools=new Map(),capitalChoiceHistory=new Map();
+function koreanCityName(city){
+ const name=city.name.normalize('NFKC').trim();
+ if(city.countryId==='us'&&normalize(city.englishName)==='washingtondc')return '워싱턴 디시';
+ return /[가-힣]/.test(name)&&/^[가-힣\s·().,\-/\d]+$/.test(name)?name:'';
+}
 function citySimilarity(a,b){
  const x=Array.from(normalize(a).normalize('NFKD')),y=Array.from(normalize(b).normalize('NFKD'));
  const grams=letters=>new Set(letters.slice(1).map((v,i)=>letters[i]+v)),gx=grams(x),gy=grams(y);
@@ -111,9 +116,9 @@ function citySimilarity(a,b){
 function capitalPool(country){
  if(capitalOptionPools.has(country.id))return capitalOptionPools.get(country.id);
  const profile=cityProfiles[country.id],capital=profile.cities.find(c=>c.id===profile.capitalId);
- const keys=city=>[normalize(city.name),normalize(city.englishName)];
+ const keys=city=>[normalize(koreanCityName(city)),normalize(city.englishName)];
  const forbidden=new Set(profile.cities.filter(c=>c.id===capital.id||profile.excludedIds.includes(c.id)).flatMap(keys));
- const unique=cities=>{const seen=new Set(forbidden),result=[];for(const city of cities){const labels=keys(city);if(labels.some(name=>seen.has(name)))continue;result.push(city);labels.forEach(name=>seen.add(name));}return result;};
+ const unique=cities=>{const seen=new Set(forbidden),result=[];for(const city of cities){if(!koreanCityName(city))continue;const labels=keys(city);if(labels.some(name=>seen.has(name)))continue;result.push(city);labels.forEach(name=>seen.add(name));}return result;};
  const own=unique(profile.cities.filter(c=>c.id!==capital.id&&!profile.excludedIds.includes(c.id)));
  let foreignBands=[];
  if(own.length<=3){
@@ -126,7 +131,7 @@ function capitalPool(country){
 }
 function capitalOptions(country){
  const pool=capitalPool(country),state=capitalChoiceHistory.get(country.id)||{own:[],foreign:[],last:''};
- const labels=city=>[normalize(city.name),normalize(city.englishName)];
+ const labels=city=>[normalize(koreanCityName(city)),normalize(city.englishName)];
  const selected=[],names=new Set(labels(pool.capital)),available=city=>labels(city).every(name=>!names.has(name));
  const refill=key=>key==='own'?shuffle(pool.own):pool.foreignBands.flatMap(shuffle);
  const draw=key=>{
@@ -147,8 +152,7 @@ function capitalOptions(country){
   }
  }
  state.last=signature();capitalChoiceHistory.set(country.id,state);
- const options=[pool.capital,...selected],korean=options.every(city=>/[가-힣]/.test(city.name));
- return shuffle(options.map(city=>({...city,displayName:korean?city.name:city.englishName})));
+ return shuffle([pool.capital,...selected].map(city=>({...city,displayName:koreanCityName(city)})));
 }
 
 function startGame(){if(!explorerName){renderExplorerEntry();return;}cleanup();const pool=questionPool(difficulty);
@@ -225,13 +229,13 @@ function tick(){
 }
 function submitCapitalAnswer(value,skipped){
  const g=game;if(g.hiddenOptions.has(value)||(!skipped&&!g.options.some(c=>c.id===value)))return;
- const correct=!skipped&&value===g.answerKey,capital=g.cityProfile.cities.find(c=>c.id===g.answerKey),feedback=document.querySelector('#feedback');
+ const correct=!skipped&&value===g.answerKey,capital=g.cityProfile.cities.find(c=>c.id===g.answerKey),capitalName=koreanCityName(capital),feedback=document.querySelector('#feedback');
  g.locked=true;g.selectedAnswer=value;g.total++;g.elapsedAtAnswer=capitalElapsed(g);g.bonusAwarded=correct?capitalBonus(g,g.elapsedAtAnswer):0;g.judgement=skipped?'skipped':correct?'correct':'wrong';
  const points=correct?capitalPoints(g)+g.bonusAwarded:0;
  if(correct){g.correct++;g.streak++;g.maxStreak=Math.max(g.maxStreak,g.streak);g.score+=points;}else g.streak=0;
- g.history.push({country:g.question,correct,answer:String(value),capitalName:capital.name,answerRevealed:true,hintUsed:g.hintUsed,elapsedMs:g.elapsedAtAnswer});
+ g.history.push({country:g.question,correct,answer:String(value),capitalName,answerRevealed:true,hintUsed:g.hintUsed,elapsedMs:g.elapsedAtAnswer});
  showJudgement(correct);feedback.className='feedback attack-feedback '+(correct?'good':'bad');
- feedback.textContent=correct?`${g.question.name} · ${capital.name} 정답! +${points}점`:`${g.question.name}의 ${g.cityProfile.questionLabel}는 ${capital.name}예요.`;
+ feedback.textContent=correct?`${g.question.name} · ${capitalName} 정답! +${points}점`:`${g.question.name}의 ${g.cityProfile.questionLabel}는 ${capitalName}예요.`;
  document.querySelectorAll('[data-answer]').forEach(button=>{button.disabled=true;button.setAttribute('aria-pressed',String(button.dataset.answer===value));if(button.dataset.answer===g.answerKey)button.classList.add('correct');else if(button.dataset.answer===value)button.classList.add('wrong');});
  document.querySelectorAll('#hint-question,#skip-question').forEach(button=>button.disabled=true);
  document.querySelector('#score').textContent=g.score.toLocaleString();updateCapitalBonus(g);advance=setTimeout(nextQuestion,correct?550:1600);
@@ -429,7 +433,7 @@ async function init(){
   // Reject ambiguous alternative names shared by distinct countries.
   const owners=new Map();data.forEach(p=>p.aliases.forEach(name=>{const key=normalize(name);if(!owners.has(key))owners.set(key,new Set());owners.get(key).add(p.id);}));
   data.forEach(p=>p.aliases=p.aliases.filter(name=>owners.get(normalize(name)).size===1));
-  if(cityData.countryCount!==195||!data.every(p=>{const profile=cityData.countries?.[p.id];return profile&&Array.isArray(profile.cities)&&profile.cities.some(c=>c.id===profile.capitalId)&&profile.cities.every(c=>c.countryId===p.id&&c.id&&c.name&&c.englishName)&&Array.isArray(profile.excludedIds);}))throw Error('cities');
+  if(cityData.countryCount!==195||!data.every(p=>{const profile=cityData.countries?.[p.id];return profile&&Array.isArray(profile.cities)&&profile.cities.some(c=>c.id===profile.capitalId&&koreanCityName(c))&&profile.cities.every(c=>c.countryId===p.id&&c.id&&c.name&&c.englishName)&&Array.isArray(profile.excludedIds);}))throw Error('cities');
   countries=data;cityProfiles=cityData.countries;cityCollectedAt=cityData.collectedAt;allCities=Object.values(cityProfiles).flatMap(p=>p.cities);citiesByContinent=new Map(Object.keys(continents).map(continent=>[continent,data.filter(p=>p.continent===continent).flatMap(p=>cityProfiles[p.id].cities)]));capitalOptionPools.clear();capitalChoiceHistory.clear();dataCollectedAt=manifest.collectedAt;render();
  }catch{app.innerHTML='<div class="empty"><p>나라 도감을 불러오지 못했어요.</p><button id="retry-load" class="primary">다시 불러오기</button></div>';document.querySelector('#retry-load').onclick=init;}
 }

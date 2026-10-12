@@ -263,8 +263,10 @@ test('all 195 capitals have four unique options, domestic cities first, and safe
    const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${country.id}'))`),profile=cityData.countries[country.id];
    assert.equal(options.length,4);assert.equal(new Set(options.map(c=>c.id)).size,4);assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.name)})`))).size,4);
    assert.equal(options.filter(c=>c.id===profile.capitalId).length,1);assert.ok(options.every(c=>!profile.excludedIds.includes(c.id)));
-   if(!cityStates.has(country.id))assert.ok(options.every(c=>c.countryId===country.id),country.id);
-   else assert.ok(options.filter(c=>c.countryId!==country.id).every(c=>data.find(p=>p.id===c.countryId).continent===country.continent||cityStates.has(c.countryId)));
+   const domestic=h.w.qa(`capitalPool(countries.find(p=>p.id==='${country.id}')).own.length`);
+   if(domestic>3)assert.ok(options.every(c=>c.countryId===country.id),country.id);
+   else assert.ok(options.filter(c=>c.id!==profile.capitalId&&c.countryId===country.id).length>=Math.min(2,domestic),country.id);
+   assert.ok(options.filter(c=>c.countryId!==country.id).every(c=>data.find(p=>p.id===c.countryId).continent===country.continent||cityStates.has(c.countryId)));
   }
  }
 });
@@ -294,7 +296,7 @@ test('capital wrong answers and passes reveal the capital and advance with clean
  const wrong=g.options.find(c=>c.id!==g.answerKey);h.click(`[data-answer="${wrong.id}"]`);assert.equal(g.total,1);assert.equal(g.score,0);assert.equal(g.correct,0);
  assert.ok(h.$('#feedback').textContent.includes('서울'));assert.equal(h.w.document.querySelectorAll('.correct').length,1);assert.equal(h.w.document.querySelectorAll('.wrong').length,1);
  h.advance();await h.ready();assert.equal(g.selectedAnswer,null);assert.equal(g.locked,false);assert.equal(h.w.document.querySelectorAll('.choice.correct,.choice.wrong,.choice.eliminated').length,0);assert.equal(h.$('#feedback').textContent,'');
- h.click('#skip-question');assert.equal(g.total,2);assert.equal(g.score,0);assert.ok(h.$('#feedback').textContent.includes(g.options.find(c=>c.id===g.answerKey).name));h.advance();await h.ready();assert.equal(g.questionNumber,3);
+ h.click('#skip-question');assert.equal(g.total,2);assert.equal(g.score,0);assert.ok(h.$('#feedback').textContent.includes(g.options.find(c=>c.id===g.answerKey).displayName));h.advance();await h.ready();assert.equal(g.questionNumber,3);
 });
 
 test('capital hint removes two wrong choices once, cannot be bypassed by keys, and resets next question',async t=>{
@@ -356,15 +358,17 @@ test('four-city and exact bag-boundary cases change the actual cities, not just 
 });
 
 
-test('mixed-language city data uses consistent option labels without giving away the capital',async t=>{
+test('all capital choices use readable Korean names and retain unique labels',async t=>{
  const h=await harness();t.after(h.close);
- for(const id of ['kr','us','ad','cn','va']){
+ for(const {id} of data){
   for(let i=0;i<6;i++){
-   const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${id}'))`),korean=options.every(c=>/[가-힣]/.test(c.name));
-   assert.ok(options.every(c=>c.displayName===(korean?c.name:c.englishName)));assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.displayName)})`))).size,4);
+   const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${id}'))`);
+   assert.ok(options.every(c=>/[가-힣]/.test(c.displayName)&&/^[가-힣\s·().,\-/\d]+$/.test(c.displayName)),id);assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.displayName)})`))).size,4);
   }
  }
  h.start('capital');await h.ready();await forceCountry(h,'ad');
  const labels=[...h.w.document.querySelectorAll('.choice')].map(button=>button.textContent.slice(1));
  assert.deepEqual(labels,Array.from(h.game().options,c=>c.displayName));
+ await forceCountry(h,'us');assert.equal(h.game().options.find(c=>c.id===cityData.countries.us.capitalId).displayName,'워싱턴 디시');
+ h.click('#skip-question');assert.ok(h.$('#feedback').textContent.includes('워싱턴 디시'));assert.equal(h.game().history.at(-1).capitalName,'워싱턴 디시');
 });
