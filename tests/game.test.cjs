@@ -272,7 +272,7 @@ test('all 195 capitals have four unique options, domestic cities first, and safe
 });
 
 test('capital tab replaces master, all difficulty levels complete ten untimed multiple-choice questions',async t=>{
- const h=await harness();t.after(h.close);h.click('[data-mode="capital"]');assert.ok(h.$('#app').textContent.includes('수도퀴즈'));assert.equal(h.$('[data-mode="write"]'),null);
+ const h=await harness();t.after(h.close);h.click('[data-mode="capital"]');assert.ok(h.$('#app').textContent.includes('수도이름'));assert.equal(h.$('[data-mode="write"]'),null);
  for(const [level,multiplier] of [['easy',1],['normal',2],['hard',3]]){
   h.clock(0);h.start('capital',level);const g=h.game();assert.equal(g.questionStartedAt,null);await h.ready();assert.equal(g.deadline,null);assert.equal(h.w.document.querySelectorAll('.choice').length,4);assert.equal(h.$('#answer-input'),null);assert.equal(h.$('#timer-bar'),null);
   for(let i=0;i<10;i++){
