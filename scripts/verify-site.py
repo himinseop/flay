@@ -9,7 +9,7 @@ ROOT = Path(__file__).resolve().parents[1]
 
 def verify(source=ROOT / 'dist'):
     source = Path(source)
-    required = ['index.html', 'app.js', 'style.css', 'countries.json', 'countries-manifest.json', 'COUNTRIES-LICENSE.txt', 'favicon.ico', 'favicon.svg', 'site.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png']
+    required = ['index.html', 'app.js', 'style.css', 'countries.json', 'countries-manifest.json', 'COUNTRIES-LICENSE.txt', 'capital-cities.json', 'CITIES-LICENSE.txt', 'favicon.ico', 'favicon.svg', 'site.webmanifest', 'apple-touch-icon.png', 'icon-192.png', 'icon-512.png', 'icon-maskable-512.png']
     if any(not (source / name).is_file() for name in required):
         raise ValueError('A required site, license or shortcut icon file is missing.')
     data = json.loads((source / 'countries.json').read_text(encoding='utf-8'))
@@ -36,6 +36,10 @@ def verify(source=ROOT / 'dist'):
             owners[normalize(name)].add(p['id'])
     if any(len(owners[normalize(p['name'])]) != 1 for p in data):
         raise ValueError('Canonical country names must not become ambiguous quiz answers.')
+    city_data = json.loads((source / 'capital-cities.json').read_text(encoding='utf-8'))
+    verify_cities(data, city_data)
+    if 'GeoNames' not in (source / 'CITIES-LICENSE.txt').read_text(encoding='utf-8'):
+        raise ValueError('City source attribution is required.')
     html = (source / 'index.html').read_text(encoding='utf-8')
     if 'app.js' not in html or 'style.css' not in html:
         raise ValueError('The entry page must load the app and stylesheet.')
@@ -45,6 +49,33 @@ def verify(source=ROOT / 'dist'):
         if path.is_symlink() or any(part.startswith('.') for part in path.relative_to(source).parts):
             raise ValueError(f'Private files or symlinks cannot be published: {path}')
     return {'countries': len(data), 'flags': len(list((source / 'assets').rglob('*.png')))}
+
+
+def verify_cities(countries, city_data):
+    profiles = city_data.get('countries', {})
+    if city_data.get('countryCount') != 195 or set(profiles) != {p['id'] for p in countries}:
+        raise ValueError('City profiles for all 195 countries are required.')
+    identifiers, count = set(), 0
+    for country in countries:
+        profile = profiles[country['id']]
+        cities = profile.get('cities', [])
+        city_ids = {c.get('id') for c in cities}
+        excluded = profile.get('excludedIds')
+        if not cities or not isinstance(excluded, list) or profile.get('capitalId') not in city_ids or profile['capitalId'] in excluded or not set(excluded).issubset(city_ids):
+            raise ValueError('A capital and valid alternative-capital exclusions are required.')
+        if country['id'] not in {'mc', 'sg', 'va'} and len(city_ids - set(excluded)) < 4:
+            raise ValueError('At least four domestic cities are required outside city states.')
+        for city in cities:
+            identifier = city.get('id')
+            if not identifier or identifier in identifiers or city.get('countryId') != country['id'] or not city.get('name') or not city.get('englishName') or city.get('source') not in {'naturalEarth', 'geoNames', 'reviewed'} or not city.get('sourceId'):
+                raise ValueError('Cities require unique identifiers, country ownership, names, and sources.')
+            identifiers.add(identifier)
+            count += 1
+    if count != city_data.get('cityCount'):
+        raise ValueError('City count does not match the collected profiles.')
+    if {s.get('id') for s in city_data.get('sources', [])} != {'naturalEarth', 'geoNames'}:
+        raise ValueError('Both city source references are required.')
+    return count
 
 
 if __name__ == '__main__':

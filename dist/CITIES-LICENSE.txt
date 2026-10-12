@@ -1,0 +1,19 @@
+Flay city profiles, collected 2026-10-12
+
+Natural Earth 1:10m Populated Places
+Authors: Natural Earth contributors (Tom Patterson, Nathaniel Vaughn Kelso, and others)
+Source: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-populated-places/
+License: Public domain
+Terms: https://www.naturalearthdata.com/about/terms-of-use/
+
+GeoNames cities500
+Attribution: GeoNames, https://www.geonames.org/
+Source: https://download.geonames.org/export/dump/cities500.zip
+License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+License URL: https://creativecommons.org/licenses/by/4.0/
+Changes: selected populated places, merged duplicate names, selected Korean names when supplied, and reviewed capital corrections listed in scripts/capital-overrides.json.
+Population values are only used to select major places; they are not current population estimates.
+The source snapshot URLs and SHA-256 hashes are recorded in capital-cities.json.
+
+Capital reference names also use mledoze/countries; see COUNTRIES-LICENSE.txt (ODbL).
+Updated capitals and administrative roles use the official sources recorded per country in capital-cities.json.

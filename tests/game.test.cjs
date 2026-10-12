@@ -6,13 +6,14 @@ const {JSDOM}=require('jsdom');
 const root=path.resolve(__dirname,'../dist');
 const data=JSON.parse(fs.readFileSync(path.join(root,'countries.json')));
 const manifest=JSON.parse(fs.readFileSync(path.join(root,'countries-manifest.json')));
+const cityData=JSON.parse(fs.readFileSync(path.join(root,'capital-cities.json')));
 const flush=()=>new Promise(resolve=>setImmediate(resolve));
 
 async function harness({firstVisit=false,storedName='테스트 탐험가'}={}){
  const dom=new JSDOM(fs.readFileSync(path.join(root,'index.html'),'utf8'),{url:'http://localhost/',runScripts:'outside-only'}),w=dom.window;
  if(!firstVisit)w.localStorage.setItem('flag-play-explorer-name',storedName);
  let now=0,interval=null,advance=null;
- w.fetch=async url=>({ok:true,json:async()=>JSON.parse(JSON.stringify(url==='countries.json'?data:manifest))});
+ w.fetch=async url=>({ok:true,json:async()=>JSON.parse(JSON.stringify(url==='countries.json'?data:url==='capital-cities.json'?cityData:manifest))});
  Object.defineProperty(w.performance,'now',{value:()=>now});
  w.setInterval=fn=>{interval=fn;return 1;};w.clearInterval=()=>interval=null;
  w.setTimeout=fn=>{advance=fn;return 1;};w.clearTimeout=()=>advance=null;
@@ -30,9 +31,8 @@ async function harness({firstVisit=false,storedName='테스트 탐험가'}={}){
  const click=selector=>{assert.ok($(selector),selector);$(selector).click();};
  const load=async img=>{if(game().images.get(game().question.id)?.ready&&img===game().images.get(game().question.id).image)return;img.load();img.decoded();await flush();};
  const ready=()=>load(game().images.get(game().question.id).image);
- const submit=value=>{$('#answer-input').value=value;$('#answer-input').dispatchEvent(new w.Event('input',{bubbles:true}));$('#answer-form').dispatchEvent(new w.Event('submit',{bubbles:true,cancelable:true}));};
  const setInput=(selector,value)=>{$(selector).value=value;$(selector).dispatchEvent(new w.Event('input',{bubbles:true}));};
- return {w,$,game,click,load,ready,submit,setInput,start:(kind='time',level='easy')=>w.qa(`mode='${kind}';difficulty='${level}';startGame()`),
+ return {w,$,game,click,load,ready,setInput,start:(kind='time',level='easy')=>w.qa(`mode='${kind}';difficulty='${level}';startGame()`),
   clock:value=>now=value,tick:()=>interval?.(),advance:()=>{assert.ok(advance);const fn=advance;advance=null;fn();},interval:()=>interval,close:()=>dom.window.close()};
 }
 
@@ -92,23 +92,6 @@ test('next time-attack question clears answer and pointer emphasis after correct
  assert.equal(g.total,3);h.advance();await h.ready();assert.ok(!h.$('.choices').classList.contains('hover-ready'));
 });
 
-test('all master difficulties: untimed retries, alias answers, skip disclosure and completion',async t=>{
- const h=await harness();t.after(h.close);
- for(const [level,multiplier] of [['easy',1],['normal',2],['hard',3]]){
-  h.start('write',level);await h.ready();const g=h.game(),original=g.question;
-  assert.equal(g.deadline,null);assert.ok(h.interval());assert.equal(h.$('.progress'),null);
-  h.clock(g.questionStartedAt+3600000);h.w.qa('tick()');assert.equal(g.question,original);
-  h.submit('없는나라');assert.equal(g.total,0);assert.equal(g.score,0);assert.equal(g.locked,false);
-  assert.ok(h.$('#feedback').textContent.includes('괜찮아요!'));assert.ok(!h.$('#feedback').textContent.includes(original.name));
-  h.submit(original.englishName.toUpperCase().split('').join(' '));assert.equal(g.score,100*multiplier);
-  h.click('#answer-submit');await h.ready();const skipped=g.question.name;h.click('#skip-question');assert.equal(h.$('#answer-slots').textContent,skipped.replace(/\s/g,''));assert.equal(h.$('#feedback').textContent,'');assert.equal(g.correct,1);assert.equal(g.total,2);
-  h.click('#answer-submit');await h.ready();
-  for(let i=2;i<10;i++){h.clock(g.questionStartedAt+20000);h.submit(g.question.name);h.click('#answer-submit');if(g.status==='playing')await h.ready();}
-  assert.equal(g.status,'ended');assert.equal(g.score,900*multiplier);assert.equal(g.total,10);assert.equal(g.record.mode,`write-${level}`);
-  assert.ok(h.$('#high-score .my-entry'));h.$('#high-score').close();
- }
-});
-
 test('cancelled loading cannot restart; repeated broken images cannot enter ranking',async t=>{
  const h=await harness();t.after(h.close);
  h.start();const first=h.game().images.get(h.game().question.id).image;h.click('#quit-game');await h.load(first);
@@ -137,11 +120,11 @@ test('ranking saves safe custom names or random country names, and caps each boa
 test('atlas alias/ISO search, six continent filters, details and independent ranking tabs',async t=>{
  const h=await harness();t.after(h.close);h.click('[data-nav="atlas"]');assert.equal(h.w.document.querySelectorAll('#atlas-results .country-card').length,195);
  h.setInput('#search','한국');assert.equal(h.w.document.querySelectorAll('#atlas-results .country-card').length,1);h.click('[data-country="kr"]');
- assert.equal(h.$('#detail-title').textContent,'대한민국');assert.ok(h.$('#detail').textContent.includes('Seoul'));h.click('#close-detail');
+ assert.equal(h.$('#detail-title').textContent,'대한민국');assert.ok(h.$('#detail').textContent.includes('서울'));h.click('#close-detail');
  h.setInput('#search','JP');assert.equal(h.$('.country-card').dataset.country,'jp');h.setInput('#search','');
  for(const c of new Set(data.map(p=>p.continent))){h.$('#continent-filter').value=c;h.$('#continent-filter').dispatchEvent(new h.w.Event('change',{bubbles:true}));assert.equal(h.w.document.querySelectorAll('#atlas-results .country-card').length,data.filter(p=>p.continent===c).length);}
  h.setInput('#search','없는나라');assert.ok(h.$('.empty'));h.click('[data-nav="play"]');h.click('[data-nav="records"]');assert.equal(h.w.document.querySelectorAll('[data-ranking-mode]').length,2);assert.equal(h.w.document.querySelectorAll('[data-ranking-difficulty]').length,3);
- h.click('[data-ranking-mode="write"]');h.click('[data-ranking-difficulty="hard"]');h.click('[data-play-record="write-hard"]');assert.equal(h.w.qa('mode'),'write');assert.equal(h.w.qa('difficulty'),'hard');
+ h.click('[data-ranking-mode="capital"]');h.click('[data-ranking-difficulty="hard"]');h.click('[data-play-record="capital-hard"]');assert.equal(h.w.qa('mode'),'capital');assert.equal(h.w.qa('difficulty'),'hard');
 });
 
 test('leaving an active game requires a choice and cleans up the timer',async t=>{
@@ -203,95 +186,13 @@ test('every canonical Korean country name remains answerable after ambiguous ali
  assert.ok(h.w.qa("countries.every(p=>p.aliases.some(name=>normalize(name)===normalize(p.name)))"));
 });
 
-test('master bonus starts at image readiness, drops in ten-point steps, and never ends the game',async t=>{
- const h=await harness();t.after(h.close);
- for(const [level,multiplier] of [['easy',1],['normal',2],['hard',3]]){
-  h.clock(1000);h.start('write',level);const g=h.game();assert.equal(g.questionStartedAt,null);
-  h.clock(21000);await h.ready();assert.equal(g.questionStartedAt,21000);
-  const maximum=50*multiplier;assert.equal(h.w.qa('masterBonus(game)'),maximum);
-  h.clock(31000);h.tick();assert.equal(h.w.qa('masterBonus(game)'),maximum-Math.floor(maximum/20)*10);
-  assert.equal(Number(h.$('.bonus-track').getAttribute('aria-valuenow')),h.w.qa('masterBonus(game)'));
-  h.clock(41000);h.tick();assert.equal(h.w.qa('masterBonus(game)'),0);assert.equal(g.status,'playing');
-  assert.equal(g.deadline,null);assert.ok(h.$('#hint-question').classList.contains('hint-ready'));assert.equal(h.$('.hint-nudge').hidden,false);
-  h.submit(g.question.name);assert.equal(g.score,100*multiplier);assert.equal(g.bonusAwarded,0);assert.equal(g.history[0].elapsedMs,20000);
-  assert.equal(g.awaitingNext,true);assert.equal(h.$('#answer-submit').textContent,'다음문제');
- }
-});
-
-test('master correct answers award the speed bonus once and preserve the focused input across questions',async t=>{
- const h=await harness();t.after(h.close);h.start('write','hard');await h.ready();
- const g=h.game(),input=h.$('#answer-input'),question=g.question;
- h.submit(question.name);assert.equal(g.score,450);assert.equal(g.bonusAwarded,150);assert.equal(g.question,question);
- assert.equal(input.readOnly,true);assert.equal(g.history.length,1);assert.equal(g.total,1);
- h.w.qa('submitAnswer(game.question.name)');h.click('#skip-question');assert.equal(g.score,450);assert.equal(g.total,1);
- h.click('#answer-submit');await h.ready();assert.equal(h.$('#answer-input'),input);assert.equal(input.value,'');assert.equal(input.readOnly,false);
- assert.equal(h.w.document.activeElement,input);assert.equal(g.judgement,null);assert.equal(g.awaitingNext,false);assert.equal(g.questionNumber,2);
- assert.equal(h.$('#answer-submit').textContent,'확인');assert.equal(h.w.qa('masterBonus(game)'),150);
-});
-
-async function forceCountry(h,id){h.w.qa(`game.deck=[countries.find(p=>p.id==='${id}')];nextQuestion()`);await h.ready();}
-
-test('wrong master letters can be edited or advanced without revealing the answer',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
- const g=h.game(),original=g.question;
- h.submit('대한미국');assert.equal(g.question,original);assert.equal(g.total,0);assert.equal(g.score,0);
- assert.equal(h.w.document.querySelectorAll('.checked-correct').length,3);assert.equal(h.w.document.querySelectorAll('.checked-wrong').length,1);
- assert.equal(g.answerRevealed,false);assert.equal(h.$('#answer-submit').textContent,'다음문제');
- h.setInput('#answer-input','대한민국');assert.equal(g.awaitingNext,false);assert.equal(g.checkedLetters,null);assert.equal(h.$('#answer-submit').textContent,'확인');
- h.submit('대한민국');assert.equal(g.score,150);assert.equal(g.correct,1);assert.equal(g.total,1);
- h.click('#answer-submit');await h.ready();h.submit('없는나라');h.click('#answer-submit');await h.ready();
- assert.equal(g.total,2);assert.equal(g.correct,1);assert.equal(g.history[1].answerRevealed,false);assert.equal(g.questionNumber,3);
-});
-
-test('one-letter hints fill only their slot, remove the bonus, halve base points, and reset next question',async t=>{
- const h=await harness();t.after(h.close);
- for(const [level,id,index,rest,points] of [['easy','kr',0,'한민국',50],['normal','kr',0,'한민국',100],['hard','ad',2,'안도',150]]){
-  h.start('write',level);await h.ready();await forceCountry(h,id);h.w.Math.random=()=>.99;
-  const g=h.game();h.click('#hint-question');assert.equal(g.hint.index,index);assert.equal(g.hintUsed,true);
-  assert.equal(h.w.document.querySelectorAll('.hint-target').length,1);assert.equal(h.$('#master-bonus').hidden,true);
-  const hint=g.hint;h.click('#hint-question');assert.equal(g.hint,hint);
-  h.submit(rest);assert.equal(g.score,points);assert.equal(g.bonusAwarded,0);assert.equal(g.history[0].hintUsed,true);
-  h.click('#answer-submit');await h.ready();assert.equal(g.hintUsed,false);assert.equal(g.hint,null);assert.equal(h.$('#hint-question').disabled,false);
-  assert.equal(h.w.document.querySelectorAll('.hint-target').length,0);assert.equal(h.$('#master-bonus').hidden,false);
- }
-});
-
-test('pass fills the answer without an answer sentence and waits for the next button',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();const g=h.game(),original=g.question,input=h.$('#answer-input');
- h.click('#skip-question');assert.equal(g.question,original);assert.equal(g.score,0);assert.equal(g.total,1);assert.equal(g.judgement,'skipped');
- assert.equal(h.$('#feedback').textContent,'');assert.equal(h.$('#answer-slots').textContent,h.w.qa('normalize(game.question.name)'));
- assert.equal(input.readOnly,true);assert.equal(h.$('#master-bonus').hidden,true);assert.equal(h.$('#hint-question').disabled,true);
- h.clock(999999);h.tick();assert.equal(g.question,original);assert.equal(g.total,1);
- h.click('#answer-submit');await h.ready();assert.equal(h.$('#answer-input'),input);assert.equal(input.value,'');assert.equal(g.questionNumber,2);
-});
-
-test('Korean composition cannot submit or advance until committed',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
- const g=h.game(),input=h.$('#answer-input');
- input.dispatchEvent(new h.w.CompositionEvent('compositionstart',{bubbles:true}));input.value='대한민국';
- input.dispatchEvent(new h.w.InputEvent('input',{bubbles:true,isComposing:true}));
- h.$('#answer-form').dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));assert.equal(g.total,0);assert.equal(g.answerComposing,true);
- input.dispatchEvent(new h.w.CompositionEvent('compositionend',{bubbles:true}));assert.equal(g.answerComposing,false);
- h.$('#answer-form').dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));assert.equal(g.total,1);assert.equal(g.score,150);
-});
-
-test('aliases and English answers remain accepted, including after hints, and long names retain all slots',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
- h.submit('한국');assert.equal(h.game().correct,1);assert.equal(h.$('#answer-slots').textContent,'대한민국');assert.equal(h.w.document.querySelectorAll('.checked-wrong').length,0);
- h.click('#answer-submit');await h.ready();await forceCountry(h,'tr');h.setInput('#answer-input',h.game().question.englishName.toUpperCase());
- assert.ok(!h.$('.letter-entry').classList.contains('free-input'));h.click('#hint-question');h.submit(h.game().question.englishName);assert.equal(h.game().score,200);
- h.click('#answer-submit');await h.ready();await forceCountry(h,'vc');
- assert.equal(h.w.document.querySelectorAll('.answer-slot').length,h.game().answerLength);
- h.submit(h.game().question.englishName);assert.equal(h.game().correct,3);assert.equal(h.w.document.querySelectorAll('.checked-wrong').length,0);
-});
-
 test('quit scores can register and replay saves the typed name before returning to the same lobby',async t=>{
  const h=await harness();t.after(h.close);h.start('time','normal');await h.ready();h.click(`[data-answer="${h.game().question.id}"]`);h.click('#quit-game');
  assert.ok(h.$('#high-score').open);assert.equal(h.game().completed,true);assert.equal(h.game().rank,1);
  h.setInput('#trainer-name','새 탐험가');h.click('#ranking-replay');assert.equal(h.game(),null);assert.equal(h.$('#high-score').open,false);
  assert.equal(h.w.qa('mode'),'time');assert.equal(h.w.qa('difficulty'),'normal');assert.equal(h.$('#start-game').textContent,'시작');
  assert.equal(JSON.parse(h.w.localStorage.getItem('flag-play-records'))[0].name,'새 탐험가');assert.equal(h.w.localStorage.getItem('flag-play-explorer-name'),'새 탐험가');
- h.start('write','hard');await h.ready();h.submit(h.game().question.name);h.click('#quit-game');assert.equal(h.$('#trainer-name').value,'새 탐험가');
+ h.start('capital','hard');await h.ready();h.click(`[data-answer="${h.game().answerKey}"]`);h.click('#quit-game');assert.equal(h.$('#trainer-name').value,'새 탐험가');
 });
 
 test('a failed ranking save keeps the typed name and replay screen available for retry',async t=>{
@@ -313,29 +214,9 @@ test('ranking ties show recent scores first and dates use Korean calendar bounda
 test('remembered explorers can edit their name and open score help without access tracking',async t=>{
  const h=await harness();t.after(h.close);h.click('#game-help');assert.ok(h.$('#detail').textContent.includes('20초'));assert.ok(h.$('#detail').textContent.includes('절반'));h.click('#close-detail');
  h.click('#edit-explorer');h.setInput('#explorer-name','우리 탐험가');h.$('#explorer-form').dispatchEvent(new h.w.Event('submit',{bubbles:true,cancelable:true}));assert.ok(h.$('#edit-explorer').textContent.includes('우리 탐험가'));
- h.start('write');await h.ready();assert.equal(h.game().status,'playing');assert.ok(h.w.document.body.classList.contains('game-focused'));
+ h.start('capital');await h.ready();assert.equal(h.game().status,'playing');assert.ok(h.w.document.body.classList.contains('game-focused'));
  h.click('#quit-game');assert.equal(h.w.document.body.classList.contains('game-focused'),false);assert.equal(h.game().rank,0);assert.ok(h.$('#high-score').open);
  assert.equal(h.w.localStorage.getItem('pokemon-play-trainer-name'),null);
-});
-
-test('hinted empty submissions do nothing and English aliases stay in letter slots',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
- h.click('#hint-question');h.submit('');assert.equal(h.game().judgement,null);assert.equal(h.game().awaitingNext,false);assert.equal(h.game().total,0);
- h.submit('South Korea');assert.equal(h.game().score,50);assert.equal(h.game().correct,1);
-});
-
-test('letter entry stays visible for typing and composition, with no alternative-input toggle',async t=>{
- const h=await harness();t.after(h.close);h.start('write');await h.ready();await forceCountry(h,'kr');
- const input=h.$('#answer-input');
- for(const value of ['대','대한','대한민국','대한민국ㄱ','South Korea']){
-  h.setInput('#answer-input',value);assert.ok(!h.$('.letter-entry').classList.contains('free-input'));
-  assert.equal(h.$('#answer-slots').textContent,value.normalize('NFC').replace(/\s+/g,''));assert.equal(h.$('#toggle-answer-mode'),null);
- }
- input.dispatchEvent(new h.w.CompositionEvent('compositionstart',{bubbles:true}));
- h.setInput('#answer-input','대한민국ㄱ');input.dispatchEvent(new h.w.CompositionEvent('compositionend',{bubbles:true}));
- assert.ok(!h.$('.letter-entry').classList.contains('free-input'));assert.equal(input.value,'대한민국ㄱ');
- h.submit('대한민국');assert.equal(h.game().correct,1);assert.equal(h.$('.stage-tag'),null);
- assert.equal(h.$('#question-image').parentElement.className,'flag-image-frame');
 });
 
 test('first visit requires a valid explorer name and a remembered visit goes straight to play',async t=>{
@@ -352,9 +233,88 @@ test('easy oceanian questions still get four unique choices from the same contin
  assert.ok(g.options.every(p=>p.continent==='오세아니아'));assert.ok(g.options.some(p=>!p.familiar));assert.ok(g.options.includes(g.question));
 });
 
-test('button and area focus is blurred while answer input focus remains available',async t=>{
+test('button and area focus is blurred while profile inputs remain usable',async t=>{
  const h=await harness();t.after(h.close);h.$('#app').focus();assert.notEqual(h.w.document.activeElement,h.$('#app'));
  h.$('#start-game').focus();assert.notEqual(h.w.document.activeElement,h.$('#start-game'));
- h.start('write');await h.ready();const input=h.$('#answer-input');input.focus();assert.equal(h.w.document.activeElement,input);
- h.$('#answer-submit').focus();assert.notEqual(h.w.document.activeElement,h.$('#answer-submit'));input.focus();assert.equal(h.w.document.activeElement,input);
+ h.click('#edit-explorer');const input=h.$('#explorer-name');input.focus();assert.equal(h.w.document.activeElement,input);
+ h.click('#close-detail');h.start('capital');await h.ready();h.$('.choice').focus();assert.notEqual(h.w.document.activeElement,h.$('.choice'));
+});
+
+async function forceCountry(h,id){h.w.qa(`game.deck=[countries.find(p=>p.id==='${id}')];nextQuestion()`);await h.ready();}
+
+test('city dataset covers all countries with traceable real cities and reviewed capitals',()=>{
+ assert.equal(cityData.countryCount,195);assert.equal(Object.keys(cityData.countries).length,195);
+ const ids=new Set();let count=0;
+ for(const country of data){
+  const p=cityData.countries[country.id];assert.ok(p);assert.ok(p.cities.some(c=>c.id===p.capitalId));
+  assert.ok(p.excludedIds.every(id=>p.cities.some(c=>c.id===id)));assert.ok(!p.excludedIds.includes(p.capitalId));
+  if(!['mc','sg','va'].includes(country.id))assert.ok(p.cities.filter(c=>!p.excludedIds.includes(c.id)).length>=4,country.id);
+  for(const c of p.cities){assert.equal(c.countryId,country.id);assert.ok(c.name&&c.englishName&&c.source&&c.sourceId);assert.ok(!ids.has(c.id));ids.add(c.id);count++;}
+ }
+ assert.equal(count,cityData.cityCount);assert.ok(count>=780);assert.ok(cityData.sources.every(s=>s.url&&s.license&&/^[a-f0-9]{64}$/.test(s.sha256)));
+ const cap=id=>{const p=cityData.countries[id];return p.cities.find(c=>c.id===p.capitalId).name;};
+ assert.equal(cap('kr'),'서울');assert.equal(cap('lk'),'스리자야와르데네푸라코테');assert.equal(cap('bi'),'기테가');assert.equal(cap('gq'),'시우다드데라파스');assert.equal(cap('kz'),'아스타나');assert.equal(cap('pw'),'응게룰무드');
+});
+
+test('all 195 capitals have four unique options, domestic cities first, and safe city-state fallback',async t=>{
+ const h=await harness();t.after(h.close);const cityStates=new Set(['mc','sg','va']);
+ for(const country of data){
+  for(let iteration=0;iteration<5;iteration++){
+   const options=h.w.qa(`capitalOptions(countries.find(p=>p.id==='${country.id}'))`),profile=cityData.countries[country.id];
+   assert.equal(options.length,4);assert.equal(new Set(options.map(c=>c.id)).size,4);assert.equal(new Set(options.map(c=>h.w.qa(`normalize(${JSON.stringify(c.name)})`))).size,4);
+   assert.equal(options.filter(c=>c.id===profile.capitalId).length,1);assert.ok(options.every(c=>!profile.excludedIds.includes(c.id)));
+   if(!cityStates.has(country.id))assert.ok(options.every(c=>c.countryId===country.id),country.id);
+   else assert.ok(options.filter(c=>c.countryId!==country.id).every(c=>data.find(p=>p.id===c.countryId).continent===country.continent||cityStates.has(c.countryId)));
+  }
+ }
+});
+
+test('capital tab replaces master, all difficulty levels complete ten untimed multiple-choice questions',async t=>{
+ const h=await harness();t.after(h.close);h.click('[data-mode="capital"]');assert.ok(h.$('#app').textContent.includes('수도퀴즈'));assert.equal(h.$('[data-mode="write"]'),null);
+ for(const [level,multiplier] of [['easy',1],['normal',2],['hard',3]]){
+  h.clock(0);h.start('capital',level);const g=h.game();assert.equal(g.questionStartedAt,null);await h.ready();assert.equal(g.deadline,null);assert.equal(h.w.document.querySelectorAll('.choice').length,4);assert.equal(h.$('#answer-input'),null);assert.equal(h.$('#timer-bar'),null);
+  for(let i=0;i<10;i++){
+   h.clock(g.questionStartedAt+20000);h.tick();assert.equal(g.status,'playing');
+   const answer=g.answerKey;h.click(`[data-answer="${answer}"]`);assert.equal(g.total,i+1);assert.equal(g.score,(i+1)*100*multiplier);
+   h.w.qa(`submitAnswer('${answer}')`);assert.equal(g.total,i+1);h.advance();if(g.status==='playing')await h.ready();
+  }
+  assert.equal(g.status,'ended');assert.equal(g.correct,10);assert.equal(g.record.mode,`capital-${level}`);assert.ok(h.$('#high-score').open);h.$('#high-score').close();
+ }
+});
+
+test('capital bonus begins at image readiness, uses ten-point steps, and never imposes a deadline',async t=>{
+ const h=await harness();t.after(h.close);h.clock(1000);h.start('capital','hard');const g=h.game();h.clock(21000);await h.ready();assert.equal(g.questionStartedAt,21000);
+ assert.equal(h.w.qa('capitalBonus(game)'),150);h.clock(31000);h.tick();assert.equal(h.w.qa('capitalBonus(game)'),80);
+ h.clock(41000);h.tick();assert.equal(h.w.qa('capitalBonus(game)'),0);assert.equal(g.status,'playing');assert.equal(g.deadline,null);
+ h.click(`[data-answer="${g.answerKey}"]`);assert.equal(g.score,300);h.advance();await h.ready();h.click(`[data-answer="${g.answerKey}"]`);assert.equal(g.score,750);
+});
+
+test('capital wrong answers and passes reveal the capital and advance with clean selection state',async t=>{
+ const h=await harness();t.after(h.close);h.start('capital');await h.ready();await forceCountry(h,'kr');const g=h.game();
+ const wrong=g.options.find(c=>c.id!==g.answerKey);h.click(`[data-answer="${wrong.id}"]`);assert.equal(g.total,1);assert.equal(g.score,0);assert.equal(g.correct,0);
+ assert.ok(h.$('#feedback').textContent.includes('서울'));assert.equal(h.w.document.querySelectorAll('.correct').length,1);assert.equal(h.w.document.querySelectorAll('.wrong').length,1);
+ h.advance();await h.ready();assert.equal(g.selectedAnswer,null);assert.equal(g.locked,false);assert.equal(h.w.document.querySelectorAll('.choice.correct,.choice.wrong,.choice.eliminated').length,0);assert.equal(h.$('#feedback').textContent,'');
+ h.click('#skip-question');assert.equal(g.total,2);assert.equal(g.score,0);assert.ok(h.$('#feedback').textContent.includes(g.options.find(c=>c.id===g.answerKey).name));h.advance();await h.ready();assert.equal(g.questionNumber,3);
+});
+
+test('capital hint removes two wrong choices once, cannot be bypassed by keys, and resets next question',async t=>{
+ const h=await harness();t.after(h.close);h.start('capital');await h.ready();const g=h.game();h.click('#hint-question');
+ assert.equal(g.hiddenOptions.size,2);assert.ok(!g.hiddenOptions.has(g.answerKey));assert.equal(h.w.document.querySelectorAll('.choice.eliminated:disabled').length,2);assert.ok(h.$('#hint-question').disabled);assert.ok(h.$('#capital-bonus').hidden);
+ const eliminated=g.options.findIndex(c=>g.hiddenOptions.has(c.id));h.w.document.body.dispatchEvent(new h.w.KeyboardEvent('keydown',{key:String(eliminated+1),bubbles:true,cancelable:true}));assert.equal(g.total,0);
+ const correct=g.options.findIndex(c=>c.id===g.answerKey);h.w.document.body.dispatchEvent(new h.w.KeyboardEvent('keydown',{key:String(correct+1),bubbles:true,cancelable:true}));assert.equal(g.score,50);assert.equal(g.bonusAwarded,0);
+ h.advance();await h.ready();assert.equal(g.hintUsed,false);assert.equal(g.hiddenOptions.size,0);assert.equal(h.w.document.querySelectorAll('.choice.eliminated').length,0);assert.equal(h.$('#hint-question').disabled,false);
+});
+
+test('multiple capitals have explicit roles and city facts expose source links',async t=>{
+ const h=await harness();t.after(h.close);h.start('capital');await h.ready();await forceCountry(h,'za');assert.ok(h.$('.capital-prompt').textContent.includes('행정 수도'));
+ const g=h.game();assert.ok(!g.options.some(c=>['Cape Town','Bloemfontein'].includes(c.englishName)));assert.ok(g.options.some(c=>c.name==='프리토리아'));
+ h.w.qa("showCountry('gq')");assert.ok(h.$('.country-facts').textContent.includes('시우다드데라파스'));assert.ok(h.$('.country-facts').textContent.includes('주요 도시'));assert.ok(h.$('.country-facts').textContent.includes('2026년 1월 2일'));
+ assert.ok(h.w.document.querySelector('a[href="https://www.geonames.org/"]'));assert.ok(h.$('#detail').textContent.includes(cityData.collectedAt));
+});
+
+test('new capital ranking saves never remove or reuse legacy master and time records',async t=>{
+ const h=await harness();t.after(h.close);const old=[{id:'legacy',name:'마스터',mode:'write-easy',score:9999,correct:10,total:10,date:'2026-10-01T00:00:00Z'},{id:'time',name:'타임',mode:'time-easy',score:9999,correct:10,total:10,date:'2026-10-01T00:00:00Z'}];
+ h.w.localStorage.setItem('flag-play-records',JSON.stringify(old));h.w.qa('records=readRecords()');assert.equal(h.w.qa("leaderboard('capital-easy').length"),0);
+ h.start('capital');await h.ready();h.click(`[data-answer="${h.game().answerKey}"]`);h.click('#quit-game');assert.equal(h.game().rank,1);h.setInput('#trainer-name','수도 탐험가');h.click('#ranking-replay');
+ const saved=JSON.parse(h.w.localStorage.getItem('flag-play-records'));assert.ok(saved.some(r=>r.id==='legacy'&&r.mode==='write-easy'));assert.ok(saved.some(r=>r.id==='time'));assert.ok(saved.some(r=>r.mode==='capital-easy'));assert.equal(h.w.qa('mode'),'capital');
 });
