@@ -423,7 +423,7 @@ document.addEventListener('keydown',e=>{if(document.querySelector('#detail').ope
 for(const id of ['detail','high-score'])document.querySelector('#'+id).addEventListener('click',e=>{if(e.target===e.currentTarget){const r=e.currentTarget.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)e.currentTarget.close();}});
 async function init(){
  try{
-  const [dataResponse,manifestResponse,cityResponse]=await Promise.all([fetch('countries.json'),fetch('countries-manifest.json'),fetch('capital-cities.json')]);if(!dataResponse.ok||!manifestResponse.ok||!cityResponse.ok)throw Error('data');
+  const [dataResponse,manifestResponse,cityResponse]=await Promise.all(['countries.json','countries-manifest.json','capital-cities.json'].map(url=>fetch(url,{cache:'no-cache'})));if(!dataResponse.ok||!manifestResponse.ok||!cityResponse.ok)throw Error('data');
   const [data,manifest,cityData]=await Promise.all([dataResponse.json(),manifestResponse.json(),cityResponse.json()]);
   if(!Array.isArray(data)||data.length!==manifest.countryCount||data.length!==195||new Set(data.map(p=>p.id)).size!==195||data.filter(p=>p.familiar).length!==30||!data.every(p=>/^[a-z]{2}$/.test(p.id)&&p.name&&p.image&&continents[p.continent]&&Array.isArray(p.aliases)&&p.aliases.includes(p.name)))throw Error('incomplete');
   // Reject ambiguous alternative names shared by distinct countries.
